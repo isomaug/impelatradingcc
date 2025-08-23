@@ -135,10 +135,11 @@ export default function EditTeamMemberPage() {
       
       toast({
         title: `Success`,
-        description: `Team member has been ${isEditing ? 'updated' : 'created'}.`,
+        description: `Team member has been ${isEditing ? 'updated' : 'created'}. You can continue editing or go back to the list.`,
       });
-      router.push("/admin/team");
-      router.refresh(); // Refresh server components
+      // We no longer redirect automatically, allowing for a smoother save experience.
+      // router.push("/admin/team");
+      router.refresh(); // Refresh server components in the background
     } catch (error) {
        toast({
         variant: "destructive",
