@@ -4,7 +4,7 @@
 import Image from "next/image";
 import type { LibraryItem } from "@/lib/types";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { DialogClose } from "@/components/ui/dialog";
+import { DialogClose, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 interface ImageLibraryProps {
   items: LibraryItem[];
@@ -16,16 +16,22 @@ export function ImageLibrary({ items, onSelectImage }: ImageLibraryProps) {
   const imageUrls = Array.from(
     new Set(
         items.flatMap((item) => {
-            if (item.images) return item.images;
-            if (item.image) return [item.image];
+            if ('images' in item && item.images) return item.images.map(img => typeof img === 'string' ? img : img.url);
+            if ('image' in item && item.image) return [item.image];
             return [];
-        })
+        }).filter(url => url) // Filter out any undefined/null urls
     )
   );
 
   return (
     <div>
-      <ScrollArea className="h-96">
+      <DialogHeader>
+        <DialogTitle>Image Library</DialogTitle>
+        <DialogDescription>
+          Select an existing image from your library below.
+        </DialogDescription>
+      </DialogHeader>
+      <ScrollArea className="h-96 mt-4">
         <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4 p-4">
           {imageUrls.map((url, index) => (
             <DialogClose key={index} asChild>
