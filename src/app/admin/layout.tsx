@@ -47,8 +47,8 @@ export default function AdminLayout({
 
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen">
-        <Sidebar className="border-r" collapsible="icon">
+      <div className="flex min-h-screen bg-muted/40">
+        <Sidebar className="border-r" collapsible="icon" variant="floating">
           <SidebarHeader>
               <Button variant="ghost" size="icon" asChild>
                 <Link href="/">
@@ -57,7 +57,7 @@ export default function AdminLayout({
                 </Link>
               </Button>
           </SidebarHeader>
-          <SidebarContent className="p-2">
+          <SidebarContent className="p-2 flex-grow">
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild tooltip="Dashboard" isActive={isActive('/admin')}>
@@ -144,7 +144,7 @@ export default function AdminLayout({
           </SidebarFooter>
         </Sidebar>
         <main className="flex-1 p-4 md:p-8">
-            <div className="md:hidden flex justify-end mb-4">
+            <div className="flex justify-end mb-4">
                  <SidebarTrigger>
                     <PanelLeft />
                 </SidebarTrigger>
