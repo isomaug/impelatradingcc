@@ -17,11 +17,19 @@ export default function Home() {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="relative h-[60vh] bg-cover bg-center text-white flex items-center justify-center" style={{ backgroundImage: "url('https://placehold.co/1600x900.png')" }} data-ai-hint="south african landscape">
-        <div className="absolute inset-0 bg-black/50" />
+      <section className="relative h-[70vh] bg-cover bg-center text-white flex items-center justify-center">
+        <Image 
+          src="https://placehold.co/1600x900.png" 
+          alt="South African landscape" 
+          layout="fill"
+          objectFit="cover"
+          className="z-0"
+          data-ai-hint="south african landscape"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-black/20" />
         <div className="relative z-10 text-center px-4">
-          <h1 className="text-4xl md:text-6xl font-headline font-bold mb-4">Impela Trading CC</h1>
-          <p className="text-lg md:text-2xl font-body max-w-3xl mx-auto">
+          <h1 className="text-4xl md:text-6xl font-headline font-bold mb-4 drop-shadow-lg">Impela Trading CC</h1>
+          <p className="text-lg md:text-2xl font-body max-w-3xl mx-auto drop-shadow-md">
             Empowering communities through artisan skills, sustainable partnerships, and global outreach.
           </p>
         </div>
@@ -87,17 +95,17 @@ export default function Home() {
             }}
             className="w-full"
           >
-            <CarouselContent>
+            <CarouselContent className="-ml-4">
               {products.slice(0, 6).map((product) => (
-                <CarouselItem key={product.id} className="md:basis-1/2 lg:basis-1/3">
-                  <div className="p-1">
+                <CarouselItem key={product.id} className="pl-4 md:basis-1/2 lg:basis-1/3 group">
+                  <div className="p-1 transition-transform duration-300 ease-in-out group-[.is-active]:scale-105">
                     <ProductCard product={product} />
                   </div>
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="ml-14" />
-            <CarouselNext className="mr-14" />
+            <CarouselPrevious className="ml-14 backdrop-blur-sm bg-background/50 hover:bg-background/80" />
+            <CarouselNext className="mr-14 backdrop-blur-sm bg-background/50 hover:bg-background/80" />
           </Carousel>
            <div className="text-center mt-12">
              <Button asChild size="lg">
