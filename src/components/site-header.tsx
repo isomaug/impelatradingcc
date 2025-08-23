@@ -29,6 +29,9 @@ const SiteHeader = () => {
         <Link href="/about">About Us</Link>
       </Button>
        <Button variant="ghost" className="text-secondary-foreground hover:bg-secondary/80" asChild>
+        <Link href="/team">Our Team</Link>
+      </Button>
+       <Button variant="ghost" className="text-secondary-foreground hover:bg-secondary/80" asChild>
         <Link href="/trainings">Trainings</Link>
       </Button>
        <Button variant="ghost" className="text-secondary-foreground hover:bg-secondary/80" asChild>
