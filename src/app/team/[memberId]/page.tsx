@@ -29,6 +29,8 @@ export default async function TeamMemberPage({ params }: TeamCV) {
     notFound();
   }
 
+  const bioParagraphs = member.bio.split('\n').filter(p => p.trim() !== '');
+
   return (
     <div className="bg-background/70">
       <div className="container mx-auto px-4 py-12 md:py-20">
@@ -62,7 +64,9 @@ export default async function TeamMemberPage({ params }: TeamCV) {
                 </Button>
               </Link>
               <div className="prose prose-lg max-w-none mt-8 text-foreground/80">
-                <p>{member.bio}</p>
+                 {bioParagraphs.map((paragraph, index) => (
+                  <p key={index}>{paragraph}</p>
+                ))}
               </div>
             </div>
           </div>
