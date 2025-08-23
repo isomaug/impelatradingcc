@@ -14,6 +14,7 @@ import {
   Users,
   Users2,
   LogOut,
+  BookHeart,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -28,7 +29,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const navItems = [
   {
@@ -41,6 +42,7 @@ const navItems = [
       { href: "/admin/team", icon: Users2, label: "Team" },
       { href: "/admin/partnerships", icon: Handshake, label: "Partnerships" },
       { href: "/admin/trainings", icon: BookUser, label: "Trainings" },
+      { href: "/admin/our-work", icon: BookHeart, label: "Our Work" },
     ],
   },
   {
@@ -63,8 +65,13 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
-  const [isMobileNavOpen, setIsMobileNavOpen] = React.useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+  const [isClient, setIsClient] = useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
 
   const isActive = (path: string) => {
     if (path === "/admin") return pathname === path;
@@ -85,7 +92,11 @@ export default function AdminLayout({
                   <TooltipTrigger asChild>
                     <Link
                       href={item.href}
-                      onClick={() => setIsMobileNavOpen(false)}
+                      onClick={() => {
+                        if (window.innerWidth < 768) {
+                          setIsSidebarOpen(false);
+                        }
+                      }}
                       className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:bg-muted ${
                         isActive(item.href)
                           ? "bg-primary text-primary-foreground hover:bg-primary/90"
@@ -110,7 +121,11 @@ export default function AdminLayout({
               <TooltipTrigger asChild>
                 <Link
                   href={item.href}
-                  onClick={() => setIsMobileNavOpen(false)}
+                   onClick={() => {
+                        if (window.innerWidth < 768) {
+                          setIsSidebarOpen(false);
+                        }
+                      }}
                   className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:bg-muted text-muted-foreground hover:text-foreground`}
                 >
                   <item.icon className="h-4 w-4" />
@@ -128,58 +143,62 @@ export default function AdminLayout({
   return (
     <TooltipProvider>
       <div className="grid min-h-screen w-full md:grid-cols-[auto_1fr]">
-        <aside
-          className={`hidden md:flex flex-col border-r bg-card transition-all duration-300 ${
-            isSidebarOpen ? "w-60" : "w-16 items-center"
-          }`}
-        >
-          <div className={`flex h-16 items-center border-b px-4 shrink-0 ${isSidebarOpen ? 'justify-between' : 'justify-center'}`}>
-            <Link href="/" className={`flex items-center gap-2 font-semibold ${!isSidebarOpen && 'sr-only'}`}>
-              <Briefcase className="h-6 w-6" />
-              <span>Impela</span>
-            </Link>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            >
-              <PanelLeft className="h-5 w-5" />
-              <span className="sr-only">Toggle Sidebar</span>
-            </Button>
-          </div>
-          <div className={`flex flex-col w-full flex-1 overflow-hidden ${!isSidebarOpen ? '[&_span]:sr-only [&_p]:sr-only' : ''}`}>
-            <NavContent />
-          </div>
-        </aside>
-        <div className="flex flex-col">
-          <header className="flex h-16 items-center gap-4 border-b bg-card px-4 md:px-6 md:hidden">
-            <Link href="/" className="flex items-center gap-2 font-semibold">
+        {isClient && (
+           <aside
+            className={`hidden md:flex flex-col border-r bg-card transition-all duration-300 ${
+              isSidebarOpen ? "w-60" : "w-16 items-center"
+            }`}
+          >
+            <div className={`flex h-16 items-center border-b px-4 shrink-0 ${isSidebarOpen ? 'justify-between' : 'justify-center'}`}>
+              <Link href="/" className={`flex items-center gap-2 font-semibold ${!isSidebarOpen && 'sr-only'}`}>
                 <Briefcase className="h-6 w-6" />
-                <span>Impela Trading</span>
-            </Link>
-            <Sheet open={isMobileNavOpen} onOpenChange={setIsMobileNavOpen}>
-              <SheetTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="ml-auto shrink-0"
-                >
-                  <PanelLeft className="h-5 w-5" />
-                  <span className="sr-only">Toggle navigation menu</span>
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="flex flex-col p-0 w-60">
-                 <SheetHeader className="p-4 border-b">
-                    <Link href="/" className="flex items-center gap-2 font-semibold">
-                      <Briefcase className="h-6 w-6" />
-                      <span>Impela Trading</span>
-                    </Link>
-                 </SheetHeader>
-                 <NavContent />
-              </SheetContent>
-            </Sheet>
+                <span>Impela</span>
+              </Link>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              >
+                <PanelLeft className="h-5 w-5" />
+                <span className="sr-only">Toggle Sidebar</span>
+              </Button>
+            </div>
+            <div className={`flex flex-col w-full flex-1 overflow-hidden ${!isSidebarOpen ? '[&_span]:sr-only [&_p]:sr-only' : ''}`}>
+              <NavContent />
+            </div>
+          </aside>
+        )}
+        <div className="flex flex-col">
+          <header className="flex h-16 items-center gap-4 border-b bg-card px-4 md:px-6">
+             <div className="md:hidden">
+                <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
+                <SheetTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                  >
+                    <PanelLeft className="h-5 w-5" />
+                    <span className="sr-only">Toggle navigation menu</span>
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="left" className="flex flex-col p-0 w-60">
+                  <SheetHeader className="p-4 border-b">
+                      <Link href="/" className="flex items-center gap-2 font-semibold">
+                        <Briefcase className="h-6 w-6" />
+                        <span>Impela Trading</span>
+                      </Link>
+                  </SheetHeader>
+                  <NavContent />
+                </SheetContent>
+              </Sheet>
+             </div>
+
+            <div className="flex w-full justify-end">
+                 {/* Right-aligned header content can go here */}
+            </div>
+
           </header>
-          <main className="flex-1 p-4 md:p-8 overflow-auto">
+          <main className="flex-1 overflow-auto">
             {children}
           </main>
         </div>
