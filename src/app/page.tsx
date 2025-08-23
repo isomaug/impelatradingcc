@@ -67,43 +67,70 @@ export default function Home() {
       </section>
 
       {/* What We Do Section */}
-       <section className="py-16 md:py-24 bg-background">
-        <div className="container mx-auto px-4 text-center">
+       <section className="py-16 md:py-24 bg-background relative overflow-hidden">
+        <div className="absolute inset-0 z-0">
+            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full filter blur-3xl opacity-50 animate-blob"></div>
+            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/10 rounded-full filter blur-3xl opacity-50 animate-blob animation-delay-2000"></div>
+        </div>
+        <div className="container mx-auto px-4 text-center relative z-10">
           <h2 className="text-3xl md:text-4xl font-headline font-bold mb-2">Our Core Activities</h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-12">
             We are dedicated to creating lasting impact through a multi-faceted approach that combines skill development, global market access, and strategic partnerships.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Card className="text-left p-8 flex flex-col items-start transition-all duration-300 hover:shadow-2xl hover:-translate-y-2">
-              <div className="bg-primary/10 p-4 rounded-lg mb-6">
-                  <Users className="w-10 h-10 text-primary" />
-              </div>
-              <h3 className="text-2xl font-headline font-semibold mb-2">Artisan Training</h3>
-              <p className="text-muted-foreground flex-grow mb-6">We provide comprehensive training programs, empowering local artisans with the skills to create world-class products.</p>
-               <Button asChild variant="outline">
-                  <Link href="/trainings">Learn About Training</Link>
+            {/* Activity Card 1 */}
+            <div className="group relative p-8 flex flex-col items-start text-left bg-card/50 backdrop-blur-md border border-white/10 rounded-2xl shadow-2xl transition-all duration-300 hover:border-primary/50">
+              <div className="absolute -inset-px bg-gradient-to-r from-primary/50 to-accent/50 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-lg"></div>
+              <div className="relative z-10 w-full">
+                <div className="relative inline-block mb-6">
+                    <div className="p-4 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full shadow-lg">
+                        <Users className="w-10 h-10 text-primary drop-shadow-lg" />
+                    </div>
+                    <div className="absolute -inset-2 bg-primary/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse"></div>
+                </div>
+                <h3 className="text-2xl font-headline font-semibold mb-2">Artisan Training</h3>
+                <p className="text-muted-foreground flex-grow mb-6">We provide comprehensive training programs, empowering local artisans with the skills to create world-class products.</p>
+                <Button asChild variant="outline" className="bg-transparent border-white/20 hover:bg-white/10 hover:text-foreground">
+                    <Link href="/trainings">Learn About Training</Link>
                 </Button>
-            </Card>
-            <Card className="text-left p-8 flex flex-col items-start transition-all duration-300 hover:shadow-2xl hover:-translate-y-2">
-              <div className="bg-primary/10 p-4 rounded-lg mb-6">
-                 <Globe className="w-10 h-10 text-primary" />
               </div>
-              <h3 className="text-2xl font-headline font-semibold mb-2">International Markets</h3>
-              <p className="text-muted-foreground flex-grow mb-6">Our work features on the global stage, connecting South African craftsmanship with international audiences.</p>
-               <Button asChild variant="outline">
-                  <Link href="/partnerships">Explore Our Reach</Link>
+            </div>
+
+            {/* Activity Card 2 */}
+            <div className="group relative p-8 flex flex-col items-start text-left bg-card/50 backdrop-blur-md border border-white/10 rounded-2xl shadow-2xl transition-all duration-300 hover:border-primary/50">
+              <div className="absolute -inset-px bg-gradient-to-r from-primary/50 to-accent/50 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-lg"></div>
+              <div className="relative z-10 w-full">
+                 <div className="relative inline-block mb-6">
+                    <div className="p-4 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full shadow-lg">
+                        <Globe className="w-10 h-10 text-primary drop-shadow-lg" />
+                    </div>
+                    <div className="absolute -inset-2 bg-primary/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse"></div>
+                </div>
+                <h3 className="text-2xl font-headline font-semibold mb-2">International Markets</h3>
+                <p className="text-muted-foreground flex-grow mb-6">Our work features on the global stage, connecting South African craftsmanship with international audiences.</p>
+                <Button asChild variant="outline" className="bg-transparent border-white/20 hover:bg-white/10 hover:text-foreground">
+                    <Link href="/partnerships">Explore Our Reach</Link>
                 </Button>
-            </Card>
-            <Card className="text-left p-8 flex flex-col items-start transition-all duration-300 hover:shadow-2xl hover:-translate-y-2">
-              <div className="bg-primary/10 p-4 rounded-lg mb-6">
-                 <Handshake className="w-10 h-10 text-primary" />
               </div>
-              <h3 className="text-2xl font-headline font-semibold mb-2">NGO Partnerships</h3>
-              <p className="text-muted-foreground flex-grow mb-6">We collaborate with non-governmental organizations to create sustainable supply chains and community-focused initiatives.</p>
-               <Button asChild variant="outline">
-                  <Link href="/partnerships">See Our Partners</Link>
+            </div>
+
+            {/* Activity Card 3 */}
+            <div className="group relative p-8 flex flex-col items-start text-left bg-card/50 backdrop-blur-md border border-white/10 rounded-2xl shadow-2xl transition-all duration-300 hover:border-primary/50">
+              <div className="absolute -inset-px bg-gradient-to-r from-primary/50 to-accent/50 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-lg"></div>
+              <div className="relative z-10 w-full">
+                <div className="relative inline-block mb-6">
+                    <div className="p-4 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full shadow-lg">
+                        <Handshake className="w-10 h-10 text-primary drop-shadow-lg" />
+                    </div>
+                    <div className="absolute -inset-2 bg-primary/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse"></div>
+                </div>
+                <h3 className="text-2xl font-headline font-semibold mb-2">NGO Partnerships</h3>
+                <p className="text-muted-foreground flex-grow mb-6">We collaborate with non-governmental organizations to create sustainable supply chains and community-focused initiatives.</p>
+                <Button asChild variant="outline" className="bg-transparent border-white/20 hover:bg-white/10 hover:text-foreground">
+                    <Link href="/partnerships">See Our Partners</Link>
                 </Button>
-            </Card>
+              </div>
+            </div>
           </div>
         </div>
       </section>
