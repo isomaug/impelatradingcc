@@ -14,23 +14,18 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import type { Product } from "@/lib/types";
 import { unstable_noStore as noStore } from 'next/cache';
+import fs from 'fs/promises';
+import path from 'path';
 
-async function getProducts() {
+async function getProducts(): Promise<Product[]> {
   noStore();
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
-      ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-      : 'http://localhost:3000';
-    const response = await fetch(`${baseUrl}/api/products`, { cache: 'no-store' });
-
-    if (!response.ok) {
-        console.error("Failed to fetch products:", response.status, response.statusText);
-        return [];
-    }
-    
-    return await response.json();
+    const dataFilePath = path.join(process.cwd(), 'data', 'products.json');
+    const fileContent = await fs.readFile(dataFilePath, 'utf-8');
+    return JSON.parse(fileContent);
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Error reading products data:", error);
+    // In case of an error (e.g., file not found), return an empty array
     return [];
   }
 }
