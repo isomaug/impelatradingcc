@@ -176,204 +176,202 @@ export default function EditProductPage() {
   }
 
   return (
-    <div className="p-4 md:p-8">
-      <div className="mx-auto grid w-full flex-1 auto-rows-max gap-4">
-        <div className="flex items-center gap-4">
-          <Button variant="outline" size="icon" className="h-7 w-7" asChild>
-            <Link href="/admin/products">
-              <ChevronLeft className="h-4 w-4" />
-              <span className="sr-only">Back</span>
-            </Link>
+    <div className="mx-auto grid w-full flex-1 auto-rows-max gap-4">
+      <div className="flex items-center gap-4">
+        <Button variant="outline" size="icon" className="h-7 w-7" asChild>
+          <Link href="/admin/products">
+            <ChevronLeft className="h-4 w-4" />
+            <span className="sr-only">Back</span>
+          </Link>
+        </Button>
+        <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
+          {isEditing ? `Edit: ${form.getValues('name')}` : "Add New Product"}
+        </h1>
+        <div className="hidden items-center gap-2 md:ml-auto md:flex">
+          <Button variant="outline" size="sm" asChild>
+            <Link href="/admin/products">Cancel</Link>
           </Button>
-          <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-            {isEditing ? `Edit Product` : "Add New Product"}
-          </h1>
-          <div className="hidden items-center gap-2 md:ml-auto md:flex">
-            <Button variant="outline" size="sm" asChild>
+          <Button size="sm" onClick={form.handleSubmit(onSubmit)} disabled={isLoading}>
+            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Save Product
+          </Button>
+        </div>
+      </div>
+      <Form {...form}>
+        <form className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
+          <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
+            <Card>
+              <CardHeader>
+                <CardTitle>Product Details</CardTitle>
+                <CardDescription>
+                  Fill in the core information for your product.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-6">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Product Name</FormLabel>
+                        <FormControl>
+                          <Input placeholder="e.g., Classic Leather Briefcase" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="category"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Category</FormLabel>
+                          <FormControl>
+                            <Input placeholder="e.g., Bags" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="price"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Price (in ZAR)</FormLabel>
+                          <FormControl>
+                            <Input type="number" placeholder="249.99" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Description</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="A detailed description of the product."
+                            {...field}
+                            rows={5}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="careInstructions"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Care Instructions</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="How to care for the product."
+                            {...field}
+                            rows={3}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+          <div className="grid auto-rows-max items-start gap-4 lg:gap-8">
+            <Card>
+              <CardHeader>
+                <CardTitle>Product Images</CardTitle>
+                <CardDescription>
+                  Add URLs, upload, or select images from your library. The first image is the main one.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-4">
+                  {fields.map((field, index) => (
+                    <FormField
+                      control={form.control}
+                      key={field.id}
+                      name={`images.${index}.url`}
+                      render={({ field: formField }) => (
+                        <FormItem>
+                          <FormLabel className={cn(index !== 0 && "sr-only")}>
+                            Image URL {index + 1}
+                          </FormLabel>
+                          <div className="flex items-center gap-2">
+                            <Input placeholder="https://..." {...formField} />
+                            {fields.length > 1 && (
+                              <Button
+                                type="button"
+                                variant="destructive"
+                                size="icon"
+                                onClick={() => remove(index)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            )}
+                          </div>
+                           <div className="flex items-center gap-2 mt-2">
+                              <Button type="button" variant="outline" size="sm" asChild>
+                                  <label htmlFor={`file-upload-${index}`} className="cursor-pointer flex items-center">
+                                       <Upload className="mr-2 h-4 w-4" /> Upload
+                                       <input id={`file-upload-${index}`} type="file" className="sr-only" accept="image/*" onChange={(e) => handleFileChange(e, index)} />
+                                  </label>
+                              </Button>
+                             <Dialog>
+                                  <DialogTrigger asChild>
+                                      <Button type="button" variant="outline" size="sm" onClick={() => setActiveImageIndex(index)}>
+                                          <Library className="mr-2 h-4 w-4" /> Select
+                                      </Button>
+                                  </DialogTrigger>
+                                  <DialogContent className="max-w-4xl">
+                                      <DialogHeader>
+                                          <DialogTitle>Image Library</DialogTitle>
+                                          <DialogDescription>Select an existing image from your products.</DialogDescription>
+                                      </DialogHeader>
+                                      <ImageLibrary products={allProducts} onSelectImage={handleImageSelect} />
+                                  </DialogContent>
+                             </Dialog>
+                           </div>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  ))}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => append({ url: "" })}
+                  >
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                    Add Image
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+          <div className="flex items-center justify-center gap-2 md:hidden">
+              <Button variant="outline" size="sm" asChild>
               <Link href="/admin/products">Cancel</Link>
-            </Button>
-            <Button size="sm" onClick={form.handleSubmit(onSubmit)} disabled={isLoading}>
+              </Button>
+              <Button size="sm" onClick={form.handleSubmit(onSubmit)} disabled={isLoading}>
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Save Product
-            </Button>
+              </Button>
           </div>
-        </div>
-        <Form {...form}>
-          <form className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
-            <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Product Details</CardTitle>
-                  <CardDescription>
-                    Fill in the core information for your product.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid gap-6">
-                    <FormField
-                      control={form.control}
-                      name="name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Product Name</FormLabel>
-                          <FormControl>
-                            <Input placeholder="e.g., Classic Leather Briefcase" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <FormField
-                        control={form.control}
-                        name="category"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Category</FormLabel>
-                            <FormControl>
-                              <Input placeholder="e.g., Bags" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="price"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Price (in ZAR)</FormLabel>
-                            <FormControl>
-                              <Input type="number" placeholder="249.99" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                    <FormField
-                      control={form.control}
-                      name="description"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Description</FormLabel>
-                          <FormControl>
-                            <Textarea
-                              placeholder="A detailed description of the product."
-                              {...field}
-                              rows={5}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="careInstructions"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Care Instructions</FormLabel>
-                          <FormControl>
-                            <Textarea
-                              placeholder="How to care for the product."
-                              {...field}
-                              rows={3}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-            <div className="grid auto-rows-max items-start gap-4 lg:gap-8">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Product Images</CardTitle>
-                  <CardDescription>
-                    Add URLs, upload, or select images from your library. The first image is the main one.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid gap-4">
-                    {fields.map((field, index) => (
-                      <FormField
-                        control={form.control}
-                        key={field.id}
-                        name={`images.${index}.url`}
-                        render={({ field: formField }) => (
-                          <FormItem>
-                            <FormLabel className={cn(index !== 0 && "sr-only")}>
-                              Image URL {index + 1}
-                            </FormLabel>
-                            <div className="flex items-center gap-2">
-                              <Input placeholder="https://..." {...formField} />
-                              {fields.length > 1 && (
-                                <Button
-                                  type="button"
-                                  variant="destructive"
-                                  size="icon"
-                                  onClick={() => remove(index)}
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              )}
-                            </div>
-                             <div className="flex items-center gap-2 mt-2">
-                                <Button type="button" variant="outline" size="sm" asChild>
-                                    <label htmlFor={`file-upload-${index}`} className="cursor-pointer flex items-center">
-                                         <Upload className="mr-2 h-4 w-4" /> Upload
-                                         <input id={`file-upload-${index}`} type="file" className="sr-only" accept="image/*" onChange={(e) => handleFileChange(e, index)} />
-                                    </label>
-                                </Button>
-                               <Dialog>
-                                    <DialogTrigger asChild>
-                                        <Button type="button" variant="outline" size="sm" onClick={() => setActiveImageIndex(index)}>
-                                            <Library className="mr-2 h-4 w-4" /> Select
-                                        </Button>
-                                    </DialogTrigger>
-                                    <DialogContent className="max-w-4xl">
-                                        <DialogHeader>
-                                            <DialogTitle>Image Library</DialogTitle>
-                                            <DialogDescription>Select an existing image from your products.</DialogDescription>
-                                        </DialogHeader>
-                                        <ImageLibrary products={allProducts} onSelectImage={handleImageSelect} />
-                                    </DialogContent>
-                               </Dialog>
-                             </div>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    ))}
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => append({ url: "" })}
-                    >
-                      <PlusCircle className="mr-2 h-4 w-4" />
-                      Add Image
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-            <div className="flex items-center justify-center gap-2 md:hidden">
-                <Button variant="outline" size="sm" asChild>
-                <Link href="/admin/products">Cancel</Link>
-                </Button>
-                <Button size="sm" onClick={form.handleSubmit(onSubmit)} disabled={isLoading}>
-                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Save Product
-                </Button>
-            </div>
-          </form>
-        </Form>
-      </div>
+        </form>
+      </Form>
     </div>
   );
 }
