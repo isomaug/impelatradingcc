@@ -51,8 +51,8 @@ const SiteHeader = () => {
       <DropdownMenuContent className="w-56 bg-secondary text-secondary-foreground border-border" align="end">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild><Link href="/dashboard">Buyer Dashboard</Link></DropdownMenuItem>
-        <DropdownMenuItem asChild><Link href="/admin">Admin Panel</Link></DropdownMenuItem>
+        <DropdownMenuItem asChild><Link href="/dashboard">My Dashboard</Link></DropdownMenuItem>
+        <DropdownMenuItem asChild><Link href="/cart">My Cart</Link></DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild><Link href="/login">Login</Link></DropdownMenuItem>
       </DropdownMenuContent>
@@ -63,10 +63,10 @@ const SiteHeader = () => {
      <div className="border-t border-secondary-foreground/20 mt-4 pt-4">
       <h3 className="px-4 mb-2 text-sm font-semibold text-secondary-foreground/70">My Account</h3>
        <Button variant="ghost" className="w-full justify-start text-secondary-foreground hover:bg-secondary/80" asChild>
-         <Link href="/dashboard">Buyer Dashboard</Link>
+         <Link href="/dashboard">My Dashboard</Link>
        </Button>
-       <Button variant="ghost" className="w-full justify-start text-secondary-foreground hover:bg-secondary/80" asChild>
-         <Link href="/admin">Admin Panel</Link>
+        <Button variant="ghost" className="w-full justify-start text-secondary-foreground hover:bg-secondary/80" asChild>
+         <Link href="/cart">My Cart</Link>
        </Button>
        <Button variant="ghost" className="w-full justify-start text-secondary-foreground hover:bg-secondary/80" asChild>
          <Link href="/login">Login</Link>
