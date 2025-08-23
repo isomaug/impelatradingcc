@@ -2,6 +2,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { ShoppingCart, Menu, User, Briefcase, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/use-cart";
@@ -111,9 +112,15 @@ const SiteHeader = () => {
   return (
     <header className="bg-secondary text-secondary-foreground shadow-md sticky top-0 z-50">
       <div className="container mx-auto flex items-center justify-between p-4">
-        <Link href="/" className="text-xl font-headline font-bold flex items-center gap-2">
-          <Briefcase />
-          <span>Impela Trading CC</span>
+        <Link href="/" className="flex items-center gap-2">
+            <Image
+                src="https://placehold.co/150x40/FFF/333?text=Impela+Logo"
+                width={150}
+                height={40}
+                alt="Impela Trading CC Logo"
+                className="h-10 w-auto"
+                priority
+            />
         </Link>
         {isClient && isMobile ? (
           <div className="flex items-center gap-2">
