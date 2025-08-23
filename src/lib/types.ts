@@ -49,7 +49,7 @@ export type Training = {
 
 // Generic type for a library item that has at least one image URL.
 export type LibraryItem = {
-    images?: string[];
+    images?: (string | { url: string })[];
     image?: string;
 }
 
@@ -57,10 +57,11 @@ export type HomePageContent = {
     hero: {
         headline: string;
         subheadline: string;
-        imageUrl: string;
+        imageUrls: string[];
         imageAlt: string;
         buttonText: string;
         buttonLink: string;
+        autoplayDelay: number;
     };
     about: {
         headline: string;

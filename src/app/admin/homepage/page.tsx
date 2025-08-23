@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -28,21 +28,24 @@ import {
 } from "@/components/ui/accordion";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, Upload, Library } from "lucide-react";
+import { Loader2, Upload, Library, PlusCircle, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import React, { useEffect, useState } from "react";
 import type { HomePageContent, LibraryItem } from "@/lib/types";
 import { ImageLibrary } from "@/components/admin/image-library";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
+
 
 const formSchema = z.object({
   hero: z.object({
     headline: z.string().min(5),
     subheadline: z.string().min(10),
-    imageUrl: z.string().url(),
+    imageUrls: z.array(z.object({ url: z.string().url() })),
     imageAlt: z.string().min(5),
     buttonText: z.string().min(2),
     buttonLink: z.string().startsWith("/"),
+    autoplayDelay: z.coerce.number().min(1000),
   }),
   about: z.object({
     headline: z.string().min(5),
@@ -79,7 +82,7 @@ const formSchema = z.object({
 });
 
 type FormSchemaType = z.infer<typeof formSchema>;
-type ImageFieldName = "hero.imageUrl" | "about.imageUrl";
+type ImageFieldName = "about.imageUrl";
 
 export default function AdminHomepagePage() {
   const { toast } = useToast();
@@ -87,10 +90,17 @@ export default function AdminHomepagePage() {
   const [isFetching, setIsFetching] = React.useState(true);
   const [libraryItems, setLibraryItems] = useState<LibraryItem[]>([]);
   const [activeImageField, setActiveImageField] = useState<ImageFieldName | null>(null);
+  const [activeHeroImageIndex, setActiveHeroImageIndex] = useState<number>(0);
+
 
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(formSchema),
     defaultValues: {},
+  });
+
+  const { fields: heroImageFields, append: appendHeroImage, remove: removeHeroImage, update: updateHeroImage } = useFieldArray({
+    control: form.control,
+    name: "hero.imageUrls",
   });
   
   useEffect(() => {
@@ -128,7 +138,14 @@ export default function AdminHomepagePage() {
         const response = await fetch('/api/homepage');
         if (!response.ok) throw new Error("Failed to fetch content");
         const data = await response.json();
-        form.reset(data);
+        const transformedData = {
+          ...data,
+          hero: {
+            ...data.hero,
+            imageUrls: data.hero.imageUrls.map((url: string) => ({ url })),
+          },
+        };
+        form.reset(transformedData);
       } catch (error) {
         toast({
           variant: "destructive",
@@ -153,10 +170,25 @@ export default function AdminHomepagePage() {
       reader.readAsDataURL(file);
     }
   };
+  
+  const handleHeroFileChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (loadEvent) => {
+        const dataUrl = loadEvent.target?.result as string;
+        updateHeroImage(index, { url: dataUrl });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleImageSelect = (url: string) => {
       if (activeImageField) {
         form.setValue(activeImageField, url);
+        setActiveImageField(null);
+      } else {
+        updateHeroImage(activeHeroImageIndex, { url });
       }
       const closeButton = document.getElementById('close-image-library');
       if (closeButton) closeButton.click();
@@ -165,11 +197,20 @@ export default function AdminHomepagePage() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
+
+    const submissionData = {
+      ...values,
+      hero: {
+        ...values.hero,
+        imageUrls: values.hero.imageUrls.map(img => img.url).filter(url => url),
+      },
+    };
+
     try {
       const response = await fetch('/api/homepage', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(values),
+        body: JSON.stringify(submissionData),
       });
 
       if (!response.ok) throw new Error("Failed to update content");
@@ -232,32 +273,60 @@ export default function AdminHomepagePage() {
                       <FormField control={form.control} name="hero.buttonLink" render={({ field }) => (<FormItem><FormLabel>Button Link</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
                     </div>
                     <div className="grid md:grid-cols-2 gap-4">
-                      <FormField control={form.control} name="hero.imageUrl" render={({ field }) => (
-                          <FormItem>
-                              <FormLabel>Image URL</FormLabel>
-                              <FormControl><Input placeholder="https://..." {...field} /></FormControl>
-                              <div className="flex items-center gap-2 mt-2">
-                                  <Button type="button" variant="outline" size="sm" asChild>
-                                      <label htmlFor="hero-file-upload" className="cursor-pointer flex items-center">
-                                          <Upload className="mr-2 h-4 w-4" /> Upload
-                                          <input id="hero-file-upload" type="file" className="sr-only" accept="image/*" onChange={(e) => handleFileChange(e, "hero.imageUrl")} />
-                                      </label>
-                                  </Button>
-                                  <Dialog>
-                                      <DialogTrigger asChild>
-                                          <Button type="button" variant="outline" size="sm" onClick={() => setActiveImageField("hero.imageUrl")}>
-                                              <Library className="mr-2 h-4 w-4" /> Select from Library
-                                          </Button>
-                                      </DialogTrigger>
-                                      <DialogContent className="max-w-4xl">
-                                         <ImageLibrary items={libraryItems} onSelectImage={handleImageSelect} />
-                                      </DialogContent>
-                                  </Dialog>
-                              </div>
-                              <FormMessage />
-                          </FormItem>
-                      )} />
-                      <FormField control={form.control} name="hero.imageAlt" render={({ field }) => (<FormItem><FormLabel>Image Alt Text</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                       <FormField control={form.control} name="hero.imageAlt" render={({ field }) => (<FormItem><FormLabel>Image Alt Text</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                       <FormField control={form.control} name="hero.autoplayDelay" render={({ field }) => (<FormItem><FormLabel>Autoplay Speed (ms)</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                    </div>
+                     <div className="space-y-4">
+                        <FormLabel>Hero Images</FormLabel>
+                        <CardDescription>Add one or more images for the carousel.</CardDescription>
+                        {heroImageFields.map((field, index) => (
+                           <FormField
+                              control={form.control}
+                              key={field.id}
+                              name={`hero.imageUrls.${index}.url`}
+                              render={({ field: formField }) => (
+                                <FormItem>
+                                    <FormLabel className={cn(index !== 0 && "sr-only")}>Image URL {index + 1}</FormLabel>
+                                    <div className="flex items-center gap-2">
+                                    <Input placeholder="https://..." {...formField} />
+                                    {heroImageFields.length > 1 && (
+                                        <Button type="button" variant="destructive" size="icon" onClick={() => removeHeroImage(index)}>
+                                        <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                    )}
+                                    </div>
+                                    <div className="flex items-center gap-2 mt-2">
+                                        <Button type="button" variant="outline" size="sm" asChild>
+                                            <label htmlFor={`hero-file-upload-${index}`} className="cursor-pointer flex items-center">
+                                                <Upload className="mr-2 h-4 w-4" /> Upload
+                                                <input id={`hero-file-upload-${index}`} type="file" className="sr-only" accept="image/*" onChange={(e) => handleHeroFileChange(e, index)} />
+                                            </label>
+                                        </Button>
+                                        <Dialog>
+                                            <DialogTrigger asChild>
+                                                <Button type="button" variant="outline" size="sm" onClick={() => {setActiveHeroImageIndex(index); setActiveImageField(null);}}>
+                                                    <Library className="mr-2 h-4 w-4" /> Select from Library
+                                                </Button>
+                                            </DialogTrigger>
+                                            <DialogContent className="max-w-4xl">
+                                                <ImageLibrary items={libraryItems} onSelectImage={handleImageSelect} />
+                                            </DialogContent>
+                                        </Dialog>
+                                    </div>
+                                    <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                        ))}
+                         <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => appendHeroImage({ url: "" })}
+                        >
+                            <PlusCircle className="mr-2 h-4 w-4" />
+                            Add Image
+                        </Button>
                     </div>
                   </CardContent>
                 </AccordionContent>

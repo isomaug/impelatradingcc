@@ -3,10 +3,15 @@
   "hero": {
     "headline": "Impela Trading CC",
     "subheadline": "Empowering communities through artisan skills, sustainable partnerships, and global outreach.",
-    "imageUrl": "https://placehold.co/1600x900.png",
+    "imageUrls": [
+      "https://placehold.co/1600x900.png",
+      "https://placehold.co/1600x900.png",
+      "https://placehold.co/1600x900.png"
+    ],
     "imageAlt": "South African landscape",
     "buttonText": "Discover Our Story",
-    "buttonLink": "/about"
+    "buttonLink": "/about",
+    "autoplayDelay": 5000
   },
   "about": {
     "headline": "Rooted in South Africa, Reaching the World",

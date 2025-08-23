@@ -1,4 +1,6 @@
 
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import ProductCard from "@/components/product-card";
@@ -13,41 +15,55 @@ import {
 } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
 import type { Product, HomePageContent } from "@/lib/types";
-import { unstable_noStore as noStore } from 'next/cache';
-import fs from 'fs/promises';
-import path from 'path';
-
-async function getProducts(): Promise<Product[]> {
-  noStore();
-  try {
-    const dataFilePath = path.join(process.cwd(), 'data', 'products.json');
-    const fileContent = await fs.readFile(dataFilePath, 'utf-8');
-    return JSON.parse(fileContent);
-  } catch (error) {
-    console.error("Error reading products data:", error);
-    return [];
-  }
-}
-
-async function getHomepageContent(): Promise<HomePageContent | null> {
-    noStore();
-    try {
-        const dataFilePath = path.join(process.cwd(), 'data', 'homepage.json');
-        const fileContent = await fs.readFile(dataFilePath, 'utf-8');
-        return JSON.parse(fileContent);
-    } catch (error) {
-        console.error("Error reading homepage data:", error);
-        return null;
-    }
-}
+import React, { useEffect, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+import Autoplay from "embla-carousel-autoplay";
 
 
-export default async function Home() {
-  const products: Product[] = await getProducts();
-  const content = await getHomepageContent();
+export default function Home() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [content, setContent] = useState<HomePageContent | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  if (!content) {
-    return <div>Error loading homepage content. Please try again later.</div>
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [productsRes, contentRes] = await Promise.all([
+          fetch('/api/products'),
+          fetch('/api/homepage'),
+        ]);
+        if (!productsRes.ok || !contentRes.ok) {
+          throw new Error('Failed to fetch data');
+        }
+        const productsData = await productsRes.json();
+        const contentData = await contentRes.json();
+        setProducts(productsData);
+        setContent(contentData);
+      } catch (error) {
+        console.error("Error fetching page data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  if (isLoading || !content) {
+    return (
+      <div className="flex flex-col gap-8 md:gap-16">
+        <Skeleton className="h-[70vh] w-full" />
+        <div className="container mx-auto px-4">
+            <Skeleton className="h-64 w-full" />
+        </div>
+         <div className="container mx-auto px-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <Skeleton className="h-64 w-full" />
+                <Skeleton className="h-64 w-full" />
+                <Skeleton className="h-64 w-full" />
+            </div>
+        </div>
+      </div>
+    );
   }
 
   const { hero, about, coreActivities } = content;
@@ -55,17 +71,29 @@ export default async function Home() {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="relative h-[70vh] bg-cover bg-center text-white flex items-center justify-center">
-        <Image
-          src={hero.imageUrl}
-          alt={hero.imageAlt}
-          fill
-          objectFit="cover"
-          className="z-0"
-          data-ai-hint="south african landscape"
-        />
+      <section className="relative h-[70vh] text-white">
+         <Carousel
+          className="w-full h-full"
+          plugins={[Autoplay({ delay: hero.autoplayDelay, stopOnInteraction: true })]}
+          opts={{ loop: true }}
+        >
+          <CarouselContent>
+            {hero.imageUrls.map((url, index) => (
+              <CarouselItem key={index}>
+                <Image
+                  src={url}
+                  alt={`${hero.imageAlt} ${index + 1}`}
+                  fill
+                  priority={index === 0}
+                  className="object-cover"
+                  data-ai-hint="south african landscape"
+                />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+        </Carousel>
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/20" />
-        <div className="relative z-10 text-center px-4">
+        <div className="absolute inset-0 z-10 text-center px-4 flex flex-col items-center justify-center">
           <h1 className="text-4xl md:text-6xl font-headline font-bold mb-4 drop-shadow-lg">{hero.headline}</h1>
           <p className="text-lg md:text-2xl font-body max-w-3xl mx-auto drop-shadow-md">
             {hero.subheadline}
