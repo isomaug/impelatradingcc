@@ -22,10 +22,12 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2 } from "lucide-react";
+import { Loader2, Upload, Library } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import React, { useEffect } from "react";
-import type { HomePageContent } from "@/lib/types";
+import React, { useEffect, useState } from "react";
+import type { HomePageContent, LibraryItem } from "@/lib/types";
+import { ImageLibrary } from "@/components/admin/image-library";
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 const formSchema = z.object({
   hero: z.object({
@@ -70,15 +72,48 @@ const formSchema = z.object({
   }),
 });
 
+type FormSchemaType = z.infer<typeof formSchema>;
+type ImageFieldName = "hero.imageUrl" | "about.imageUrl";
+
 export default function AdminHomepagePage() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = React.useState(false);
   const [isFetching, setIsFetching] = React.useState(true);
+  const [libraryItems, setLibraryItems] = useState<LibraryItem[]>([]);
+  const [activeImageField, setActiveImageField] = useState<ImageFieldName | null>(null);
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormSchemaType>({
     resolver: zodResolver(formSchema),
     defaultValues: {},
   });
+  
+  useEffect(() => {
+    const fetchLibraryContent = async () => {
+        try {
+            const [productsRes, teamRes, partnersRes, trainingsRes] = await Promise.all([
+                fetch('/api/products'),
+                fetch('/api/team'),
+                fetch('/api/partnerships'),
+                fetch('/api/trainings'),
+            ]);
+            if (!productsRes.ok || !teamRes.ok || !partnersRes.ok || !trainingsRes.ok) {
+                throw new Error("Failed to fetch library content");
+            }
+            const products = await productsRes.json();
+            const team = await teamRes.json();
+            const partners = await partnersRes.json();
+            const trainings = await trainingsRes.json();
+            setLibraryItems([...products, ...team, ...partners, ...trainings]);
+        } catch (error) {
+            toast({
+              variant: "destructive",
+              title: "Error",
+              description: "Could not fetch image library content.",
+            });
+        }
+    };
+    fetchLibraryContent();
+  }, [toast]);
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -100,6 +135,26 @@ export default function AdminHomepagePage() {
     };
     fetchContent();
   }, [form, toast]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, fieldName: ImageFieldName) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (loadEvent) => {
+        const dataUrl = loadEvent.target?.result as string;
+        form.setValue(fieldName, dataUrl);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleImageSelect = (url: string) => {
+      if (activeImageField) {
+        form.setValue(activeImageField, url);
+      }
+      const closeButton = document.getElementById('close-image-library');
+      if (closeButton) closeButton.click();
+  }
 
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -186,7 +241,41 @@ export default function AdminHomepagePage() {
                 <FormField control={form.control} name="hero.buttonLink" render={({ field }) => (<FormItem><FormLabel>Button Link</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
               </div>
                <div className="grid md:grid-cols-2 gap-4">
-                <FormField control={form.control} name="hero.imageUrl" render={({ field }) => (<FormItem><FormLabel>Image URL</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                 <FormField
+                    control={form.control}
+                    name="hero.imageUrl"
+                    render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Image URL</FormLabel>
+                        <FormControl>
+                        <Input placeholder="https://..." {...field} />
+                        </FormControl>
+                        <div className="flex items-center gap-2 mt-2">
+                             <Button type="button" variant="outline" size="sm" asChild>
+                                <label htmlFor="hero-file-upload" className="cursor-pointer flex items-center">
+                                     <Upload className="mr-2 h-4 w-4" /> Upload
+                                     <input id="hero-file-upload" type="file" className="sr-only" accept="image/*" onChange={(e) => handleFileChange(e, "hero.imageUrl")} />
+                                </label>
+                            </Button>
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <Button type="button" variant="outline" size="sm" onClick={() => setActiveImageField("hero.imageUrl")}>
+                                        <Library className="mr-2 h-4 w-4" /> Select from Library
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent className="max-w-4xl">
+                                    <DialogHeader>
+                                        <DialogTitle>Image Library</DialogTitle>
+                                        <DialogDescription>Select an existing image.</DialogDescription>
+                                    </DialogHeader>
+                                    <ImageLibrary items={libraryItems} onSelectImage={handleImageSelect} />
+                                </DialogContent>
+                            </Dialog>
+                        </div>
+                        <FormMessage />
+                    </FormItem>
+                    )}
+                />
                 <FormField control={form.control} name="hero.imageAlt" render={({ field }) => (<FormItem><FormLabel>Image Alt Text</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
               </div>
             </CardContent>
@@ -205,7 +294,41 @@ export default function AdminHomepagePage() {
                 <FormField control={form.control} name="about.linkUrl" render={({ field }) => (<FormItem><FormLabel>Link URL</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
               </div>
                <div className="grid md:grid-cols-2 gap-4">
-                <FormField control={form.control} name="about.imageUrl" render={({ field }) => (<FormItem><FormLabel>Image URL</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                <FormField
+                    control={form.control}
+                    name="about.imageUrl"
+                    render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Image URL</FormLabel>
+                        <FormControl>
+                        <Input placeholder="https://..." {...field} />
+                        </FormControl>
+                        <div className="flex items-center gap-2 mt-2">
+                             <Button type="button" variant="outline" size="sm" asChild>
+                                <label htmlFor="about-file-upload" className="cursor-pointer flex items-center">
+                                     <Upload className="mr-2 h-4 w-4" /> Upload
+                                     <input id="about-file-upload" type="file" className="sr-only" accept="image/*" onChange={(e) => handleFileChange(e, "about.imageUrl")} />
+                                </label>
+                            </Button>
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <Button type="button" variant="outline" size="sm" onClick={() => setActiveImageField("about.imageUrl")}>
+                                        <Library className="mr-2 h-4 w-4" /> Select from Library
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent className="max-w-4xl">
+                                    <DialogHeader>
+                                        <DialogTitle>Image Library</DialogTitle>
+                                        <DialogDescription>Select an existing image.</DialogDescription>
+                                    </DialogHeader>
+                                    <ImageLibrary items={libraryItems} onSelectImage={handleImageSelect} />
+                                </DialogContent>
+                            </Dialog>
+                        </div>
+                        <FormMessage />
+                    </FormItem>
+                    )}
+                />
                 <FormField control={form.control} name="about.imageAlt" render={({ field }) => (<FormItem><FormLabel>Image Alt Text</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
               </div>
             </CardContent>
