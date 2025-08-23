@@ -27,6 +27,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ChevronLeft, Loader2, PlusCircle, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import React, { useEffect } from "react";
+import { cn } from "@/lib/utils";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
