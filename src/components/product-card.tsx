@@ -1,4 +1,6 @@
 
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import type { Product } from "@/lib/types";
@@ -10,12 +12,15 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useCurrency } from "@/hooks/use-currency";
 
 interface ProductCardProps {
   product: Product;
 }
 
 const ProductCard = ({ product }: ProductCardProps) => {
+  const { formatCurrency } = useCurrency();
+
   return (
     <Card className="flex flex-col h-full overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 group/card">
       <CardHeader className="p-0 relative overflow-hidden">
@@ -37,7 +42,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
           </Link>
         </CardTitle>
         <p className="font-semibold text-primary text-xl">
-          ${product.price.toFixed(2)}
+          {formatCurrency(product.price)}
         </p>
       </CardContent>
       <CardFooter className="p-4 pt-0">

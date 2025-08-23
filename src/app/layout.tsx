@@ -1,9 +1,8 @@
 
 import type { Metadata } from "next";
 import { Toaster } from "@/components/ui/toaster";
-import SiteHeader from "@/components/site-header";
-import SiteFooter from "@/components/site-footer";
 import { CartProvider } from "@/hooks/use-cart";
+import { CurrencyProvider } from "@/hooks/use-currency";
 import { AdminLayoutContent } from "./admin-layout-content";
 import "./globals.css";
 
@@ -27,12 +26,14 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased min-h-screen flex flex-col">
-        <CartProvider>
-            <AdminLayoutContent>
-                {children}
-            </AdminLayoutContent>
-          <Toaster />
-        </CartProvider>
+        <CurrencyProvider>
+          <CartProvider>
+              <AdminLayoutContent>
+                  {children}
+              </AdminLayoutContent>
+            <Toaster />
+          </CartProvider>
+        </CurrencyProvider>
       </body>
     </html>
   );

@@ -58,7 +58,7 @@ export default function AdminProductsPage() {
 
   useEffect(() => {
     fetchProducts();
-  }, [toast]);
+  }, []);
 
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this product?")) return;
@@ -87,7 +87,7 @@ export default function AdminProductsPage() {
           <div>
             <CardTitle>Products</CardTitle>
             <CardDescription>
-              Manage your products and their information.
+              Manage your products and their information. Prices are in ZAR.
             </CardDescription>
           </div>
           <Button asChild>
@@ -149,7 +149,7 @@ export default function AdminProductsPage() {
                   <TableCell className="hidden sm:table-cell">
                      <Badge variant="outline">{product.category}</Badge>
                   </TableCell>
-                  <TableCell className="hidden md:table-cell">${product.price.toFixed(2)}</TableCell>
+                  <TableCell className="hidden md:table-cell">R{product.price.toFixed(2)}</TableCell>
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>

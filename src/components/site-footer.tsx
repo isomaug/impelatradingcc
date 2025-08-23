@@ -54,17 +54,20 @@ const SiteFooter = () => {
           </div>
         </div>
 
-        <div className="mt-12 pt-8 border-t border-background/20 flex flex-col md:flex-row justify-between items-center">
-            <div className="flex items-center gap-4 text-sm text-muted-foreground order-2 md:order-1 mt-4 md:mt-0">
+        <div className="mt-12 pt-8 border-t border-background/20 flex flex-col md:flex-row justify-between items-center text-sm text-muted-foreground">
+            <div className="flex items-center gap-4 order-2 md:order-1 mt-4 md:mt-0">
                 <p>&copy; {new Date().getFullYear()} Impela Trading CC. All Rights Reserved.</p>
                 <Link href="/privacy-policy" className="hover:text-background transition-colors">Privacy</Link>
                 <Link href="/terms-of-service" className="hover:text-background transition-colors">Terms</Link>
             </div>
            <div className="flex justify-center md:justify-start space-x-4 order-1 md:order-2">
-              <Link href="#" className="text-muted-foreground hover:text-background transition-colors"><Twitter /></Link>
-              <Link href="#" className="text-muted-foreground hover:text-background transition-colors"><Facebook /></Link>
-              <Link href="#" className="text-muted-foreground hover:text-background transition-colors"><Instagram /></Link>
+              <Link href="#" className="hover:text-background transition-colors"><Twitter /></Link>
+              <Link href="#" className="hover:text-background transition-colors"><Facebook /></Link>
+              <Link href="#" className="hover:text-background transition-colors"><Instagram /></Link>
             </div>
+        </div>
+        <div className="mt-4 text-center text-xs text-muted-foreground/70 order-3">
+            <p>Currency conversions are for informational purposes only. All transactions will be processed in ZAR (South African Rand). Exchange rates may fluctuate.</p>
         </div>
       </div>
     </footer>

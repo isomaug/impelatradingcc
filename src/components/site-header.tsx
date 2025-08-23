@@ -2,9 +2,10 @@
 "use client";
 
 import Link from "next/link";
-import { ShoppingCart, Menu, User, Briefcase } from "lucide-react";
+import { ShoppingCart, Menu, User, Briefcase, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/use-cart";
+import { useCurrency, Currency } from "@/hooks/use-currency";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
@@ -14,11 +15,21 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
+import React from "react";
 
 const SiteHeader = () => {
   const { cartCount } = useCart();
+  const { currency, setCurrency } = useCurrency();
   const isMobile = useIsMobile();
+  const [isClient, setIsClient] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsClient(true);
+  }, []);
+
 
   const navLinks = (
     <>
@@ -41,6 +52,26 @@ const SiteHeader = () => {
         <Link href="/shop">Shop</Link>
       </Button>
     </>
+  );
+
+  const currencySelector = (
+     <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="text-secondary-foreground hover:bg-secondary/80">
+            {currency}
+            <ChevronDown className="ml-1 h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-56 bg-secondary text-secondary-foreground border-border">
+          <DropdownMenuLabel>Select Currency</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuRadioGroup value={currency} onValueChange={(value) => setCurrency(value as Currency)}>
+            <DropdownMenuRadioItem value="ZAR">ZAR (South African Rand)</DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value="USD">USD (US Dollar)</DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value="EUR">EUR (Euro)</DropdownMenuRadioItem>
+          </DropdownMenuRadioGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
   );
 
   const userMenu = (
@@ -84,7 +115,7 @@ const SiteHeader = () => {
           <Briefcase />
           <span>Impela Trading CC</span>
         </Link>
-        {isMobile ? (
+        {isClient && isMobile ? (
           <div className="flex items-center gap-2">
             <Link href="/cart" className="relative p-2">
               <ShoppingCart />
@@ -105,6 +136,9 @@ const SiteHeader = () => {
                 <nav className="flex flex-col gap-2">
                   {navLinks}
                 </nav>
+                <div className="mt-4 pt-4 border-t border-secondary-foreground/20">
+                    {currencySelector}
+                </div>
                 {mobileUserMenu}
               </SheetContent>
             </Sheet>
@@ -114,6 +148,7 @@ const SiteHeader = () => {
             <nav className="hidden md:flex items-center gap-1">
               {navLinks}
             </nav>
+            {isClient && currencySelector}
              <Link href="/cart" className="relative p-2 rounded-full hover:bg-secondary/80 transition-colors">
               <ShoppingCart />
               {cartCount > 0 && (
@@ -123,7 +158,7 @@ const SiteHeader = () => {
               )}
               <span className="sr-only">Shopping Cart</span>
             </Link>
-            {userMenu}
+            {isClient && userMenu}
           </div>
         )}
       </div>

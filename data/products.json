@@ -3,7 +3,7 @@
   {
     "id": "1",
     "name": "Classic Leather Briefcase",
-    "price": 249.99,
+    "price": 4499.99,
     "category": "Bags",
     "description": "A timeless briefcase crafted from full-grain leather, perfect for the modern professional. Features multiple compartments and a padded laptop sleeve.",
     "images": [
@@ -16,7 +16,7 @@
   {
     "id": "2",
     "name": "Hand-stitched Bifold Wallet",
-    "price": 79.99,
+    "price": 1449.99,
     "category": "Wallets",
     "description": "A minimalist bifold wallet, hand-stitched for durability. Made from premium vegetable-tanned leather that will develop a beautiful patina over time.",
     "images": [
@@ -28,7 +28,7 @@
   {
     "id": "3",
     "name": "The Journeyman's Duffel Bag",
-    "price": 349.99,
+    "price": 6299.99,
     "category": "Bags",
     "description": "Spacious and rugged, this leather duffel bag is your ideal companion for weekend getaways. Features a detachable shoulder strap and solid brass hardware.",
     "images": [
@@ -41,7 +41,7 @@
   {
     "id": "4",
     "name": "Artisan Leather Belt",
-    "price": 99.99,
+    "price": 1799.99,
     "category": "Accessories",
     "description": "A sturdy and stylish belt made from a single piece of thick harness leather. The solid buckle is built to last for decades.",
     "images": [
@@ -53,7 +53,7 @@
   {
     "id": "5",
     "name": "Leather Journal Cover",
-    "price": 64.99,
+    "price": 1199.99,
     "category": "Accessories",
     "description": "Protect your thoughts and sketches with this elegant A5 journal cover. Includes an integrated pen loop and card slots.",
     "images": [
@@ -65,7 +65,7 @@
   {
     "id": "6",
     "name": "Slim Card Holder",
-    "price": 49.99,
+    "price": 899.99,
     "category": "Wallets",
     "description": "For the true minimalist, this slim card holder carries your essential cards and a few folded bills without the bulk.",
     "images": [
@@ -77,7 +77,7 @@
   {
     "id": "7",
     "name": "Leather Messenger Bag",
-    "price": 289.99,
+    "price": 5299.99,
     "category": "Bags",
     "description": "A versatile messenger bag that blends classic style with modern functionality. Perfect for your daily commute or as a stylish carry-on.",
     "images": [
@@ -89,7 +89,7 @@
   {
     "id": "8",
     "name": "Woven Leather Bracelet",
-    "price": 39.99,
+    "price": 749.99,
     "category": "Accessories",
     "description": "A stylish accessory to complete your look. This bracelet is hand-woven from soft, supple leather for a comfortable fit.",
     "images": [

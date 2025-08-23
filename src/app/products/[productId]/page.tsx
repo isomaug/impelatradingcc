@@ -18,6 +18,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useCart } from "@/hooks/use-cart";
+import { useCurrency } from "@/hooks/use-currency";
 import { useToast } from "@/hooks/use-toast";
 import ProductRecommender from "@/components/ai/product-recommender";
 import React, { useEffect, useState } from "react";
@@ -26,6 +27,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ProductPage() {
   const { addToCart } = useCart();
+  const { formatCurrency } = useCurrency();
   const { toast } = useToast();
   const params = useParams();
   const productId = params.productId as string;
@@ -114,7 +116,7 @@ export default function ProductPage() {
         <div className="space-y-6">
           <h1 className="text-4xl font-headline font-bold">{product.name}</h1>
           <p className="text-3xl font-semibold text-primary">
-            ${product.price.toFixed(2)}
+            {formatCurrency(product.price)}
           </p>
           <p className="text-lg text-muted-foreground">{product.description}</p>
           <Button size="lg" className="w-full md:w-auto" onClick={handleAddToCart}>

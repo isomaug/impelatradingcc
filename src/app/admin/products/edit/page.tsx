@@ -242,7 +242,7 @@ export default function EditProductPage() {
                         name="price"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Price</FormLabel>
+                            <FormLabel>Price (in ZAR)</FormLabel>
                             <FormControl>
                               <Input type="number" placeholder="249.99" {...field} />
                             </FormControl>
@@ -377,5 +377,3 @@ export default function EditProductPage() {
     </div>
   );
 }
-
-    

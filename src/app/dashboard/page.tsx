@@ -21,19 +21,19 @@ const mockOrders = [
     id: "ORD001",
     date: "2023-10-26",
     status: "Delivered",
-    total: 249.99,
+    total: 4499.99,
   },
   {
     id: "ORD002",
     date: "2023-11-15",
     status: "Shipped",
-    total: 79.99,
+    total: 1449.99,
   },
   {
     id: "ORD003",
     date: "2023-11-20",
     status: "Processing",
-    total: 449.98,
+    total: 8099.98,
   },
 ];
 
@@ -47,7 +47,7 @@ export default function DashboardPage() {
             <CardHeader>
               <CardTitle>Order History</CardTitle>
               <CardDescription>
-                Review your past orders and their status.
+                Review your past orders and their status. Prices in ZAR.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -82,7 +82,7 @@ export default function DashboardPage() {
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right">
-                        ${order.total.toFixed(2)}
+                        R{order.total.toFixed(2)}
                       </TableCell>
                     </TableRow>
                   ))}

@@ -1,8 +1,10 @@
+
 "use client";
 
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/hooks/use-cart";
+import { useCurrency } from "@/hooks/use-currency";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -18,6 +20,7 @@ import { Trash2 } from "lucide-react";
 
 export default function CartPage() {
   const { cart, removeFromCart, updateQuantity, totalPrice, cartCount } = useCart();
+  const { formatCurrency } = useCurrency();
 
   const subtotal = totalPrice;
   const tax = subtotal * 0.08; // 8% tax
@@ -30,7 +33,7 @@ export default function CartPage() {
         <div className="text-center">
           <p className="text-xl text-muted-foreground mb-4">Your cart is empty.</p>
           <Button asChild>
-            <Link href="/">Continue Shopping</Link>
+            <Link href="/shop">Continue Shopping</Link>
           </Button>
         </div>
       ) : (
@@ -67,7 +70,7 @@ export default function CartPage() {
                             {item.product.name}
                           </Link>
                         </TableCell>
-                        <TableCell>${item.product.price.toFixed(2)}</TableCell>
+                        <TableCell>{formatCurrency(item.product.price)}</TableCell>
                         <TableCell>
                           <Input
                             type="number"
@@ -78,7 +81,7 @@ export default function CartPage() {
                           />
                         </TableCell>
                         <TableCell className="text-right">
-                          ${(item.product.price * item.quantity).toFixed(2)}
+                          {formatCurrency(item.product.price * item.quantity)}
                         </TableCell>
                         <TableCell>
                           <Button variant="ghost" size="icon" onClick={() => removeFromCart(item.product.id)}>
@@ -101,15 +104,15 @@ export default function CartPage() {
               <CardContent className="space-y-4">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
-                  <span>${subtotal.toFixed(2)}</span>
+                  <span>{formatCurrency(subtotal)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Taxes (8%)</span>
-                  <span>${tax.toFixed(2)}</span>
+                  <span>{formatCurrency(tax)}</span>
                 </div>
                 <div className="flex justify-between font-bold text-lg border-t pt-4">
                   <span>Total</span>
-                  <span>${total.toFixed(2)}</span>
+                  <span>{formatCurrency(total)}</span>
                 </div>
               </CardContent>
               <CardFooter>
