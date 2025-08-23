@@ -20,7 +20,7 @@ const SiteFooter = () => {
             <li><Link href="/trainings" className="text-sm hover:underline text-secondary-foreground/80">Trainings</Link></li>
             <li><Link href="/partnerships" className="text-sm hover:underline text-secondary-foreground/80">Our Work</Link></li>
             <li><Link href="/shop" className="text-sm hover:underline text-secondary-foreground/80">Shop</Link></li>
-            <li><Link href="/cart" className="text-sm hover:underline text-secondary-foreground/80">My Cart</Link></li>
+            <li><Link href="/contact" className="text-sm hover:underline text-secondary-foreground/80">Contact</Link></li>
           </ul>
         </div>
         <div>

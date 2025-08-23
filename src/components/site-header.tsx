@@ -2,11 +2,19 @@
 "use client";
 
 import Link from "next/link";
-import { ShoppingCart, Menu } from "lucide-react";
+import { ShoppingCart, Menu, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/use-cart";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const SiteHeader = () => {
   const { cartCount } = useCart();
@@ -28,12 +36,6 @@ const SiteHeader = () => {
       </Button>
       <Button variant="ghost" className="text-secondary-foreground hover:bg-secondary/80" asChild>
         <Link href="/shop">Shop</Link>
-      </Button>
-      <Button variant="ghost" className="text-secondary-foreground hover:bg-secondary/80" asChild>
-        <Link href="/dashboard">Dashboard</Link>
-      </Button>
-      <Button variant="ghost" className="text-secondary-foreground hover:bg-secondary/80" asChild>
-        <Link href="/admin">Admin</Link>
       </Button>
     </>
   );
@@ -64,6 +66,20 @@ const SiteHeader = () => {
               <SheetContent side="left" className="bg-secondary text-secondary-foreground w-64 pt-12">
                 <nav className="flex flex-col gap-4">
                   {navLinks}
+                   <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                       <Button variant="ghost" className="text-secondary-foreground hover:bg-secondary/80 justify-start">
+                         Account
+                       </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56 bg-secondary text-secondary-foreground border-border">
+                      <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem asChild><Link href="/login">Login</Link></DropdownMenuItem>
+                      <DropdownMenuItem asChild><Link href="/dashboard">Dashboard</Link></DropdownMenuItem>
+                      <DropdownMenuItem asChild><Link href="/admin">Admin Panel</Link></DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </nav>
               </SheetContent>
             </Sheet>
@@ -73,7 +89,7 @@ const SiteHeader = () => {
             <nav className="flex items-center gap-2">
               {navLinks}
             </nav>
-            <Link href="/cart" className="relative p-2 rounded-full hover:bg-secondary/80 transition-colors">
+             <Link href="/cart" className="relative p-2 rounded-full hover:bg-secondary/80 transition-colors">
               <ShoppingCart />
               {cartCount > 0 && (
                 <span className="absolute top-0 right-0 block h-5 w-5 rounded-full bg-primary text-primary-foreground text-xs text-center leading-5">
@@ -82,6 +98,21 @@ const SiteHeader = () => {
               )}
               <span className="sr-only">Shopping Cart</span>
             </Link>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                 <Button variant="ghost" size="icon" className="rounded-full hover:bg-secondary/80">
+                    <User />
+                    <span className="sr-only">User Menu</span>
+                  </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56 bg-secondary text-secondary-foreground border-border" align="end">
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild><Link href="/login">Login</Link></DropdownMenuItem>
+                <DropdownMenuItem asChild><Link href="/dashboard">Dashboard</Link></DropdownMenuItem>
+                <DropdownMenuItem asChild><Link href="/admin">Admin Panel</Link></DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         )}
       </div>
