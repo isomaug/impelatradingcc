@@ -104,33 +104,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* About Section */}
-       <section className="py-16 md:py-24 bg-background/70">
-        <div className="container mx-auto px-4">
-           <Card className="overflow-hidden lg:grid lg:grid-cols-2 lg:items-center bg-card shadow-2xl">
-              <div className="p-10 md:p-16">
-                 <h2 className="text-3xl md:text-4xl font-headline font-bold mb-4">{about.headline}</h2>
-                <p className="text-lg text-muted-foreground mb-6">
-                  {about.description}
-                </p>
-                <Button asChild variant="link" className="p-0 h-auto text-base">
-                  <Link href={about.linkUrl}>{about.linkText} <ArrowRight className="ml-2 h-4 w-4" /></Link>
-                </Button>
-              </div>
-               <div className="h-64 sm:h-96 lg:h-full">
-                 <Image
-                    src={about.imageUrl}
-                    alt={about.imageAlt}
-                    width={800}
-                    height={600}
-                    className="w-full h-full object-cover"
-                    data-ai-hint="african artisans craft"
-                  />
-               </div>
-           </Card>
-        </div>
-      </section>
-
       {/* What We Do Section */}
        <section className="py-16 md:py-24 bg-background relative overflow-hidden">
         <div className="absolute inset-0 z-0">
@@ -191,6 +164,33 @@ export default function Home() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* About Section */}
+       <section className="py-16 md:py-24 bg-background/70">
+        <div className="container mx-auto px-4">
+           <Card className="overflow-hidden lg:grid lg:grid-cols-2 lg:items-center bg-card shadow-2xl">
+              <div className="p-10 md:p-16">
+                 <h2 className="text-3xl md:text-4xl font-headline font-bold mb-4">{about.headline}</h2>
+                <p className="text-lg text-muted-foreground mb-6">
+                  {about.description}
+                </p>
+                <Button asChild variant="link" className="p-0 h-auto text-base">
+                  <Link href={about.linkUrl}>{about.linkText} <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                </Button>
+              </div>
+               <div className="h-64 sm:h-96 lg:h-full">
+                 <Image
+                    src={about.imageUrl}
+                    alt={about.imageAlt}
+                    width={800}
+                    height={600}
+                    className="w-full h-full object-cover"
+                    data-ai-hint="african artisans craft"
+                  />
+               </div>
+           </Card>
         </div>
       </section>
 
