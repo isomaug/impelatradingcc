@@ -20,6 +20,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }),
@@ -32,6 +33,7 @@ const formSchema = z.object({
 export default function LoginPage() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = React.useState(false);
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -51,11 +53,15 @@ export default function LoginPage() {
       setIsLoading(false);
       toast({
         title: "Login Successful!",
-        description: `Welcome back! You are logged in as a ${values.userType}.`,
+        description: `Welcome back! Redirecting you to your dashboard.`,
       });
-      // Here you would typically redirect the user
-      // For now, we'll just reset the form
-      form.reset();
+      
+      if (values.userType === 'admin') {
+        router.push('/admin');
+      } else {
+        router.push('/dashboard');
+      }
+
     }, 1500);
   }
 
