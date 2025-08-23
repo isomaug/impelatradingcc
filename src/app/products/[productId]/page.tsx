@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from "next/image";
@@ -20,6 +21,7 @@ import {
 import { useCart } from "@/hooks/use-cart";
 import { useToast } from "@/hooks/use-toast";
 import ProductRecommender from "@/components/ai/product-recommender";
+import React from "react";
 
 interface ProductPageProps {
   params: {
@@ -95,6 +97,7 @@ export default function ProductPage({ params }: ProductPageProps) {
               <AccordionTrigger className="text-lg font-medium">Care Instructions</AccordionTrigger>
               <AccordionContent>
                 <p className="text-muted-foreground">{product.careInstructions}</p>
+
               </AccordionContent>
             </AccordionItem>
           </Accordion>
