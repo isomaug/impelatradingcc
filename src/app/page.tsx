@@ -22,7 +22,7 @@ export default function Home() {
         <Image
           src="https://placehold.co/1600x900.png"
           alt="South African landscape"
-          layout="fill"
+          fill
           objectFit="cover"
           className="z-0"
           data-ai-hint="south african landscape"
@@ -79,14 +79,12 @@ export default function Home() {
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Activity Card 1 */}
-            <div className="group relative p-8 flex flex-col items-start text-left bg-card/50 backdrop-blur-md border border-white/10 rounded-2xl shadow-2xl transition-all duration-300 hover:border-primary/50">
-              <div className="absolute -inset-px bg-gradient-to-r from-primary/50 to-accent/50 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-lg"></div>
+            <div className="group relative p-8 flex flex-col items-start text-left bg-card/50 backdrop-blur-md border border-white/10 rounded-2xl shadow-2xl transition-all duration-300 hover:border-primary/30">
               <div className="relative z-10 w-full">
                 <div className="relative inline-block mb-6">
                     <div className="p-4 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full shadow-lg">
                         <Users className="w-10 h-10 text-primary drop-shadow-lg" />
                     </div>
-                    <div className="absolute -inset-2 bg-primary/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse"></div>
                 </div>
                 <h3 className="text-2xl font-headline font-semibold mb-2">Artisan Training</h3>
                 <p className="text-muted-foreground flex-grow mb-6">We provide comprehensive training programs, empowering local artisans with the skills to create world-class products.</p>
@@ -97,14 +95,12 @@ export default function Home() {
             </div>
 
             {/* Activity Card 2 */}
-            <div className="group relative p-8 flex flex-col items-start text-left bg-card/50 backdrop-blur-md border border-white/10 rounded-2xl shadow-2xl transition-all duration-300 hover:border-primary/50">
-              <div className="absolute -inset-px bg-gradient-to-r from-primary/50 to-accent/50 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-lg"></div>
+            <div className="group relative p-8 flex flex-col items-start text-left bg-card/50 backdrop-blur-md border border-white/10 rounded-2xl shadow-2xl transition-all duration-300 hover:border-primary/30">
               <div className="relative z-10 w-full">
                  <div className="relative inline-block mb-6">
                     <div className="p-4 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full shadow-lg">
                         <Globe className="w-10 h-10 text-primary drop-shadow-lg" />
                     </div>
-                    <div className="absolute -inset-2 bg-primary/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse"></div>
                 </div>
                 <h3 className="text-2xl font-headline font-semibold mb-2">International Markets</h3>
                 <p className="text-muted-foreground flex-grow mb-6">Our work features on the global stage, connecting South African craftsmanship with international audiences.</p>
@@ -115,14 +111,12 @@ export default function Home() {
             </div>
 
             {/* Activity Card 3 */}
-            <div className="group relative p-8 flex flex-col items-start text-left bg-card/50 backdrop-blur-md border border-white/10 rounded-2xl shadow-2xl transition-all duration-300 hover:border-primary/50">
-              <div className="absolute -inset-px bg-gradient-to-r from-primary/50 to-accent/50 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-lg"></div>
+            <div className="group relative p-8 flex flex-col items-start text-left bg-card/50 backdrop-blur-md border border-white/10 rounded-2xl shadow-2xl transition-all duration-300 hover:border-primary/30">
               <div className="relative z-10 w-full">
                 <div className="relative inline-block mb-6">
                     <div className="p-4 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full shadow-lg">
                         <Handshake className="w-10 h-10 text-primary drop-shadow-lg" />
                     </div>
-                    <div className="absolute -inset-2 bg-primary/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse"></div>
                 </div>
                 <h3 className="text-2xl font-headline font-semibold mb-2">NGO Partnerships</h3>
                 <p className="text-muted-foreground flex-grow mb-6">We collaborate with non-governmental organizations to create sustainable supply chains and community-focused initiatives.</p>
