@@ -57,8 +57,8 @@ export default async function TeamMemberPage({ params }: TeamCV) {
               />
             </div>
             <div className="md:col-span-2">
-              <h1 className="text-4xl md:text-5xl font-headline font-bold">{member.name}</h1>
-              <p className="text-2xl font-semibold text-primary mt-2">{member.title}</p>
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-headline font-bold">{member.name}</h1>
+              <p className="text-xl md:text-2xl font-semibold text-primary mt-2">{member.title}</p>
               <Link href={member.linkedin} passHref target="_blank" className="mt-4 inline-block">
                 <Button variant="outline">
                   <Linkedin className="mr-2 h-5 w-5" />

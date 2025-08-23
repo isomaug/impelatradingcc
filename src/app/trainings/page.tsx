@@ -27,7 +27,7 @@ export default async function TrainingsPage() {
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-headline font-bold mb-4">
+        <h1 className="text-3xl md:text-5xl font-headline font-bold mb-4">
           Artisan Training Programs
         </h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
@@ -40,7 +40,7 @@ export default async function TrainingsPage() {
           <Card key={index} className="overflow-hidden grid md:grid-cols-2 items-center">
             <div className="order-2 md:order-1 p-8">
               <CardHeader className="p-0 mb-4">
-                <CardTitle className="font-headline text-3xl">{program.title}</CardTitle>
+                <CardTitle className="font-headline text-2xl">{program.title}</CardTitle>
               </CardHeader>
               <CardContent className="p-0">
                 <p className="text-muted-foreground mb-6">{program.description}</p>
@@ -69,7 +69,7 @@ export default async function TrainingsPage() {
       </div>
 
        <div className="bg-primary/10 p-8 md:p-12 rounded-lg text-center mt-20">
-        <h2 className="text-3xl font-headline font-bold mb-4">Interested in our Programs?</h2>
+        <h2 className="text-2xl md:text-3xl font-headline font-bold mb-4">Interested in our Programs?</h2>
         <p className="text-muted-foreground max-w-2xl mx-auto mb-6">
           Contact us to learn more about our training schedules, enrollment process, and partnership opportunities for new programs.
         </p>

@@ -28,7 +28,7 @@ export default function CartPage() {
 
   return (
     <div className="container mx-auto px-4 py-12">
-      <h1 className="text-4xl font-headline font-bold text-center mb-8">Shopping Cart</h1>
+      <h1 className="text-3xl md:text-4xl font-headline font-bold text-center mb-8">Shopping Cart</h1>
       {cartCount === 0 ? (
         <div className="text-center">
           <p className="text-xl text-muted-foreground mb-4">Your cart is empty.</p>
@@ -99,7 +99,7 @@ export default function CartPage() {
           <div>
             <Card className="sticky top-24">
               <CardHeader>
-                <CardTitle className="font-headline text-2xl">Order Summary</CardTitle>
+                <CardTitle className="font-headline text-xl">Order Summary</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex justify-between">

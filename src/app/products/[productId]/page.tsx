@@ -114,8 +114,8 @@ export default function ProductPage() {
           </Carousel>
         </div>
         <div className="space-y-6">
-          <h1 className="text-4xl font-headline font-bold">{product.name}</h1>
-          <p className="text-3xl font-semibold text-primary">
+          <h1 className="text-3xl md:text-4xl font-headline font-bold">{product.name}</h1>
+          <p className="text-2xl md:text-3xl font-semibold text-primary">
             {formatCurrency(product.price)}
           </p>
           <p className="text-lg text-muted-foreground">{product.description}</p>

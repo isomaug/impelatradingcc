@@ -94,8 +94,8 @@ export default function Home() {
         </Carousel>
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/20" />
         <div className="absolute inset-0 z-10 text-center px-4 flex flex-col items-center justify-center">
-          <h1 className="text-4xl md:text-6xl font-headline font-bold mb-4 drop-shadow-lg">{hero.headline}</h1>
-          <p className="text-lg md:text-2xl font-body max-w-3xl mx-auto drop-shadow-md">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-headline font-bold mb-4 drop-shadow-lg">{hero.headline}</h1>
+          <p className="text-lg md:text-xl font-body max-w-3xl mx-auto drop-shadow-md">
             {hero.subheadline}
           </p>
            <Button asChild size="lg" className="mt-8">
@@ -124,7 +124,7 @@ export default function Home() {
                         <Users className="w-10 h-10 text-primary drop-shadow-lg" />
                     </div>
                 </div>
-                <h3 className="text-2xl font-headline font-semibold mb-2">{coreActivities.cards.artisanTraining.title}</h3>
+                <h3 className="text-xl font-headline font-semibold mb-2">{coreActivities.cards.artisanTraining.title}</h3>
                 <p className="text-muted-foreground flex-grow mb-6">{coreActivities.cards.artisanTraining.description}</p>
                 <Button asChild variant="outline" className="bg-transparent border-white/20 hover:bg-white/10 hover:text-foreground">
                     <Link href={coreActivities.cards.artisanTraining.linkUrl}>{coreActivities.cards.artisanTraining.linkText}</Link>
@@ -140,7 +140,7 @@ export default function Home() {
                         <Globe className="w-10 h-10 text-primary drop-shadow-lg" />
                     </div>
                 </div>
-                <h3 className="text-2xl font-headline font-semibold mb-2">{coreActivities.cards.internationalMarkets.title}</h3>
+                <h3 className="text-xl font-headline font-semibold mb-2">{coreActivities.cards.internationalMarkets.title}</h3>
                 <p className="text-muted-foreground flex-grow mb-6">{coreActivities.cards.internationalMarkets.description}</p>
                 <Button asChild variant="outline" className="bg-transparent border-white/20 hover:bg-white/10 hover:text-foreground">
                     <Link href={coreActivities.cards.internationalMarkets.linkUrl}>{coreActivities.cards.internationalMarkets.linkText}</Link>
@@ -156,7 +156,7 @@ export default function Home() {
                         <Handshake className="w-10 h-10 text-primary drop-shadow-lg" />
                     </div>
                 </div>
-                <h3 className="text-2xl font-headline font-semibold mb-2">{coreActivities.cards.ngoPartnerships.title}</h3>
+                <h3 className="text-xl font-headline font-semibold mb-2">{coreActivities.cards.ngoPartnerships.title}</h3>
                 <p className="text-muted-foreground flex-grow mb-6">{coreActivities.cards.ngoPartnerships.description}</p>
                 <Button asChild variant="outline" className="bg-transparent border-white/20 hover:bg-white/10 hover:text-foreground">
                     <Link href={coreActivities.cards.ngoPartnerships.linkUrl}>{coreActivities.cards.ngoPartnerships.linkText}</Link>
