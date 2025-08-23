@@ -19,6 +19,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -29,6 +30,7 @@ const formSchema = z.object({
 export default function SignupPage() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = React.useState(false);
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -53,8 +55,7 @@ export default function SignupPage() {
         description: "Your buyer account has been created successfully. You can now log in.",
       });
       // Here you would typically redirect the user to the login page
-      // For now, we'll just reset the form
-      form.reset();
+      router.push("/login");
     }, 1500);
   }
 
