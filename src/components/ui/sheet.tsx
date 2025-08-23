@@ -1,9 +1,11 @@
+
 "use client"
 
 import * as React from "react"
 import * as SheetPrimitive from "@radix-ui/react-dialog"
 import { cva, type VariantProps } from "class-variance-authority"
 import { X } from "lucide-react"
+import { Slot } from "@radix-ui/react-slot"
 
 import { cn } from "@/lib/utils"
 
@@ -104,14 +106,20 @@ SheetFooter.displayName = "SheetFooter"
 
 const SheetTitle = React.forwardRef<
   React.ElementRef<typeof SheetPrimitive.Title>,
-  React.ComponentPropsWithoutRef<typeof SheetPrimitive.Title>
->(({ className, ...props }, ref) => (
-  <SheetPrimitive.Title
-    ref={ref}
-    className={cn("text-lg font-semibold text-foreground", className)}
-    {...props}
-  />
-))
+  React.ComponentPropsWithoutRef<typeof SheetPrimitive.Title> & { asChild?: boolean }
+>(({ className, asChild = false, ...props }, ref) => {
+    const Comp = asChild ? Slot : "h2"
+    return (
+        <SheetPrimitive.Title
+        asChild
+        ref={ref}
+        className={cn("text-lg font-semibold text-foreground", className)}
+        {...props}
+        >
+            <Comp>{props.children}</Comp>
+        </SheetPrimitive.Title>
+    )
+})
 SheetTitle.displayName = SheetPrimitive.Title.displayName
 
 const SheetDescription = React.forwardRef<

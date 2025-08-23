@@ -22,6 +22,7 @@ import {
   SheetContent,
   SheetTrigger,
   SheetHeader,
+  SheetTitle,
 } from "@/components/ui/sheet";
 import {
   Tooltip,
@@ -93,7 +94,7 @@ export default function AdminLayout({
                     <Link
                       href={item.href}
                       onClick={() => {
-                        if (window.innerWidth < 768) {
+                        if (isClient && window.innerWidth < 768) {
                           setIsSidebarOpen(false);
                         }
                       }}
@@ -122,7 +123,7 @@ export default function AdminLayout({
                 <Link
                   href={item.href}
                    onClick={() => {
-                        if (window.innerWidth < 768) {
+                        if (isClient && window.innerWidth < 768) {
                           setIsSidebarOpen(false);
                         }
                       }}
@@ -183,10 +184,12 @@ export default function AdminLayout({
                 </SheetTrigger>
                 <SheetContent side="left" className="flex flex-col p-0 w-60">
                   <SheetHeader className="p-4 border-b">
+                    <SheetTitle asChild>
                       <Link href="/" className="flex items-center gap-2 font-semibold">
                         <Briefcase className="h-6 w-6" />
                         <span>Impela Trading</span>
                       </Link>
+                    </SheetTitle>
                   </SheetHeader>
                   <NavContent />
                 </SheetContent>
@@ -198,7 +201,7 @@ export default function AdminLayout({
             </div>
 
           </header>
-          <main className="flex-1 overflow-auto">
+          <main className="flex-1 overflow-auto p-4 md:p-8">
             {children}
           </main>
         </div>
@@ -206,3 +209,4 @@ export default function AdminLayout({
     </TooltipProvider>
   );
 }
+
