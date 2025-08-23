@@ -6,118 +6,85 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { products } from "@/lib/data";
-import { Button } from "@/components/ui/button";
-import { Edit, Trash, UserPlus } from "lucide-react";
-import SalesForecaster from "@/components/ai/sales-forecaster";
-import { Badge } from "@/components/ui/badge";
-
-const mockUsers = [
-  { id: 1, name: "John Doe", email: "john.doe@example.com", role: "Buyer" },
-  { id: 2, name: "Sipho Mbele", email: "sipho.mbele@impela.co.za", role: "Admin" },
-  { id: 3, name: "Jane Smith", email: "jane.smith@example.com", role: "Buyer" },
-];
+import { Briefcase, DollarSign, Users, Activity } from "lucide-react";
 
 export default function AdminDashboardPage() {
   return (
-      <div className="flex flex-col gap-8">
-         <h1 className="text-4xl font-headline font-bold">Dashboard</h1>
+    <div className="flex flex-col gap-8">
+        <div>
+            <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+            <p className="text-muted-foreground">
+                Welcome to your site management panel.
+            </p>
+        </div>
+      <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
         <Card>
-            <CardHeader>
-              <div className="flex justify-between items-center">
-                <div>
-                  <CardTitle>Products</CardTitle>
-                  <CardDescription>
-                    Add, edit, or remove product listings.
-                  </CardDescription>
-                </div>
-                <Button>Add New Product</Button>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Category</TableHead>
-                    <TableHead>Price</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {products.map((product) => (
-                    <TableRow key={product.id}>
-                      <TableCell className="font-medium">{product.name}</TableCell>
-                      <TableCell>{product.category}</TableCell>
-                      <TableCell>${product.price.toFixed(2)}</TableCell>
-                      <TableCell className="text-right space-x-2">
-                        <Button variant="ghost" size="icon">
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive">
-                          <Trash className="h-4 w-4" />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-           <Card>
-            <CardHeader>
-              <div className="flex justify-between items-center">
-                <div>
-                  <CardTitle>Users</CardTitle>
-                  <CardDescription>
-                    Manage user accounts and roles.
-                  </CardDescription>
-                </div>
-                <Button><UserPlus className="mr-2"/>Invite Admin</Button>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Role</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {mockUsers.map((user) => (
-                    <TableRow key={user.id}>
-                      <TableCell className="font-medium">{user.name}</TableCell>
-                      <TableCell>{user.email}</TableCell>
-                      <TableCell>
-                        <Badge variant={user.role === 'Admin' ? 'default' : 'secondary'}>{user.role}</Badge>
-                      </TableCell>
-                      <TableCell className="text-right space-x-2">
-                        <Button variant="ghost" size="icon">
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive">
-                          <Trash className="h-4 w-4" />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-          <SalesForecaster />
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Total Revenue
+            </CardTitle>
+            <DollarSign className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">$45,231.89</div>
+            <p className="text-xs text-muted-foreground">
+              +20.1% from last month
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Active Users
+            </CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">+2350</div>
+            <p className="text-xs text-muted-foreground">
+              +180.1% from last month
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Products</CardTitle>
+            <Briefcase className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">+12</div>
+            <p className="text-xs text-muted-foreground">
+              +19% from last month
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Active Now</CardTitle>
+            <Activity className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">+573</div>
+            <p className="text-xs text-muted-foreground">
+              +201 since last hour
+            </p>
+          </CardContent>
+        </Card>
       </div>
+      <div className="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
+        {/* Placeholder for more complex dashboard components like charts or recent activity feeds */}
+         <Card className="xl:col-span-2">
+          <CardHeader>
+            <CardTitle>Recent Activity</CardTitle>
+            <CardDescription>
+              A log of recent sales and user sign-ups.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground">No recent activity to display.</p>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
   );
 }

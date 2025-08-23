@@ -1,159 +1,189 @@
 
-"use client"
+"use client";
 
-import * as React from "react"
-import Link from "next/link"
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarTrigger,
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarFooter,
-  SidebarSeparator,
-  SidebarProvider
-} from "@/components/ui/sidebar"
-import {
-  LayoutDashboard,
-  Users,
-  ShoppingBag,
-  Wand2,
-  Settings,
-  UserCircle,
-  Briefcase,
-  Users2,
-  Handshake,
   BookUser,
+  Briefcase,
+  Handshake,
+  LayoutDashboard,
   PanelLeft,
-} from "lucide-react"
+  Settings,
+  ShoppingBag,
+  Users,
+  Users2,
+  LogOut,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetHeader,
+} from "@/components/ui/sheet";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import React from "react";
 
-import { Button } from "@/components/ui/button"
-import { usePathname } from "next/navigation"
+const navItems = [
+  {
+    label: "Overview",
+    items: [{ href: "/admin", icon: LayoutDashboard, label: "Dashboard" }],
+  },
+  {
+    label: "Content",
+    items: [
+      { href: "/admin/team", icon: Users2, label: "Team" },
+      { href: "/admin/partnerships", icon: Handshake, label: "Partnerships" },
+      { href: "/admin/trainings", icon: BookUser, label: "Trainings" },
+    ],
+  },
+  {
+    label: "E-Commerce",
+    items: [
+      { href: "/admin/products", icon: ShoppingBag, label: "Products" },
+      { href: "/admin/users", icon: Users, label: "Users" },
+    ],
+  },
+];
+
+const footerNavItems = [
+    { href: "/admin/settings", icon: Settings, label: "Settings" },
+    { href: "/", icon: LogOut, label: "Exit Admin" },
+]
 
 export default function AdminLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  
+  const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
+  const [isMobileNavOpen, setIsMobileNavOpen] = React.useState(false);
+
   const isActive = (path: string) => {
-    return pathname === path;
-  }
+    if (path === "/admin") return pathname === path;
+    return pathname.startsWith(path);
+  };
+
+  const NavContent = () => (
+    <>
+      <div className="flex-1 overflow-y-auto">
+        <nav className="grid items-start gap-1 px-2 py-4">
+          {navItems.map((section) => (
+            <div key={section.label} className="mb-2">
+              <p className="px-3 py-2 text-xs font-semibold uppercase text-muted-foreground/80 tracking-wider">
+                {section.label}
+              </p>
+              {section.items.map((item) => (
+                <Tooltip key={item.href}>
+                  <TooltipTrigger asChild>
+                    <Link
+                      href={item.href}
+                      onClick={() => setIsMobileNavOpen(false)}
+                      className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:bg-muted ${
+                        isActive(item.href)
+                          ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                          : "text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      <item.icon className="h-4 w-4" />
+                      <span>{item.label}</span>
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">{item.label}</TooltipContent>
+                </Tooltip>
+              ))}
+            </div>
+          ))}
+        </nav>
+      </div>
+      <div className="mt-auto p-2">
+         <nav className="grid items-start gap-1">
+          {footerNavItems.map((item) => (
+            <Tooltip key={item.href}>
+              <TooltipTrigger asChild>
+                <Link
+                  href={item.href}
+                  onClick={() => setIsMobileNavOpen(false)}
+                  className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:bg-muted text-muted-foreground hover:text-foreground`}
+                >
+                  <item.icon className="h-4 w-4" />
+                  <span>{item.label}</span>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="right">{item.label}</TooltipContent>
+            </Tooltip>
+          ))}
+        </nav>
+      </div>
+    </>
+  );
 
   return (
-    <SidebarProvider>
-      <div className="flex min-h-screen bg-muted/40">
-        <Sidebar className="border-r" collapsible="icon" variant="floating">
-          <div className="flex flex-col h-full">
-            <SidebarHeader className="p-2">
-                <Button variant="ghost" size="icon" asChild>
-                  <Link href="/">
-                      <Briefcase />
-                      <span className="sr-only">Home</span>
-                  </Link>
-                </Button>
-            </SidebarHeader>
-            <SidebarContent className="p-2 flex-grow">
-              <SidebarMenu>
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild tooltip="Dashboard" isActive={isActive('/admin')}>
-                    <Link href="/admin">
-                      <LayoutDashboard />
-                      <span>Dashboard</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              </SidebarMenu>
-              
-              <SidebarSeparator />
-
-              <SidebarGroup>
-                  <SidebarGroupLabel>Content</SidebarGroupLabel>
-                  <SidebarMenu>
-                      <SidebarMenuItem>
-                          <SidebarMenuButton tooltip="Team" isActive={isActive('/admin/team')}>
-                              <Users2 />
-                              <span>Team</span>
-                          </SidebarMenuButton>
-                      </SidebarMenuItem>
-                      <SidebarMenuItem>
-                          <SidebarMenuButton tooltip="Partnerships" isActive={isActive('/admin/partnerships')}>
-                              <Handshake />
-                              <span>Partnerships</span>
-                          </SidebarMenuButton>
-                      </SidebarMenuItem>
-                      <SidebarMenuItem>
-                          <SidebarMenuButton tooltip="Trainings" isActive={isActive('/admin/trainings')}>
-                              <BookUser />
-                              <span>Trainings</span>
-                          </SidebarMenuButton>
-                      </SidebarMenuItem>
-                  </SidebarMenu>
-              </SidebarGroup>
-
-              <SidebarGroup>
-                  <SidebarGroupLabel>E-Commerce</SidebarGroupLabel>
-                  <SidebarMenu>
-                      <SidebarMenuItem>
-                          <SidebarMenuButton tooltip="Products" isActive={isActive('/admin/products')}>
-                              <ShoppingBag />
-                              <span>Products</span>
-                          </SidebarMenuButton>
-                      </SidebarMenuItem>
-                      <SidebarMenuItem>
-                          <SidebarMenuButton tooltip="Users" isActive={isActive('/admin/users')}>
-                              <Users />
-                              <span>Users</span>
-                          </SidebarMenuButton>
-                      </SidebarMenuItem>
-                  </SidebarMenu>
-              </SidebarGroup>
-              
-              <SidebarGroup>
-                  <SidebarGroupLabel>AI Tools</SidebarGroupLabel>
-                  <SidebarMenu>
-                      <SidebarMenuItem>
-                          <SidebarMenuButton tooltip="Sales Forecaster" isActive={isActive('/admin/forecasting')}>
-                              <Wand2 />
-                              <span>Forecasting</span>
-                          </SidebarMenuButton>
-                      </SidebarMenuItem>
-                  </SidebarMenu>
-              </SidebarGroup>
-
-            </SidebarContent>
-            <SidebarFooter className="p-2">
-              <SidebarMenu>
-                  <SidebarMenuItem>
-                      <SidebarMenuButton tooltip="Account" isActive={isActive('/admin/account')}>
-                          <UserCircle />
-                          <span>Account</span>
-                      </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                      <SidebarMenuButton tooltip="Settings" isActive={isActive('/admin/settings')}>
-                          <Settings />
-                          <span>Settings</span>
-                      </SidebarMenuButton>
-                  </SidebarMenuItem>
-              </SidebarMenu>
-            </SidebarFooter>
+    <TooltipProvider>
+      <div className="grid min-h-screen w-full md:grid-cols-[auto_1fr]">
+        <aside
+          className={`hidden md:flex flex-col border-r bg-card transition-all duration-300 ${
+            isSidebarOpen ? "w-60" : "w-16 items-center"
+          }`}
+        >
+          <div className={`flex h-16 items-center border-b px-4 shrink-0 ${isSidebarOpen ? 'justify-between' : 'justify-center'}`}>
+            <Link href="/" className={`flex items-center gap-2 font-semibold ${!isSidebarOpen && 'sr-only'}`}>
+              <Briefcase className="h-6 w-6" />
+              <span>Impela</span>
+            </Link>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            >
+              <PanelLeft className="h-5 w-5" />
+              <span className="sr-only">Toggle Sidebar</span>
+            </Button>
           </div>
-        </Sidebar>
-        <main className="flex-1 p-4 md:p-8">
-            <div className="flex justify-end mb-4">
-                 <SidebarTrigger>
-                    <PanelLeft />
-                </SidebarTrigger>
-            </div>
+          <div className={`flex flex-col w-full flex-1 overflow-hidden ${!isSidebarOpen ? '[&_span]:sr-only [&_p]:sr-only' : ''}`}>
+            <NavContent />
+          </div>
+        </aside>
+        <div className="flex flex-col">
+          <header className="flex h-16 items-center gap-4 border-b bg-card px-4 md:px-6 md:hidden">
+            <Link href="/" className="flex items-center gap-2 font-semibold">
+                <Briefcase className="h-6 w-6" />
+                <span>Impela Trading</span>
+            </Link>
+            <Sheet open={isMobileNavOpen} onOpenChange={setIsMobileNavOpen}>
+              <SheetTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="ml-auto shrink-0"
+                >
+                  <PanelLeft className="h-5 w-5" />
+                  <span className="sr-only">Toggle navigation menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="flex flex-col p-0 w-60">
+                 <SheetHeader className="p-4 border-b">
+                    <Link href="/" className="flex items-center gap-2 font-semibold">
+                      <Briefcase className="h-6 w-6" />
+                      <span>Impela Trading</span>
+                    </Link>
+                 </SheetHeader>
+                 <NavContent />
+              </SheetContent>
+            </Sheet>
+          </header>
+          <main className="flex-1 p-4 md:p-8 overflow-auto">
             {children}
-        </main>
+          </main>
+        </div>
       </div>
-    </SidebarProvider>
-  )
+    </TooltipProvider>
+  );
 }
