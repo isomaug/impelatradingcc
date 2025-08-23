@@ -50,7 +50,7 @@ export default function AdminLayout({
       <div className="flex min-h-screen bg-muted/40">
         <Sidebar className="border-r" collapsible="icon" variant="floating">
           <div className="flex flex-col h-full">
-            <SidebarHeader>
+            <SidebarHeader className="p-2">
                 <Button variant="ghost" size="icon" asChild>
                   <Link href="/">
                       <Briefcase />
