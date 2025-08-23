@@ -4,7 +4,7 @@ import Link from "next/link";
 import { products } from "@/lib/data";
 import ProductCard from "@/components/product-card";
 import { Button } from "@/components/ui/button";
-import { Briefcase, Globe, Handshake, Users } from "lucide-react";
+import { Users, Globe, Handshake, ArrowRight } from "lucide-react";
 import {
   Carousel,
   CarouselContent,
@@ -12,80 +12,104 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { Card, CardContent } from "@/components/ui/card";
 
 export default function Home() {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
       <section className="relative h-[70vh] bg-cover bg-center text-white flex items-center justify-center">
-        <Image 
-          src="https://placehold.co/1600x900.png" 
-          alt="South African landscape" 
+        <Image
+          src="https://placehold.co/1600x900.png"
+          alt="South African landscape"
           layout="fill"
           objectFit="cover"
           className="z-0"
           data-ai-hint="south african landscape"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-black/20" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/20" />
         <div className="relative z-10 text-center px-4">
           <h1 className="text-4xl md:text-6xl font-headline font-bold mb-4 drop-shadow-lg">Impela Trading CC</h1>
           <p className="text-lg md:text-2xl font-body max-w-3xl mx-auto drop-shadow-md">
             Empowering communities through artisan skills, sustainable partnerships, and global outreach.
           </p>
+           <Button asChild size="lg" className="mt-8">
+              <Link href="/about">Discover Our Story</Link>
+            </Button>
         </div>
       </section>
 
       {/* About Section */}
-      <section className="py-16 md:py-24 bg-background">
-        <div className="container mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
-          <div>
-            <h2 className="text-3xl md:text-4xl font-headline font-bold mb-4">Rooted in South Africa, Reaching the World</h2>
-            <p className="text-lg text-muted-foreground mb-6">
-              Impela Trading CC is more than just a brand; we are a movement born from the heart of South Africa. Our mission is to provide high-quality, handcrafted goods while fostering economic empowerment and sustainable practices within our communities.
-            </p>
-            <Button asChild>
-              <Link href="/about">Learn More About Us</Link>
-            </Button>
-          </div>
-          <div>
-            <Image
-              src="https://placehold.co/600x400.png"
-              alt="South African artisans at work"
-              width={600}
-              height={400}
-              className="rounded-lg shadow-xl"
-              data-ai-hint="african artisans craft"
-            />
-          </div>
+       <section className="py-16 md:py-24 bg-background/70">
+        <div className="container mx-auto px-4">
+           <Card className="overflow-hidden lg:grid lg:grid-cols-2 lg:items-center bg-card shadow-2xl">
+              <div className="p-10 md:p-16">
+                 <h2 className="text-3xl md:text-4xl font-headline font-bold mb-4">Rooted in South Africa, Reaching the World</h2>
+                <p className="text-lg text-muted-foreground mb-6">
+                  Impela Trading CC is more than just a brand; we are a movement born from the heart of South Africa. Our mission is to provide high-quality, handcrafted goods while fostering economic empowerment and sustainable practices within our communities.
+                </p>
+                <Button asChild variant="link" className="p-0 h-auto text-base">
+                  <Link href="/about">Learn More About Us <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                </Button>
+              </div>
+               <div className="h-64 sm:h-96 lg:h-full">
+                 <Image
+                    src="https://placehold.co/800x600.png"
+                    alt="South African artisans at work"
+                    width={800}
+                    height={600}
+                    className="w-full h-full object-cover"
+                    data-ai-hint="african artisans craft"
+                  />
+               </div>
+           </Card>
         </div>
       </section>
 
       {/* What We Do Section */}
-      <section className="py-16 md:py-24 bg-card/50">
+       <section className="py-16 md:py-24 bg-background">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-headline font-bold mb-12">Our Core Activities</h2>
+          <h2 className="text-3xl md:text-4xl font-headline font-bold mb-2">Our Core Activities</h2>
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-12">
+            We are dedicated to creating lasting impact through a multi-faceted approach that combines skill development, global market access, and strategic partnerships.
+          </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="flex flex-col items-center p-6">
-              <Users className="w-12 h-12 text-primary mb-4" />
+            <Card className="text-left p-8 flex flex-col items-start transition-all duration-300 hover:shadow-2xl hover:-translate-y-2">
+              <div className="bg-primary/10 p-4 rounded-lg mb-6">
+                  <Users className="w-10 h-10 text-primary" />
+              </div>
               <h3 className="text-2xl font-headline font-semibold mb-2">Artisan Training</h3>
-              <p className="text-muted-foreground">We provide comprehensive training programs, empowering local artisans with the skills to create world-class products.</p>
-            </div>
-            <div className="flex flex-col items-center p-6">
-              <Globe className="w-12 h-12 text-primary mb-4" />
+              <p className="text-muted-foreground flex-grow mb-6">We provide comprehensive training programs, empowering local artisans with the skills to create world-class products.</p>
+               <Button asChild variant="outline">
+                  <Link href="/trainings">Learn About Training</Link>
+                </Button>
+            </Card>
+            <Card className="text-left p-8 flex flex-col items-start transition-all duration-300 hover:shadow-2xl hover:-translate-y-2">
+              <div className="bg-primary/10 p-4 rounded-lg mb-6">
+                 <Globe className="w-10 h-10 text-primary" />
+              </div>
               <h3 className="text-2xl font-headline font-semibold mb-2">International Markets</h3>
-              <p className="text-muted-foreground">Our work features on the global stage, connecting South African craftsmanship with international audiences.</p>
-            </div>
-            <div className="flex flex-col items-center p-6">
-              <Handshake className="w-12 h-12 text-primary mb-4" />
+              <p className="text-muted-foreground flex-grow mb-6">Our work features on the global stage, connecting South African craftsmanship with international audiences.</p>
+               <Button asChild variant="outline">
+                  <Link href="/partnerships">Explore Our Reach</Link>
+                </Button>
+            </Card>
+            <Card className="text-left p-8 flex flex-col items-start transition-all duration-300 hover:shadow-2xl hover:-translate-y-2">
+              <div className="bg-primary/10 p-4 rounded-lg mb-6">
+                 <Handshake className="w-10 h-10 text-primary" />
+              </div>
               <h3 className="text-2xl font-headline font-semibold mb-2">NGO Partnerships</h3>
-              <p className="text-muted-foreground">We collaborate with non-governmental organizations to create sustainable supply chains and community-focused initiatives.</p>
-            </div>
+              <p className="text-muted-foreground flex-grow mb-6">We collaborate with non-governmental organizations to create sustainable supply chains and community-focused initiatives.</p>
+               <Button asChild variant="outline">
+                  <Link href="/partnerships">See Our Partners</Link>
+                </Button>
+            </Card>
           </div>
         </div>
       </section>
 
       {/* Featured Products Carousel */}
-      <section className="py-16 md:py-24">
+      <section className="py-16 md:py-24 bg-card/50">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-headline font-bold text-center mb-12">From Our Workshop</h2>
           <Carousel
@@ -97,8 +121,8 @@ export default function Home() {
           >
             <CarouselContent className="-ml-4">
               {products.slice(0, 6).map((product) => (
-                <CarouselItem key={product.id} className="pl-4 md:basis-1/2 lg:basis-1/3 group">
-                  <div className="p-1 transition-transform duration-300 ease-in-out group-[.is-active]:scale-105">
+                <CarouselItem key={product.id} className="pl-4 md:basis-1/2 lg:basis-1/3">
+                   <div className="p-1">
                     <ProductCard product={product} />
                   </div>
                 </CarouselItem>
