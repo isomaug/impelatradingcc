@@ -99,7 +99,8 @@ export default function AdminLayout({
                       href={item.href}
                       onClick={() => {
                         if (isClient && window.innerWidth < 768) {
-                          setIsSidebarOpen(false);
+                          const sheetTrigger = document.querySelector('[aria-controls="radix-:R1mlaq:"]');
+                          if (sheetTrigger) (sheetTrigger as HTMLElement).click();
                         }
                       }}
                       className={cn(`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:bg-muted`,
@@ -128,7 +129,8 @@ export default function AdminLayout({
                   href={item.href}
                    onClick={() => {
                         if (isClient && window.innerWidth < 768) {
-                          setIsSidebarOpen(false);
+                           const sheetTrigger = document.querySelector('[aria-controls="radix-:R1mlaq:"]');
+                          if (sheetTrigger) (sheetTrigger as HTMLElement).click();
                         }
                       }}
                   className={cn(`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:bg-muted text-muted-foreground hover:text-foreground`,
@@ -178,25 +180,27 @@ export default function AdminLayout({
         <div className="flex flex-col">
           <header className="flex h-16 items-center gap-4 border-b bg-card px-4 md:px-6">
              <div className="md:hidden">
-                <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
-                <SheetTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                  >
-                    <PanelLeft className="h-5 w-5" />
-                    <span className="sr-only">Toggle navigation menu</span>
-                  </Button>
-                </SheetTrigger>
-                <SheetContent side="left" className="flex flex-col p-0 w-60">
-                  <SheetHeader className="p-4 border-b">
-                     <Link href="/" className="flex items-center gap-2 font-semibold">
-                        <Briefcase className="h-6 w-6" />
-                        <span>Impela Trading</span>
-                      </Link>
-                  </SheetHeader>
-                  <NavContent />
-                </SheetContent>
+                <Sheet>
+                  <SheetTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                    >
+                      <PanelLeft className="h-5 w-5" />
+                      <span className="sr-only">Toggle navigation menu</span>
+                    </Button>
+                  </SheetTrigger>
+                  <SheetContent side="left" className="flex flex-col p-0 w-60">
+                    <SheetHeader className="p-4 border-b">
+                      <SheetTitle asChild>
+                         <Link href="/" className="flex items-center gap-2 font-semibold">
+                            <Briefcase className="h-6 w-6" />
+                            <span>Impela Trading</span>
+                          </Link>
+                      </SheetTitle>
+                    </SheetHeader>
+                    <NavContent />
+                  </SheetContent>
               </Sheet>
              </div>
 
