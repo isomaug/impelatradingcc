@@ -1,4 +1,4 @@
-import type { Product } from "./types";
+import type { Product, TeamMember } from "./types";
 
 export const products: Product[] = [
   {
@@ -87,5 +87,44 @@ export const products: Product[] = [
     images: ["https://placehold.co/600x600.png", "https://placehold.co/600x600.png"],
     careInstructions:
       "Avoid getting wet. Wipe with a dry cloth to clean.",
+  },
+];
+
+export const teamMembers: TeamMember[] = [
+  {
+    id: "1",
+    name: "Nolwazi Khumalo",
+    title: "Founder & CEO",
+    bio: "Nolwazi is the visionary behind Impela, driven by a passion for social entrepreneurship and sustainable development.",
+    image: "https://placehold.co/400x400.png",
+    imageHint: "professional african woman",
+    linkedin: "#",
+  },
+  {
+    id: "2",
+    name: "Sipho Mbele",
+    title: "Head of Operations",
+    bio: "Sipho ensures that our training programs and production lines run smoothly, empowering our artisans every day.",
+    image: "https://placehold.co/400x400.png",
+    imageHint: "professional african man",
+    linkedin: "#",
+  },
+  {
+    id: "3",
+    name: "Thandiwe Ndlovu",
+    title: "Lead Designer",
+    bio: "Thandiwe blends traditional techniques with contemporary aesthetics to create our signature product lines.",
+    image: "https://placehold.co/400x400.png",
+    imageHint: "creative designer working",
+    linkedin: "#",
+  },
+  {
+    id: "4",
+    name: "Bongani Dlamini",
+    title: "Partnerships Manager",
+    bio: "Bongani builds and maintains our crucial relationships with NGOs and international market partners.",
+    image: "https://placehold.co/400x400.png",
+    imageHint: "man shaking hands",
+    linkedin: "#",
   },
 ];

@@ -4,41 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Linkedin } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-
-const teamMembers = [
-  {
-    name: "Nolwazi Khumalo",
-    title: "Founder & CEO",
-    bio: "Nolwazi is the visionary behind Impela, driven by a passion for social entrepreneurship and sustainable development.",
-    image: "https://placehold.co/400x400.png",
-    imageHint: "professional african woman",
-    linkedin: "#",
-  },
-  {
-    name: "Sipho Mbele",
-    title: "Head of Operations",
-    bio: "Sipho ensures that our training programs and production lines run smoothly, empowering our artisans every day.",
-    image: "https://placehold.co/400x400.png",
-    imageHint: "professional african man",
-    linkedin: "#",
-  },
-  {
-    name: "Thandiwe Ndlovu",
-    title: "Lead Designer",
-    bio: "Thandiwe blends traditional techniques with contemporary aesthetics to create our signature product lines.",
-    image: "https://placehold.co/400x400.png",
-    imageHint: "creative designer working",
-    linkedin: "#",
-  },
-  {
-    name: "Bongani Dlamini",
-    title: "Partnerships Manager",
-    bio: "Bongani builds and maintains our crucial relationships with NGOs and international market partners.",
-    image: "https://placehold.co/400x400.png",
-    imageHint: "man shaking hands",
-    linkedin: "#",
-  },
-];
+import { teamMembers } from "@/lib/data";
 
 
 export default function TeamPage() {
@@ -54,8 +20,8 @@ export default function TeamPage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-        {teamMembers.map((member, index) => (
-          <Card key={index} className="text-center flex flex-col">
+        {teamMembers.map((member) => (
+          <Card key={member.id} className="text-center flex flex-col">
             <CardHeader className="p-0">
                <Image
                 src={member.image}

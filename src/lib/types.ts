@@ -12,3 +12,13 @@ export type CartItem = {
   product: Product;
   quantity: number;
 };
+
+export type TeamMember = {
+  id: string;
+  name: string;
+  title: string;
+  bio: string;
+  image: string;
+  imageHint: string;
+  linkedin: string;
+};
