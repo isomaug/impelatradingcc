@@ -1,3 +1,4 @@
+
 export type Product = {
   id: string;
   name: string;
@@ -21,4 +22,13 @@ export type TeamMember = {
   image: string;
   imageHint: string;
   linkedin: string;
+};
+
+export type Partner = {
+  id: string;
+  name: string;
+  type: 'NGO' | 'Corporate' | 'Government';
+  description: string;
+  image: string;
+  imageHint: string;
 };

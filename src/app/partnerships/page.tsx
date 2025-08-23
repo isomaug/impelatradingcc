@@ -4,8 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Globe, Handshake, Landmark } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { partners } from "@/lib/data";
 
 export default function PartnershipsPage() {
+  const ngoPartners = partners.filter(p => p.type === 'NGO');
+  const otherPartners = partners.filter(p => p.type !== 'NGO');
+
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="text-center mb-12">
@@ -16,58 +20,32 @@ export default function PartnershipsPage() {
           Collaboration is at the heart of our impact. We partner with leading organizations and feature our artisans' work on the world stage.
         </p>
       </div>
-
-      {/* NGO Partnerships Section */}
+      
+      {/* Partners Section */}
       <section className="mb-20">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          <div>
-            <Image
-              src="https://placehold.co/600x400.png"
-              alt="Team collaborating with NGO partners"
-              width={600}
-              height={400}
-              className="rounded-lg shadow-xl"
-              data-ai-hint="diverse group meeting"
-            />
-          </div>
-          <div className="text-left">
-            <Handshake className="w-12 h-12 text-primary mb-4" />
-            <h2 className="text-3xl font-headline font-bold mb-4">NGO Collaborations</h2>
-            <p className="text-muted-foreground mb-4">
-              We build strong, lasting relationships with non-governmental organizations that share our vision for community empowerment. These partnerships are crucial for creating ethical supply chains, ensuring fair wages, and implementing community development projects.
-            </p>
-            <p className="text-muted-foreground">
-              Our joint initiatives focus on education, healthcare, and environmental sustainability, creating a holistic support system for the communities we serve.
-            </p>
-          </div>
+        <h2 className="text-3xl font-headline font-bold mb-8 text-center">Our Valued Partners</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {partners.map(partner => (
+                 <Card key={partner.id} className="overflow-hidden">
+                    <Image
+                        src={partner.image}
+                        alt={partner.name}
+                        width={600}
+                        height={400}
+                        className="w-full h-48 object-cover"
+                        data-ai-hint={partner.imageHint}
+                    />
+                    <CardHeader>
+                        <CardTitle>{partner.name}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <p className="text-muted-foreground">{partner.description}</p>
+                    </CardContent>
+                 </Card>
+            ))}
         </div>
       </section>
 
-      {/* International Markets Section */}
-      <section className="mb-20">
-         <div className="grid md:grid-cols-2 gap-12 items-center">
-           <div className="text-left order-2 md:order-1">
-             <Globe className="w-12 h-12 text-primary mb-4" />
-             <h2 className="text-3xl font-headline font-bold mb-4">International Markets</h2>
-             <p className="text-muted-foreground mb-4">
-               Impela Trading CC proudly showcases South African craftsmanship in international markets. By participating in global trade shows and leveraging online platforms, we connect our artisans with a worldwide customer base.
-             </p>
-             <p className="text-muted-foreground">
-               This global exposure not only provides a vital source of income for our artisans but also fosters cross-cultural appreciation and promotes the rich heritage of South African craft.
-             </p>
-           </div>
-           <div className="order-1 md:order-2">
-             <Image
-              src="https://placehold.co/600x400.png"
-              alt="Product displayed at an international trade show"
-              width={600}
-              height={400}
-              className="rounded-lg shadow-xl"
-              data-ai-hint="market stall product"
-            />
-          </div>
-        </div>
-      </section>
       
       <div className="bg-card/50 p-8 md:p-12 rounded-lg text-center">
         <h2 className="text-3xl font-headline font-bold mb-4">Become a Partner</h2>

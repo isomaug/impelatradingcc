@@ -1,4 +1,5 @@
-import type { Product, TeamMember } from "./types";
+
+import type { Product, TeamMember, Partner } from "./types";
 
 export const products: Product[] = [
   {
@@ -127,4 +128,31 @@ export const teamMembers: TeamMember[] = [
     imageHint: "man shaking hands",
     linkedin: "#",
   },
+];
+
+export const partners: Partner[] = [
+    {
+        id: "1",
+        name: "Crafting Futures Foundation",
+        type: "NGO",
+        description: "A non-profit dedicated to preserving traditional crafts and providing economic opportunities for artisans in rural areas.",
+        image: "https://placehold.co/600x400.png",
+        imageHint: "charity foundation logo",
+    },
+    {
+        id: "2",
+        name: "Artisan Alliance of SA",
+        type: "NGO",
+        description: "A coalition of artisan groups working together to access new markets and advocate for fair trade practices.",
+        image: "https://placehold.co/600x400.png",
+        imageHint: "community alliance logo",
+    },
+    {
+        id: "3",
+        name: "Global Goods Inc.",
+        type: "Corporate",
+        description: "An international distributor specializing in ethically sourced, handmade products from around the world.",
+        image: "https://placehold.co/600x400.png",
+        imageHint: "global business logo",
+    },
 ];
