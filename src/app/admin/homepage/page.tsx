@@ -20,6 +20,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Upload, Library } from "lucide-react";
@@ -208,166 +214,146 @@ export default function AdminHomepagePage() {
       
       <Form {...form}>
         <form className="space-y-8">
-          <Card>
-            <CardHeader>
-              <CardTitle>Hero Section</CardTitle>
-              <CardDescription>The main section at the top of your homepage.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <FormField
-                control={form.control}
-                name="hero.headline"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Headline</FormLabel>
-                    <FormControl><Input {...field} /></FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="hero.subheadline"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Sub-headline</FormLabel>
-                    <FormControl><Textarea {...field} /></FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <div className="grid md:grid-cols-2 gap-4">
-                <FormField control={form.control} name="hero.buttonText" render={({ field }) => (<FormItem><FormLabel>Button Text</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
-                <FormField control={form.control} name="hero.buttonLink" render={({ field }) => (<FormItem><FormLabel>Button Link</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
-              </div>
-               <div className="grid md:grid-cols-2 gap-4">
-                 <FormField
-                    control={form.control}
-                    name="hero.imageUrl"
-                    render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Image URL</FormLabel>
-                        <FormControl>
-                        <Input placeholder="https://..." {...field} />
-                        </FormControl>
-                        <div className="flex items-center gap-2 mt-2">
-                             <Button type="button" variant="outline" size="sm" asChild>
-                                <label htmlFor="hero-file-upload" className="cursor-pointer flex items-center">
-                                     <Upload className="mr-2 h-4 w-4" /> Upload
-                                     <input id="hero-file-upload" type="file" className="sr-only" accept="image/*" onChange={(e) => handleFileChange(e, "hero.imageUrl")} />
-                                </label>
-                            </Button>
-                            <Dialog>
-                                <DialogTrigger asChild>
-                                    <Button type="button" variant="outline" size="sm" onClick={() => setActiveImageField("hero.imageUrl")}>
-                                        <Library className="mr-2 h-4 w-4" /> Select from Library
-                                    </Button>
-                                </DialogTrigger>
-                                <DialogContent className="max-w-4xl">
-                                    <DialogHeader>
-                                        <DialogTitle>Image Library</DialogTitle>
-                                        <DialogDescription>Select an existing image.</DialogDescription>
-                                    </DialogHeader>
-                                    <ImageLibrary items={libraryItems} onSelectImage={handleImageSelect} />
-                                </DialogContent>
-                            </Dialog>
-                        </div>
-                        <FormMessage />
-                    </FormItem>
-                    )}
-                />
-                <FormField control={form.control} name="hero.imageAlt" render={({ field }) => (<FormItem><FormLabel>Image Alt Text</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
-              </div>
-            </CardContent>
-          </Card>
+           <Accordion type="multiple" className="w-full space-y-8" defaultValue={['hero-section']}>
+            <AccordionItem value="hero-section" className="border-none">
+              <Card>
+                <AccordionTrigger className="p-6 hover:no-underline">
+                  <CardHeader className="p-0 text-left">
+                    <CardTitle>Hero Section</CardTitle>
+                    <CardDescription>The main section at the top of your homepage.</CardDescription>
+                  </CardHeader>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <CardContent className="space-y-4 pt-0">
+                    <FormField control={form.control} name="hero.headline" render={({ field }) => (<FormItem><FormLabel>Headline</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                    <FormField control={form.control} name="hero.subheadline" render={({ field }) => (<FormItem><FormLabel>Sub-headline</FormLabel><FormControl><Textarea {...field} /></FormControl><FormMessage /></FormItem>)} />
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <FormField control={form.control} name="hero.buttonText" render={({ field }) => (<FormItem><FormLabel>Button Text</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                      <FormField control={form.control} name="hero.buttonLink" render={({ field }) => (<FormItem><FormLabel>Button Link</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                    </div>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <FormField control={form.control} name="hero.imageUrl" render={({ field }) => (
+                          <FormItem>
+                              <FormLabel>Image URL</FormLabel>
+                              <FormControl><Input placeholder="https://..." {...field} /></FormControl>
+                              <div className="flex items-center gap-2 mt-2">
+                                  <Button type="button" variant="outline" size="sm" asChild>
+                                      <label htmlFor="hero-file-upload" className="cursor-pointer flex items-center">
+                                          <Upload className="mr-2 h-4 w-4" /> Upload
+                                          <input id="hero-file-upload" type="file" className="sr-only" accept="image/*" onChange={(e) => handleFileChange(e, "hero.imageUrl")} />
+                                      </label>
+                                  </Button>
+                                  <Dialog>
+                                      <DialogTrigger asChild>
+                                          <Button type="button" variant="outline" size="sm" onClick={() => setActiveImageField("hero.imageUrl")}>
+                                              <Library className="mr-2 h-4 w-4" /> Select from Library
+                                          </Button>
+                                      </DialogTrigger>
+                                      <DialogContent className="max-w-4xl">
+                                         <ImageLibrary items={libraryItems} onSelectImage={handleImageSelect} />
+                                      </DialogContent>
+                                  </Dialog>
+                              </div>
+                              <FormMessage />
+                          </FormItem>
+                      )} />
+                      <FormField control={form.control} name="hero.imageAlt" render={({ field }) => (<FormItem><FormLabel>Image Alt Text</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                    </div>
+                  </CardContent>
+                </AccordionContent>
+              </Card>
+            </AccordionItem>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>About Section</CardTitle>
-               <CardDescription>"Rooted in South Africa, Reaching the World" section.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <FormField control={form.control} name="about.headline" render={({ field }) => (<FormItem><FormLabel>Headline</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
-              <FormField control={form.control} name="about.description" render={({ field }) => (<FormItem><FormLabel>Description</FormLabel><FormControl><Textarea {...field} rows={4} /></FormControl><FormMessage /></FormItem>)} />
-              <div className="grid md:grid-cols-2 gap-4">
-                <FormField control={form.control} name="about.linkText" render={({ field }) => (<FormItem><FormLabel>Link Text</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
-                <FormField control={form.control} name="about.linkUrl" render={({ field }) => (<FormItem><FormLabel>Link URL</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
-              </div>
-               <div className="grid md:grid-cols-2 gap-4">
-                <FormField
-                    control={form.control}
-                    name="about.imageUrl"
-                    render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Image URL</FormLabel>
-                        <FormControl>
-                        <Input placeholder="https://..." {...field} />
-                        </FormControl>
-                        <div className="flex items-center gap-2 mt-2">
-                             <Button type="button" variant="outline" size="sm" asChild>
-                                <label htmlFor="about-file-upload" className="cursor-pointer flex items-center">
-                                     <Upload className="mr-2 h-4 w-4" /> Upload
-                                     <input id="about-file-upload" type="file" className="sr-only" accept="image/*" onChange={(e) => handleFileChange(e, "about.imageUrl")} />
-                                </label>
-                            </Button>
-                            <Dialog>
-                                <DialogTrigger asChild>
-                                    <Button type="button" variant="outline" size="sm" onClick={() => setActiveImageField("about.imageUrl")}>
-                                        <Library className="mr-2 h-4 w-4" /> Select from Library
-                                    </Button>
-                                </DialogTrigger>
-                                <DialogContent className="max-w-4xl">
-                                    <DialogHeader>
-                                        <DialogTitle>Image Library</DialogTitle>
-                                        <DialogDescription>Select an existing image.</DialogDescription>
-                                    </DialogHeader>
-                                    <ImageLibrary items={libraryItems} onSelectImage={handleImageSelect} />
-                                </DialogContent>
-                            </Dialog>
-                        </div>
-                        <FormMessage />
-                    </FormItem>
-                    )}
-                />
-                <FormField control={form.control} name="about.imageAlt" render={({ field }) => (<FormItem><FormLabel>Image Alt Text</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
-              </div>
-            </CardContent>
-          </Card>
+            <AccordionItem value="about-section" className="border-none">
+              <Card>
+                <AccordionTrigger className="p-6 hover:no-underline">
+                  <CardHeader className="p-0 text-left">
+                    <CardTitle>About Section</CardTitle>
+                    <CardDescription>"Rooted in South Africa, Reaching the World" section.</CardDescription>
+                  </CardHeader>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <CardContent className="space-y-4 pt-0">
+                    <FormField control={form.control} name="about.headline" render={({ field }) => (<FormItem><FormLabel>Headline</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                    <FormField control={form.control} name="about.description" render={({ field }) => (<FormItem><FormLabel>Description</FormLabel><FormControl><Textarea {...field} rows={4} /></FormControl><FormMessage /></FormItem>)} />
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <FormField control={form.control} name="about.linkText" render={({ field }) => (<FormItem><FormLabel>Link Text</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                      <FormField control={form.control} name="about.linkUrl" render={({ field }) => (<FormItem><FormLabel>Link URL</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                    </div>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <FormField control={form.control} name="about.imageUrl" render={({ field }) => (
+                          <FormItem>
+                              <FormLabel>Image URL</FormLabel>
+                              <FormControl><Input placeholder="https://..." {...field} /></FormControl>
+                              <div className="flex items-center gap-2 mt-2">
+                                  <Button type="button" variant="outline" size="sm" asChild>
+                                      <label htmlFor="about-file-upload" className="cursor-pointer flex items-center">
+                                          <Upload className="mr-2 h-4 w-4" /> Upload
+                                          <input id="about-file-upload" type="file" className="sr-only" accept="image/*" onChange={(e) => handleFileChange(e, "about.imageUrl")} />
+                                      </label>
+                                  </Button>
+                                  <Dialog>
+                                      <DialogTrigger asChild>
+                                          <Button type="button" variant="outline" size="sm" onClick={() => setActiveImageField("about.imageUrl")}>
+                                              <Library className="mr-2 h-4 w-4" /> Select from Library
+                                          </Button>
+                                      </DialogTrigger>
+                                      <DialogContent className="max-w-4xl">
+                                        <ImageLibrary items={libraryItems} onSelectImage={handleImageSelect} />
+                                      </DialogContent>
+                                  </Dialog>
+                              </div>
+                              <FormMessage />
+                          </FormItem>
+                      )} />
+                      <FormField control={form.control} name="about.imageAlt" render={({ field }) => (<FormItem><FormLabel>Image Alt Text</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                    </div>
+                  </CardContent>
+                </AccordionContent>
+              </Card>
+            </AccordionItem>
 
-          <Card>
-            <CardHeader>
-                <CardTitle>Core Activities Section</CardTitle>
-                <CardDescription>The section with the three cards (Artisan Training, etc.).</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-                <FormField control={form.control} name="coreActivities.headline" render={({ field }) => (<FormItem><FormLabel>Section Headline</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
-                <FormField control={form.control} name="coreActivities.description" render={({ field }) => (<FormItem><FormLabel>Section Description</FormLabel><FormControl><Textarea {...field} /></FormControl><FormMessage /></FormItem>)} />
-                
-                <div className="grid md:grid-cols-3 gap-6">
-                    <div className="space-y-4 p-4 border rounded-lg">
-                        <h4 className="font-semibold">Card 1: Artisan Training</h4>
-                        <FormField control={form.control} name="coreActivities.cards.artisanTraining.title" render={({ field }) => (<FormItem><FormLabel>Title</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
-                        <FormField control={form.control} name="coreActivities.cards.artisanTraining.description" render={({ field }) => (<FormItem><FormLabel>Description</FormLabel><FormControl><Textarea {...field} rows={3} /></FormControl><FormMessage /></FormItem>)} />
-                        <FormField control={form.control} name="coreActivities.cards.artisanTraining.linkText" render={({ field }) => (<FormItem><FormLabel>Link Text</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
-                        <FormField control={form.control} name="coreActivities.cards.artisanTraining.linkUrl" render={({ field }) => (<FormItem><FormLabel>Link URL</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
-                    </div>
-                     <div className="space-y-4 p-4 border rounded-lg">
-                        <h4 className="font-semibold">Card 2: International Markets</h4>
-                        <FormField control={form.control} name="coreActivities.cards.internationalMarkets.title" render={({ field }) => (<FormItem><FormLabel>Title</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
-                        <FormField control={form.control} name="coreActivities.cards.internationalMarkets.description" render={({ field }) => (<FormItem><FormLabel>Description</FormLabel><FormControl><Textarea {...field} rows={3} /></FormControl><FormMessage /></FormItem>)} />
-                        <FormField control={form.control} name="coreActivities.cards.internationalMarkets.linkText" render={({ field }) => (<FormItem><FormLabel>Link Text</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
-                        <FormField control={form.control} name="coreActivities.cards.internationalMarkets.linkUrl" render={({ field }) => (<FormItem><FormLabel>Link URL</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
-                    </div>
-                     <div className="space-y-4 p-4 border rounded-lg">
-                        <h4 className="font-semibold">Card 3: NGO Partnerships</h4>
-                        <FormField control={form.control} name="coreActivities.cards.ngoPartnerships.title" render={({ field }) => (<FormItem><FormLabel>Title</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
-                        <FormField control={form.control} name="coreActivities.cards.ngoPartnerships.description" render={({ field }) => (<FormItem><FormLabel>Description</FormLabel><FormControl><Textarea {...field} rows={3} /></FormControl><FormMessage /></FormItem>)} />
-                        <FormField control={form.control} name="coreActivities.cards.ngoPartnerships.linkText" render={({ field }) => (<FormItem><FormLabel>Link Text</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
-                        <FormField control={form.control} name="coreActivities.cards.ngoPartnerships.linkUrl" render={({ field }) => (<FormItem><FormLabel>Link URL</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
-                    </div>
-                </div>
-            </CardContent>
-          </Card>
+            <AccordionItem value="core-activities-section" className="border-none">
+              <Card>
+                <AccordionTrigger className="p-6 hover:no-underline">
+                    <CardHeader className="p-0 text-left">
+                        <CardTitle>Core Activities Section</CardTitle>
+                        <CardDescription>The section with the three cards (Artisan Training, etc.).</CardDescription>
+                    </CardHeader>
+                </AccordionTrigger>
+                <AccordionContent>
+                    <CardContent className="space-y-6 pt-0">
+                        <FormField control={form.control} name="coreActivities.headline" render={({ field }) => (<FormItem><FormLabel>Section Headline</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                        <FormField control={form.control} name="coreActivities.description" render={({ field }) => (<FormItem><FormLabel>Section Description</FormLabel><FormControl><Textarea {...field} /></FormControl><FormMessage /></FormItem>)} />
+                        
+                        <div className="grid md:grid-cols-3 gap-6">
+                            <div className="space-y-4 p-4 border rounded-lg">
+                                <h4 className="font-semibold">Card 1: Artisan Training</h4>
+                                <FormField control={form.control} name="coreActivities.cards.artisanTraining.title" render={({ field }) => (<FormItem><FormLabel>Title</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                                <FormField control={form.control} name="coreActivities.cards.artisanTraining.description" render={({ field }) => (<FormItem><FormLabel>Description</FormLabel><FormControl><Textarea {...field} rows={3} /></FormControl><FormMessage /></FormItem>)} />
+                                <FormField control={form.control} name="coreActivities.cards.artisanTraining.linkText" render={({ field }) => (<FormItem><FormLabel>Link Text</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                                <FormField control={form.control} name="coreActivities.cards.artisanTraining.linkUrl" render={({ field }) => (<FormItem><FormLabel>Link URL</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                            </div>
+                            <div className="space-y-4 p-4 border rounded-lg">
+                                <h4 className="font-semibold">Card 2: International Markets</h4>
+                                <FormField control={form.control} name="coreActivities.cards.internationalMarkets.title" render={({ field }) => (<FormItem><FormLabel>Title</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                                <FormField control={form.control} name="coreActivities.cards.internationalMarkets.description" render={({ field }) => (<FormItem><FormLabel>Description</FormLabel><FormControl><Textarea {...field} rows={3} /></FormControl><FormMessage /></FormItem>)} />
+                                <FormField control={form.control} name="coreActivities.cards.internationalMarkets.linkText" render={({ field }) => (<FormItem><FormLabel>Link Text</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                                <FormField control={form.control} name="coreActivities.cards.internationalMarkets.linkUrl" render={({ field }) => (<FormItem><FormLabel>Link URL</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                            </div>
+                            <div className="space-y-4 p-4 border rounded-lg">
+                                <h4 className="font-semibold">Card 3: NGO Partnerships</h4>
+                                <FormField control={form.control} name="coreActivities.cards.ngoPartnerships.title" render={({ field }) => (<FormItem><FormLabel>Title</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                                <FormField control={form.control} name="coreActivities.cards.ngoPartnerships.description" render={({ field }) => (<FormItem><FormLabel>Description</FormLabel><FormControl><Textarea {...field} rows={3} /></FormControl><FormMessage /></FormItem>)} />
+                                <FormField control={form.control} name="coreActivities.cards.ngoPartnerships.linkText" render={({ field }) => (<FormItem><FormLabel>Link Text</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                                <FormField control={form.control} name="coreActivities.cards.ngoPartnerships.linkUrl" render={({ field }) => (<FormItem><FormLabel>Link URL</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                            </div>
+                        </div>
+                    </CardContent>
+                </AccordionContent>
+              </Card>
+            </AccordionItem>
+          </Accordion>
 
            <div className="flex justify-end">
              <Button size="lg" onClick={form.handleSubmit(onSubmit)} disabled={isLoading}>
