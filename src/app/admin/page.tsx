@@ -27,19 +27,11 @@ const mockUsers = [
   { id: 3, name: "Jane Smith", email: "jane.smith@example.com", role: "Buyer" },
 ];
 
-export default function AdminPage() {
+export default function AdminDashboardPage() {
   return (
-    <div className="container mx-auto px-4 py-12">
-      <h1 className="text-4xl font-headline font-bold mb-8">Admin Panel</h1>
-      <Tabs defaultValue="products">
-        <TabsList className="grid w-full grid-cols-3 md:w-[480px]">
-          <TabsTrigger value="products">Product Management</TabsTrigger>
-          <TabsTrigger value="users">User Management</TabsTrigger>
-          <TabsTrigger value="forecast">AI Sales Forecasting</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="products" className="mt-6">
-          <Card>
+      <div className="flex flex-col gap-8">
+         <h1 className="text-4xl font-headline font-bold">Dashboard</h1>
+        <Card>
             <CardHeader>
               <div className="flex justify-between items-center">
                 <div>
@@ -81,9 +73,6 @@ export default function AdminPage() {
               </Table>
             </CardContent>
           </Card>
-        </TabsContent>
-        
-        <TabsContent value="users" className="mt-6">
            <Card>
             <CardHeader>
               <div className="flex justify-between items-center">
@@ -128,12 +117,7 @@ export default function AdminPage() {
               </Table>
             </CardContent>
           </Card>
-        </TabsContent>
-
-        <TabsContent value="forecast" className="mt-6">
           <SalesForecaster />
-        </TabsContent>
-      </Tabs>
-    </div>
+      </div>
   );
 }
