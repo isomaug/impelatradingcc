@@ -95,3 +95,7 @@ export type HomePageContent = {
         };
     };
 };
+
+export type SiteSettings = {
+    logoUrl: string;
+}

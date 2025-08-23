@@ -19,16 +19,29 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import type { SiteSettings } from "@/lib/types";
 
 const SiteHeader = () => {
   const { cartCount } = useCart();
   const { currency, setCurrency } = useCurrency();
   const isMobile = useIsMobile();
   const [isClient, setIsClient] = React.useState(false);
+  const [settings, setSettings] = useState<SiteSettings | null>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setIsClient(true);
+    const fetchSettings = async () => {
+      try {
+        const response = await fetch('/api/settings');
+        if (!response.ok) throw new Error('Failed to fetch settings');
+        const data = await response.json();
+        setSettings(data);
+      } catch (error) {
+        console.error('Failed to fetch site settings:', error);
+      }
+    };
+    fetchSettings();
   }, []);
 
 
@@ -114,9 +127,9 @@ const SiteHeader = () => {
       <div className="container mx-auto flex items-center justify-between p-4">
         <Link href="/" className="flex items-center gap-2">
             <Image
-                src="https://placehold.co/150x40/FFF/333?text=Impela+Logo"
-                width={150}
-                height={40}
+                src={settings?.logoUrl || 'https://placehold.co/200x120.png'}
+                width={200}
+                height={120}
                 alt="Impela Trading CC Logo"
                 className="h-10 w-auto"
                 priority

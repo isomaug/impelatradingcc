@@ -69,7 +69,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
   const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {
@@ -131,7 +131,9 @@ export default function AdminLayout({
                           setIsSidebarOpen(false);
                         }
                       }}
-                  className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:bg-muted text-muted-foreground hover:text-foreground`}
+                  className={cn(`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:bg-muted text-muted-foreground hover:text-foreground`,
+                     isActive(item.href) && "bg-muted text-foreground"
+                  )}
                 >
                   <item.icon className="h-4 w-4" />
                   <span>{item.label}</span>
@@ -188,12 +190,10 @@ export default function AdminLayout({
                 </SheetTrigger>
                 <SheetContent side="left" className="flex flex-col p-0 w-60">
                   <SheetHeader className="p-4 border-b">
-                    <SheetTitle asChild>
-                      <Link href="/" className="flex items-center gap-2 font-semibold">
+                     <Link href="/" className="flex items-center gap-2 font-semibold">
                         <Briefcase className="h-6 w-6" />
                         <span>Impela Trading</span>
                       </Link>
-                    </SheetTitle>
                   </SheetHeader>
                   <NavContent />
                 </SheetContent>
