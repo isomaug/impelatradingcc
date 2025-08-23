@@ -1,67 +1,54 @@
 
 import { NextResponse } from 'next/server';
-import fs from 'fs/promises';
-import path from 'path';
+import { db } from '@/lib/firebase';
+import { doc, getDoc, updateDoc, deleteDoc } from 'firebase/firestore';
 import type { TeamMember } from '@/lib/types';
-
-const dataFilePath = path.join(process.cwd(), 'data', 'team.json');
-
-async function readData(): Promise<TeamMember[]> {
-  try {
-    const fileContent = await fs.readFile(dataFilePath, 'utf-8');
-    return JSON.parse(fileContent);
-  } catch (error) {
-    // If the file doesn't exist, return an empty array
-    if (error instanceof Error && 'code' in error && error.code === 'ENOENT') {
-      return [];
-    }
-    throw error;
-  }
-}
-
-async function writeData(data: TeamMember[]): Promise<void> {
-  await fs.writeFile(dataFilePath, JSON.stringify(data, null, 2), 'utf-8');
-}
 
 export async function GET(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  const teamMembers = await readData();
-  const member = teamMembers.find(m => m.id === params.id);
-  if (member) {
-    return NextResponse.json(member);
+  try {
+    const docRef = doc(db, "team", params.id);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      return NextResponse.json({ id: docSnap.id, ...docSnap.data() } as TeamMember);
+    } else {
+      return new NextResponse('Team member not found', { status: 404 });
+    }
+  } catch (error) {
+    console.error(`Error fetching team member ${params.id}: `, error);
+    return new NextResponse('Internal Server Error', { status: 500 });
   }
-  return new NextResponse('Team member not found', { status: 404 });
 }
 
 export async function PUT(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  const updatedMemberData: Omit<TeamMember, 'id'> = await request.json();
-  let teamMembers = await readData();
-  const memberIndex = teamMembers.findIndex(m => m.id === params.id);
-
-  if (memberIndex > -1) {
-    teamMembers[memberIndex] = { ...teamMembers[memberIndex], ...updatedMemberData };
-    await writeData(teamMembers);
-    return NextResponse.json(teamMembers[memberIndex]);
+  try {
+    const updatedMemberData: Omit<TeamMember, 'id'> = await request.json();
+    const docRef = doc(db, "team", params.id);
+    await updateDoc(docRef, updatedMemberData);
+    const updatedDoc = await getDoc(docRef);
+    return NextResponse.json({ id: updatedDoc.id, ...updatedDoc.data() });
+  } catch (error) {
+    console.error(`Error updating team member ${params.id}: `, error);
+    return new NextResponse('Internal Server Error', { status: 500 });
   }
-  return new NextResponse('Team member not found', { status: 404 });
 }
 
 export async function DELETE(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  let teamMembers = await readData();
-  const filteredMembers = teamMembers.filter(m => m.id !== params.id);
-
-  if (teamMembers.length === filteredMembers.length) {
-    return new NextResponse('Team member not found', { status: 404 });
+  try {
+    const docRef = doc(db, "team", params.id);
+    await deleteDoc(docRef);
+    return new NextResponse(null, { status: 204 }); // No Content
+  } catch (error) {
+    console.error(`Error deleting team member ${params.id}: `, error);
+    return new NextResponse('Internal Server Error', { status: 500 });
   }
-
-  await writeData(filteredMembers);
-  return new NextResponse(null, { status: 204 }); // No Content
 }

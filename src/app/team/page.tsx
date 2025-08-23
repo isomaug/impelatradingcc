@@ -6,15 +6,20 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import type { TeamMember } from "@/lib/types";
 import { unstable_noStore as noStore } from 'next/cache';
-import fs from 'fs/promises';
-import path from 'path';
 
 async function getTeamMembers(): Promise<TeamMember[]> {
   noStore();
+  const baseUrl = process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : 'http://localhost:9002';
   try {
-    const dataFilePath = path.join(process.cwd(), 'data', 'team.json');
-    const fileContent = await fs.readFile(dataFilePath, 'utf-8');
-    return JSON.parse(fileContent);
+    const response = await fetch(`${baseUrl}/api/team`, { cache: 'no-store' });
+    if (!response.ok) {
+      console.error("Failed to fetch team members:", response.status, response.statusText);
+      return [];
+    }
+    const data = await response.json();
+    return data;
   } catch (error) {
      console.error("Error reading team data:", error);
     return [];
