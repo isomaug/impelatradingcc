@@ -33,7 +33,7 @@ import { useToast } from "@/hooks/use-toast";
 import React, { useEffect, useState } from "react";
 import type { HomePageContent, LibraryItem } from "@/lib/types";
 import { ImageLibrary } from "@/components/admin/image-library";
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 
 
