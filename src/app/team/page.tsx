@@ -4,10 +4,36 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Linkedin } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { teamMembers } from "@/lib/data";
+import type { TeamMember } from "@/lib/types";
+import { unstable_noStore as noStore } from 'next/cache';
 
+async function getTeamMembers() {
+  noStore();
+  // In a real app, you'd fetch this from your database.
+  // We'll use the API route we created.
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
+      ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+      : 'http://localhost:3000';
+    const response = await fetch(`${baseUrl}/api/team`, { cache: 'no-store' });
 
-export default function TeamPage() {
+    if (!response.ok) {
+        console.error("Failed to fetch team members:", response.status, response.statusText);
+        const text = await response.text();
+        console.error("Response body:", text);
+        return [];
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching team members:", error);
+    return [];
+  }
+}
+
+export default async function TeamPage() {
+  const teamMembers: TeamMember[] = await getTeamMembers();
+
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="text-center mb-12">

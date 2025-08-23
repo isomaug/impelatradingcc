@@ -1,12 +1,11 @@
 
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { teamMembers } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -27,7 +26,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ChevronLeft, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import React from "react";
+import React, { useEffect } from "react";
 import type { TeamMember } from "@/lib/types";
 
 const formSchema = z.object({
@@ -36,44 +35,94 @@ const formSchema = z.object({
   bio: z.string().min(10, "Bio must be at least 10 characters."),
   image: z.string().url("Please enter a valid URL."),
   linkedin: z.string().url("Please enter a valid LinkedIn URL."),
+  imageHint: z.string().optional(),
 });
 
 export default function EditTeamMemberPage() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const memberId = searchParams.get("id");
+  const isEditing = Boolean(memberId);
   const { toast } = useToast();
   const [isLoading, setIsLoading] = React.useState(false);
-
-  const member = teamMembers.find((m) => m.id === memberId);
-  const isEditing = Boolean(member);
+  const [isFetching, setIsFetching] = React.useState(isEditing);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: member?.name || "",
-      title: member?.title || "",
-      bio: member?.bio || "",
-      image: member?.image || "",
-      linkedin: member?.linkedin || "",
+      name: "",
+      title: "",
+      bio: "",
+      image: "https://placehold.co/400x400.png",
+      linkedin: "https://linkedin.com/in/",
+      imageHint: "professional headshot",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsLoading(true);
-    // In a real app, you'd send this to your backend API
-    console.log({ ...values, id: memberId || "new" });
+  useEffect(() => {
+    if (isEditing) {
+      const fetchMember = async () => {
+        try {
+          const response = await fetch(`/api/team/${memberId}`);
+          if (!response.ok) throw new Error("Failed to fetch team member");
+          const data = await response.json();
+          form.reset(data);
+        } catch (error) {
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Could not fetch team member data.",
+          });
+          router.push("/admin/team");
+        } finally {
+          setIsFetching(false);
+        }
+      };
+      fetchMember();
+    }
+  }, [isEditing, memberId, form, router, toast]);
 
-    setTimeout(() => {
-      setIsLoading(false);
-      toast({
-        title: isEditing ? "Member Updated" : "Member Added",
-        description: `The team member's information has been saved.`,
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsLoading(true);
+    const url = isEditing ? `/api/team/${memberId}` : '/api/team';
+    const method = isEditing ? 'PUT' : 'POST';
+
+    try {
+      const response = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(values),
       });
-    }, 1500);
+
+      if (!response.ok) throw new Error(`Failed to ${isEditing ? 'update' : 'create'} team member`);
+      
+      toast({
+        title: `Success`,
+        description: `Team member has been ${isEditing ? 'updated' : 'created'}.`,
+      });
+      router.push("/admin/team");
+      router.refresh(); // Refresh server components
+    } catch (error) {
+       toast({
+        variant: "destructive",
+        title: "Error",
+        description: `Could not save team member.`,
+      });
+    } finally {
+        setIsLoading(false);
+    }
+  }
+  
+  if (isFetching) {
+    return (
+        <div className="flex items-center justify-center h-full">
+            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        </div>
+    )
   }
 
   return (
-    <div className="mx-auto grid max-w-2xl flex-1 auto-rows-max gap-4">
+    <div className="mx-auto grid w-full flex-1 auto-rows-max gap-4">
       <div className="flex items-center gap-4">
         <Button variant="outline" size="icon" className="h-7 w-7" asChild>
           <Link href="/admin/team">
@@ -82,7 +131,7 @@ export default function EditTeamMemberPage() {
           </Link>
         </Button>
         <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-          {isEditing ? `Edit: ${member?.name}` : "Add New Team Member"}
+          {isEditing ? `Edit: ${form.getValues("name")}` : "Add New Team Member"}
         </h1>
         <div className="hidden items-center gap-2 md:ml-auto md:flex">
           <Button variant="outline" size="sm" asChild>
