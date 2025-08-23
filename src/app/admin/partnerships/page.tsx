@@ -1,7 +1,8 @@
 
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
-import { partners } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -27,8 +28,58 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import type { Partner } from "@/lib/types";
+import React, { useEffect, useState } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function AdminPartnershipsPage() {
+  const [partners, setPartners] = useState<Partner[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
+
+  const fetchPartners = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch("/api/partnerships");
+      if (!response.ok) throw new Error("Failed to fetch partners");
+      const data = await response.json();
+      setPartners(data);
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Could not fetch partners.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchPartners();
+  }, []);
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this partner?")) return;
+
+    try {
+      const response = await fetch(`/api/partnerships/${id}`, { method: 'DELETE' });
+      if (!response.ok) throw new Error("Failed to delete partner");
+      toast({
+        title: "Success",
+        description: "Partner deleted.",
+      });
+      fetchPartners(); // Refresh list
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Could not delete partner.",
+      });
+    }
+  };
+
   return (
     <div className="w-full">
     <Card>
@@ -63,7 +114,28 @@ export default function AdminPartnershipsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {partners.map((partner) => (
+            {isLoading ? (
+              Array.from({ length: 3 }).map((_, i) => (
+                <TableRow key={i}>
+                  <TableCell className="hidden sm:table-cell">
+                    <Skeleton className="h-[64px] w-[64px] rounded-md" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-6 w-32" />
+                  </TableCell>
+                   <TableCell className="hidden sm:table-cell">
+                    <Skeleton className="h-6 w-24" />
+                  </TableCell>
+                  <TableCell className="hidden md:table-cell">
+                    <Skeleton className="h-6 w-64" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-8 w-8" />
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              partners.map((partner) => (
               <TableRow key={partner.id}>
                 <TableCell className="hidden sm:table-cell">
                   <Image
@@ -95,12 +167,12 @@ export default function AdminPartnershipsPage() {
                       <DropdownMenuItem asChild>
                         <Link href={`/admin/partnerships/edit?id=${partner.id}`}>Edit</Link>
                       </DropdownMenuItem>
-                      <DropdownMenuItem>Delete</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleDelete(partner.id)}>Delete</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
               </TableRow>
-            ))}
+            )))}
           </TableBody>
         </Table>
       </CardContent>

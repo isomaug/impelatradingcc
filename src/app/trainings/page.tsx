@@ -4,9 +4,26 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { trainings } from "@/lib/data";
+import type { Training } from "@/lib/types";
+import { unstable_noStore as noStore } from 'next/cache';
+import fs from 'fs/promises';
+import path from 'path';
 
-export default function TrainingsPage() {
+async function getTrainings(): Promise<Training[]> {
+  noStore();
+  try {
+    const dataFilePath = path.join(process.cwd(), 'data', 'trainings.json');
+    const fileContent = await fs.readFile(dataFilePath, 'utf-8');
+    return JSON.parse(fileContent);
+  } catch (error) {
+     console.error("Error reading trainings data:", error);
+    return [];
+  }
+}
+
+export default async function TrainingsPage() {
+  const trainings = await getTrainings();
+
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="text-center mb-12">

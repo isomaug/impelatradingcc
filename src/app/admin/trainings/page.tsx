@@ -1,7 +1,8 @@
 
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
-import { trainings } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -26,8 +27,58 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import type { Training } from "@/lib/types";
+import React, { useEffect, useState } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function AdminTrainingsPage() {
+  const [trainings, setTrainings] = useState<Training[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
+
+  const fetchTrainings = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch("/api/trainings");
+      if (!response.ok) throw new Error("Failed to fetch trainings");
+      const data = await response.json();
+      setTrainings(data);
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Could not fetch trainings.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTrainings();
+  }, []);
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this training program?")) return;
+
+    try {
+      const response = await fetch(`/api/trainings/${id}`, { method: 'DELETE' });
+      if (!response.ok) throw new Error("Failed to delete training program");
+      toast({
+        title: "Success",
+        description: "Training program deleted.",
+      });
+      fetchTrainings(); // Refresh list
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Could not delete training program.",
+      });
+    }
+  };
+
   return (
     <div className="w-full">
     <Card>
@@ -61,7 +112,25 @@ export default function AdminTrainingsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {trainings.map((training) => (
+             {isLoading ? (
+              Array.from({ length: 3 }).map((_, i) => (
+                <TableRow key={i}>
+                  <TableCell className="hidden sm:table-cell">
+                    <Skeleton className="h-[64px] w-[64px] rounded-md" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-6 w-32" />
+                  </TableCell>
+                  <TableCell className="hidden md:table-cell">
+                    <Skeleton className="h-6 w-64" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-8 w-8" />
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+                trainings.map((training) => (
               <TableRow key={training.id}>
                 <TableCell className="hidden sm:table-cell">
                   <Image
@@ -90,12 +159,12 @@ export default function AdminTrainingsPage() {
                       <DropdownMenuItem asChild>
                         <Link href={`/admin/trainings/edit?id=${training.id}`}>Edit</Link>
                       </DropdownMenuItem>
-                      <DropdownMenuItem>Delete</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleDelete(training.id)}>Delete</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
               </TableRow>
-            ))}
+            )))}
           </TableBody>
         </Table>
       </CardContent>

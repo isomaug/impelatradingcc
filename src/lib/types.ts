@@ -1,5 +1,4 @@
 
-
 export type Product = {
   id: string;
   name: string;
@@ -42,3 +41,9 @@ export type Training = {
   image: string;
   imageHint: string;
 };
+
+// Generic type for a library item that has at least one image URL.
+export type LibraryItem = {
+    images?: string[];
+    image?: string;
+}

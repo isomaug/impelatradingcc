@@ -1,12 +1,11 @@
 
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { trainings } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -25,54 +24,146 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ChevronLeft, Loader2 } from "lucide-react";
+import { ChevronLeft, Loader2, Upload, Library } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import type { Training } from "@/lib/types";
+import { ImageLibrary } from "@/components/admin/image-library";
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 const formSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters."),
   description: z.string().min(10, "Description must be at least 10 characters."),
-  image: z.string().url("Please enter a valid URL."),
+  image: z.string().url("Please enter a valid URL or upload a file."),
   imageHint: z.string().min(2, "Image hint must be at least 2 characters."),
   modules: z.string().min(10, "Please list at least one module."),
 });
 
+type FormSchemaType = z.infer<typeof formSchema>;
+
 export default function EditTrainingPage() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const trainingId = searchParams.get("id");
+  const isEditing = Boolean(trainingId);
   const { toast } = useToast();
   const [isLoading, setIsLoading] = React.useState(false);
+  const [isFetching, setIsFetching] = React.useState(isEditing);
+  const [allTrainings, setAllTrainings] = useState<Training[]>([]);
 
-  const training = trainings.find((t) => t.id === trainingId);
-  const isEditing = Boolean(training);
-
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormSchemaType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: training?.title || "",
-      description: training?.description || "",
-      image: training?.image || "",
-      imageHint: training?.imageHint || "",
-      modules: training?.modules.join("\n") || "",
+      title: "",
+      description: "",
+      image: "",
+      imageHint: "",
+      modules: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+   useEffect(() => {
+    const fetchAllTrainings = async () => {
+       try {
+          const response = await fetch(`/api/trainings`);
+          if (!response.ok) throw new Error("Failed to fetch trainings");
+          const data = await response.json();
+          setAllTrainings(data);
+        } catch (error) {
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Could not fetch training library for images.",
+          });
+        }
+    }
+    fetchAllTrainings();
+
+    if (isEditing) {
+      const fetchTraining = async () => {
+        try {
+          const response = await fetch(`/api/trainings/${trainingId}`);
+          if (!response.ok) throw new Error("Failed to fetch training");
+          const data = await response.json();
+          form.reset({
+            ...data,
+            modules: data.modules.join("\n"),
+          });
+        } catch (error) {
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Could not fetch training data.",
+          });
+          router.push("/admin/trainings");
+        } finally {
+          setIsFetching(false);
+        }
+      };
+      fetchTraining();
+    }
+  }, [isEditing, trainingId, form, router, toast]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (loadEvent) => {
+        const dataUrl = loadEvent.target?.result as string;
+        form.setValue('image', dataUrl);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleImageSelect = (url: string) => {
+      form.setValue('image', url);
+      const closeButton = document.getElementById('close-image-library');
+      if (closeButton) closeButton.click();
+  }
+
+  async function onSubmit(values: FormSchemaType) {
     setIsLoading(true);
-    // In a real app, you'd send this to your backend API
     const processedValues = {
         ...values,
         modules: values.modules.split('\n').filter(m => m.trim() !== '')
     }
-    console.log({ ...processedValues, id: trainingId || "new" });
 
-    setTimeout(() => {
-      setIsLoading(false);
-      toast({
-        title: isEditing ? "Training Updated" : "Training Added",
-        description: `The training program's information has been saved.`,
+    const url = isEditing ? `/api/trainings/${trainingId}` : '/api/trainings';
+    const method = isEditing ? 'PUT' : 'POST';
+
+    try {
+      const response = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(processedValues),
       });
-    }, 1500);
+
+      if (!response.ok) throw new Error(`Failed to ${isEditing ? 'update' : 'create'} training`);
+      
+      toast({
+        title: `Success`,
+        description: `Training has been ${isEditing ? 'updated' : 'created'}.`,
+      });
+      router.push("/admin/trainings");
+      router.refresh(); 
+    } catch (error) {
+       toast({
+        variant: "destructive",
+        title: "Error",
+        description: `Could not save training.`,
+      });
+    } finally {
+        setIsLoading(false);
+    }
+  }
+
+  if (isFetching && isEditing) {
+    return (
+      <div className="flex items-center justify-center h-full p-8">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
   }
 
   return (
@@ -85,7 +176,7 @@ export default function EditTrainingPage() {
           </Link>
         </Button>
         <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-          {isEditing ? `Edit: ${training?.title}` : "Add New Training Program"}
+          {isEditing ? `Edit: ${form.getValues('title')}` : "Add New Training Program"}
         </h1>
         <div className="hidden items-center gap-2 md:ml-auto md:flex">
           <Button variant="outline" size="sm" asChild>
@@ -162,8 +253,30 @@ export default function EditTrainingPage() {
                     <FormItem>
                         <FormLabel>Image URL</FormLabel>
                         <FormControl>
-                        <Input placeholder="https://placehold.co/600x400.png" {...field} />
+                          <Input placeholder="https://..." {...field} />
                         </FormControl>
+                         <div className="flex items-center gap-2 mt-2">
+                            <Button type="button" variant="outline" size="sm" asChild>
+                                <label htmlFor="file-upload" className="cursor-pointer flex items-center">
+                                     <Upload className="mr-2 h-4 w-4" /> Upload
+                                     <input id="file-upload" type="file" className="sr-only" accept="image/*" onChange={handleFileChange} />
+                                </label>
+                            </Button>
+                           <Dialog>
+                                <DialogTrigger asChild>
+                                    <Button type="button" variant="outline" size="sm">
+                                        <Library className="mr-2 h-4 w-4" /> Select from Library
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent className="max-w-4xl">
+                                    <DialogHeader>
+                                        <DialogTitle>Training Image Library</DialogTitle>
+                                        <DialogDescription>Select an existing image.</DialogDescription>
+                                    </DialogHeader>
+                                    <ImageLibrary items={allTrainings} onSelectImage={handleImageSelect} />
+                                </DialogContent>
+                           </Dialog>
+                         </div>
                         <FormMessage />
                     </FormItem>
                     )}

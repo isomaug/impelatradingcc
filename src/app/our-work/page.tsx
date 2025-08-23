@@ -1,12 +1,27 @@
 
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
-import { partners } from "@/lib/data";
+import type { Partner } from "@/lib/types";
+import { unstable_noStore as noStore } from 'next/cache';
+import fs from 'fs/promises';
+import path from 'path';
 
-export default function OurWorkPage() {
+async function getPartners(): Promise<Partner[]> {
+  noStore();
+  try {
+    const dataFilePath = path.join(process.cwd(), 'data', 'partners.json');
+    const fileContent = await fs.readFile(dataFilePath, 'utf-8');
+    return JSON.parse(fileContent);
+  } catch (error) {
+    console.error("Error reading partners data:", error);
+    return [];
+  }
+}
+
+export default async function OurWorkPage() {
+  const partners = await getPartners();
 
   return (
     <div className="container mx-auto px-4 py-12">

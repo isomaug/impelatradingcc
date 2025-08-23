@@ -2,19 +2,25 @@
 "use client";
 
 import Image from "next/image";
-import type { Product } from "@/lib/types";
+import type { LibraryItem } from "@/lib/types";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { DialogClose } from "@/components/ui/dialog";
 
 interface ImageLibraryProps {
-  products: Product[];
+  items: LibraryItem[];
   onSelectImage: (url: string) => void;
 }
 
-export function ImageLibrary({ products, onSelectImage }: ImageLibraryProps) {
-  // Create a unique set of image URLs
+export function ImageLibrary({ items, onSelectImage }: ImageLibraryProps) {
+  // Create a unique set of image URLs from all items
   const imageUrls = Array.from(
-    new Set(products.flatMap((p) => p.images))
+    new Set(
+        items.flatMap((item) => {
+            if (item.images) return item.images;
+            if (item.image) return [item.image];
+            return [];
+        })
+    )
   );
 
   return (
@@ -42,5 +48,3 @@ export function ImageLibrary({ products, onSelectImage }: ImageLibraryProps) {
     </div>
   );
 }
-
-    

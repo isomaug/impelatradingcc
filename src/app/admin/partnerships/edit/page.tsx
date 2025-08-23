@@ -1,12 +1,11 @@
 
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { partners } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -32,48 +31,136 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ChevronLeft, Loader2 } from "lucide-react";
+import { ChevronLeft, Loader2, Upload, Library } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import type { Partner } from "@/lib/types";
+import { ImageLibrary } from "@/components/admin/image-library";
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
   type: z.enum(["NGO", "Corporate", "Government"]),
   description: z.string().min(10, "Description must be at least 10 characters."),
-  image: z.string().url("Please enter a valid URL."),
+  image: z.string().url("Please enter a valid URL or upload a file."),
+  imageHint: z.string().optional(),
 });
 
 export default function EditPartnerPage() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const partnerId = searchParams.get("id");
+  const isEditing = Boolean(partnerId);
   const { toast } = useToast();
   const [isLoading, setIsLoading] = React.useState(false);
-
-  const partner = partners.find((p) => p.id === partnerId);
-  const isEditing = Boolean(partner);
+  const [isFetching, setIsFetching] = React.useState(isEditing);
+  const [allPartners, setAllPartners] = useState<Partner[]>([]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: partner?.name || "",
-      type: partner?.type || "NGO",
-      description: partner?.description || "",
-      image: partner?.image || "",
+      name: "",
+      type: "NGO",
+      description: "",
+      image: "",
+      imageHint: "partner logo",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsLoading(true);
-    // In a real app, you'd send this to your backend API
-    console.log({ ...values, id: partnerId || "new" });
+  useEffect(() => {
+    const fetchAllPartners = async () => {
+       try {
+          const response = await fetch(`/api/partnerships`);
+          if (!response.ok) throw new Error("Failed to fetch partners");
+          const data = await response.json();
+          setAllPartners(data);
+        } catch (error) {
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Could not fetch partner library for images.",
+          });
+        }
+    }
+    fetchAllPartners();
 
-    setTimeout(() => {
-      setIsLoading(false);
-      toast({
-        title: isEditing ? "Partner Updated" : "Partner Added",
-        description: `The partner's information has been saved.`,
+    if (isEditing) {
+      const fetchPartner = async () => {
+        try {
+          const response = await fetch(`/api/partnerships/${partnerId}`);
+          if (!response.ok) throw new Error("Failed to fetch partner");
+          const data = await response.json();
+          form.reset(data);
+        } catch (error) {
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Could not fetch partner data.",
+          });
+          router.push("/admin/partnerships");
+        } finally {
+          setIsFetching(false);
+        }
+      };
+      fetchPartner();
+    }
+  }, [isEditing, partnerId, form, router, toast]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (loadEvent) => {
+        const dataUrl = loadEvent.target?.result as string;
+        form.setValue('image', dataUrl);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleImageSelect = (url: string) => {
+      form.setValue('image', url);
+      const closeButton = document.getElementById('close-image-library');
+      if (closeButton) closeButton.click();
+  }
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsLoading(true);
+    const url = isEditing ? `/api/partnerships/${partnerId}` : '/api/partnerships';
+    const method = isEditing ? 'PUT' : 'POST';
+
+    try {
+      const response = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(values),
       });
-    }, 1500);
+
+      if (!response.ok) throw new Error(`Failed to ${isEditing ? 'update' : 'create'} partner`);
+      
+      toast({
+        title: `Success`,
+        description: `Partner has been ${isEditing ? 'updated' : 'created'}.`,
+      });
+      router.push("/admin/partnerships");
+      router.refresh(); 
+    } catch (error) {
+       toast({
+        variant: "destructive",
+        title: "Error",
+        description: `Could not save partner.`,
+      });
+    } finally {
+        setIsLoading(false);
+    }
+  }
+
+  if (isFetching && isEditing) {
+    return (
+      <div className="flex items-center justify-center h-full p-8">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
   }
 
   return (
@@ -86,7 +173,7 @@ export default function EditPartnerPage() {
           </Link>
         </Button>
         <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-          {isEditing ? `Edit: ${partner?.name}` : "Add New Partner"}
+          {isEditing ? `Edit: ${form.getValues('name')}` : "Add New Partner"}
         </h1>
         <div className="hidden items-center gap-2 md:ml-auto md:flex">
           <Button variant="outline" size="sm" asChild>
@@ -165,9 +252,31 @@ export default function EditPartnerPage() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Logo / Image URL</FormLabel>
-                    <FormControl>
-                      <Input placeholder="https://placehold.co/600x400.png" {...field} />
+                     <FormControl>
+                      <Input placeholder="https://..." {...field} />
                     </FormControl>
+                     <div className="flex items-center gap-2 mt-2">
+                        <Button type="button" variant="outline" size="sm" asChild>
+                            <label htmlFor="file-upload" className="cursor-pointer flex items-center">
+                                 <Upload className="mr-2 h-4 w-4" /> Upload
+                                 <input id="file-upload" type="file" className="sr-only" accept="image/*" onChange={handleFileChange} />
+                            </label>
+                        </Button>
+                       <Dialog>
+                            <DialogTrigger asChild>
+                                <Button type="button" variant="outline" size="sm">
+                                    <Library className="mr-2 h-4 w-4" /> Select from Library
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent className="max-w-4xl">
+                                <DialogHeader>
+                                    <DialogTitle>Partner Image Library</DialogTitle>
+                                    <DialogDescription>Select an existing image.</DialogDescription>
+                                </DialogHeader>
+                                <ImageLibrary items={allPartners} onSelectImage={handleImageSelect} />
+                            </DialogContent>
+                       </Dialog>
+                     </div>
                     <FormMessage />
                   </FormItem>
                 )}

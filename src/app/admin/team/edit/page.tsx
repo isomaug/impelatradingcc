@@ -24,16 +24,18 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ChevronLeft, Loader2 } from "lucide-react";
+import { ChevronLeft, Loader2, Upload, Library } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import type { TeamMember } from "@/lib/types";
+import { ImageLibrary } from "@/components/admin/image-library";
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
   title: z.string().min(2, "Title must be at least 2 characters."),
   bio: z.string().min(10, "Bio must be at least 10 characters."),
-  image: z.string().url("Please enter a valid URL."),
+  image: z.string().url("Please enter a valid URL or upload a file."),
   linkedin: z.string().url("Please enter a valid LinkedIn URL."),
   imageHint: z.string().optional(),
 });
@@ -46,6 +48,7 @@ export default function EditTeamMemberPage() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = React.useState(false);
   const [isFetching, setIsFetching] = React.useState(isEditing);
+  const [allTeamMembers, setAllTeamMembers] = useState<TeamMember[]>([]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -60,6 +63,22 @@ export default function EditTeamMemberPage() {
   });
 
   useEffect(() => {
+    const fetchAllTeamMembers = async () => {
+       try {
+          const response = await fetch(`/api/team`);
+          if (!response.ok) throw new Error("Failed to fetch team members");
+          const data = await response.json();
+          setAllTeamMembers(data);
+        } catch (error) {
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Could not fetch team library for images.",
+          });
+        }
+    }
+    fetchAllTeamMembers();
+
     if (isEditing) {
       const fetchMember = async () => {
         try {
@@ -81,6 +100,24 @@ export default function EditTeamMemberPage() {
       fetchMember();
     }
   }, [isEditing, memberId, form, router, toast]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (loadEvent) => {
+        const dataUrl = loadEvent.target?.result as string;
+        form.setValue('image', dataUrl);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleImageSelect = (url: string) => {
+      form.setValue('image', url);
+      const closeButton = document.getElementById('close-image-library');
+      if (closeButton) closeButton.click();
+  }
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
@@ -195,15 +232,37 @@ export default function EditTeamMemberPage() {
                   </FormItem>
                 )}
               />
-              <FormField
+               <FormField
                 control={form.control}
                 name="image"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Image URL</FormLabel>
                     <FormControl>
-                      <Input placeholder="https://placehold.co/400x400.png" {...field} />
+                      <Input placeholder="https://..." {...field} />
                     </FormControl>
+                     <div className="flex items-center gap-2 mt-2">
+                        <Button type="button" variant="outline" size="sm" asChild>
+                            <label htmlFor="file-upload" className="cursor-pointer flex items-center">
+                                 <Upload className="mr-2 h-4 w-4" /> Upload
+                                 <input id="file-upload" type="file" className="sr-only" accept="image/*" onChange={handleFileChange} />
+                            </label>
+                        </Button>
+                       <Dialog>
+                            <DialogTrigger asChild>
+                                <Button type="button" variant="outline" size="sm">
+                                    <Library className="mr-2 h-4 w-4" /> Select from Library
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent className="max-w-4xl">
+                                <DialogHeader>
+                                    <DialogTitle>Team Image Library</DialogTitle>
+                                    <DialogDescription>Select an existing image.</DialogDescription>
+                                </DialogHeader>
+                                <ImageLibrary items={allTeamMembers} onSelectImage={handleImageSelect} />
+                            </DialogContent>
+                       </Dialog>
+                     </div>
                     <FormMessage />
                   </FormItem>
                 )}
