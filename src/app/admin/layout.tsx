@@ -155,12 +155,10 @@ export default function AdminLayout({
             )}
           >
             <div className={cn(`flex h-16 items-center border-b px-4 shrink-0`, isSidebarOpen ? 'justify-between' : 'justify-center')}>
-              <SheetTitle asChild>
-                  <Link href="/" className={cn(`flex items-center gap-2 font-semibold`, !isSidebarOpen && 'sr-only')}>
-                    <Briefcase className="h-6 w-6" />
-                    <span>Impela</span>
-                  </Link>
-              </SheetTitle>
+              <Link href="/" className={cn(`flex items-center gap-2 font-semibold`, !isSidebarOpen && 'sr-only')}>
+                <Briefcase className="h-6 w-6" />
+                <span>Impela</span>
+              </Link>
               <Button
                 variant="ghost"
                 size="icon"
