@@ -4,30 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-
-const trainingPrograms = [
-  {
-    title: "Leatherworking Fundamentals",
-    description: "Master the basics of leather crafting, from selecting hides to cutting, stitching, and finishing.",
-    modules: ["Tool safety and usage", "Hand-stitching techniques", "Edge finishing and burnishing", "Basic pattern making"],
-    image: "https://placehold.co/600x400.png",
-    imageHint: "leatherworking tools"
-  },
-  {
-    title: "Advanced Product Design",
-    description: "Develop your design skills to create complex and innovative leather goods like bags and briefcases.",
-    modules: ["Advanced construction methods", "Hardware setting", "Lining and reinforcement", "Prototyping and refinement"],
-    image: "https://placehold.co/600x400.png",
-    imageHint: "design sketchbook blueprint"
-  },
-  {
-    title: "Entrepreneurship for Artisans",
-    description: "Learn the business skills needed to turn your craft into a sustainable enterprise.",
-    modules: ["Pricing and costing", "Marketing and branding", "Accessing markets", "Financial literacy"],
-    image: "https://placehold.co/600x400.png",
-    imageHint: "small business owner"
-  },
-];
+import { trainings } from "@/lib/data";
 
 export default function TrainingsPage() {
   return (
@@ -42,7 +19,7 @@ export default function TrainingsPage() {
       </div>
 
       <div className="space-y-16">
-        {trainingPrograms.map((program, index) => (
+        {trainings.map((program, index) => (
           <Card key={index} className="overflow-hidden grid md:grid-cols-2 items-center">
             <div className="order-2 md:order-1 p-8">
               <CardHeader className="p-0 mb-4">

@@ -32,3 +32,12 @@ export type Partner = {
   image: string;
   imageHint: string;
 };
+
+export type Training = {
+  id: string;
+  title: string;
+  description: string;
+  modules: string[];
+  image: string;
+  imageHint: string;
+};
