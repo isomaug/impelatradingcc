@@ -24,10 +24,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ChevronLeft, Loader2, PlusCircle, Trash2 } from "lucide-react";
+import { ChevronLeft, Loader2, PlusCircle, Trash2, Upload, Library } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import type { Product } from "@/lib/types";
+import { ImageLibrary } from "@/components/admin/image-library";
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
@@ -35,7 +38,7 @@ const formSchema = z.object({
   price: z.coerce.number().min(0, "Price must be a positive number."),
   description: z.string().min(10, "Description must be at least 10 characters."),
   careInstructions: z.string().min(10, "Care instructions must be at least 10 characters."),
-  images: z.array(z.object({ url: z.string().url("Please enter a valid URL.") })),
+  images: z.array(z.object({ url: z.string().url("Please enter a valid URL or upload a file.") })),
 });
 
 export default function EditProductPage() {
@@ -46,6 +49,8 @@ export default function EditProductPage() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = React.useState(false);
   const [isFetching, setIsFetching] = React.useState(isEditing);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -59,19 +64,34 @@ export default function EditProductPage() {
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, update } = useFieldArray({
     control: form.control,
     name: "images",
   });
 
   useEffect(() => {
+    const fetchAllProducts = async () => {
+       try {
+          const response = await fetch(`/api/products`);
+          if (!response.ok) throw new Error("Failed to fetch products");
+          const data = await response.json();
+          setAllProducts(data);
+        } catch (error) {
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Could not fetch product library for images.",
+          });
+        }
+    }
+    fetchAllProducts();
+
     if (isEditing) {
       const fetchProduct = async () => {
         try {
           const response = await fetch(`/api/products/${productId}`);
           if (!response.ok) throw new Error("Failed to fetch product");
           const data = await response.json();
-          // Transform the flat `images` array into an array of objects
           const transformedData = {
             ...data,
             images: data.images.map((url: string) => ({ url })),
@@ -92,12 +112,30 @@ export default function EditProductPage() {
     }
   }, [isEditing, productId, form, router, toast]);
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (loadEvent) => {
+        const dataUrl = loadEvent.target?.result as string;
+        update(index, { url: dataUrl });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleImageSelect = (url: string) => {
+      update(activeImageIndex, { url: url });
+      // Close the dialog - assuming Dialog state is managed outside or by a trigger
+      const closeButton = document.getElementById('close-image-library');
+      if (closeButton) closeButton.click();
+  }
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    // Transform the images array back into a flat array of strings
     const submissionData = {
       ...values,
-      images: values.images.map(img => img.url),
+      images: values.images.map(img => img.url).filter(url => url),
     };
     
     const url = isEditing ? `/api/products/${productId}` : '/api/products';
@@ -129,7 +167,7 @@ export default function EditProductPage() {
     }
   }
   
-  if (isFetching) {
+  if (isFetching && isEditing) {
     return (
       <div className="flex items-center justify-center h-full p-8">
         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
@@ -256,7 +294,7 @@ export default function EditProductPage() {
                 <CardHeader>
                   <CardTitle>Product Images</CardTitle>
                   <CardDescription>
-                    Add URLs for your product images. The first image will be the main one.
+                    Add URLs, upload, or select images from your library. The first image is the main one.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -266,15 +304,13 @@ export default function EditProductPage() {
                         control={form.control}
                         key={field.id}
                         name={`images.${index}.url`}
-                        render={({ field }) => (
+                        render={({ field: formField }) => (
                           <FormItem>
                             <FormLabel className={cn(index !== 0 && "sr-only")}>
-                              Image URL
+                              Image URL {index + 1}
                             </FormLabel>
                             <div className="flex items-center gap-2">
-                              <FormControl>
-                                <Input placeholder="https://placehold.co/600x600.png" {...field} />
-                              </FormControl>
+                              <Input placeholder="https://..." {...formField} />
                               {fields.length > 1 && (
                                 <Button
                                   type="button"
@@ -286,6 +322,28 @@ export default function EditProductPage() {
                                 </Button>
                               )}
                             </div>
+                             <div className="flex items-center gap-2 mt-2">
+                                <Button type="button" variant="outline" size="sm" asChild>
+                                    <label htmlFor={`file-upload-${index}`} className="cursor-pointer flex items-center">
+                                         <Upload className="mr-2 h-4 w-4" /> Upload
+                                         <input id={`file-upload-${index}`} type="file" className="sr-only" accept="image/*" onChange={(e) => handleFileChange(e, index)} />
+                                    </label>
+                                </Button>
+                               <Dialog>
+                                    <DialogTrigger asChild>
+                                        <Button type="button" variant="outline" size="sm" onClick={() => setActiveImageIndex(index)}>
+                                            <Library className="mr-2 h-4 w-4" /> Select
+                                        </Button>
+                                    </DialogTrigger>
+                                    <DialogContent className="max-w-4xl">
+                                        <DialogHeader>
+                                            <DialogTitle>Image Library</DialogTitle>
+                                            <DialogDescription>Select an existing image from your products.</DialogDescription>
+                                        </DialogHeader>
+                                        <ImageLibrary products={allProducts} onSelectImage={handleImageSelect} />
+                                    </DialogContent>
+                               </Dialog>
+                             </div>
                             <FormMessage />
                           </FormItem>
                         )}
@@ -319,3 +377,5 @@ export default function EditProductPage() {
     </div>
   );
 }
+
+    
