@@ -49,99 +49,101 @@ export default function AdminLayout({
     <SidebarProvider>
       <div className="flex min-h-screen bg-muted/40">
         <Sidebar className="border-r" collapsible="icon" variant="floating">
-          <SidebarHeader>
-              <Button variant="ghost" size="icon" asChild>
-                <Link href="/">
-                    <Briefcase />
-                    <span className="sr-only">Home</span>
-                </Link>
-              </Button>
-          </SidebarHeader>
-          <SidebarContent className="p-2 flex-grow">
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Dashboard" isActive={isActive('/admin')}>
-                  <Link href="/admin">
-                    <LayoutDashboard />
-                    <span>Dashboard</span>
+          <div className="flex flex-col h-full">
+            <SidebarHeader>
+                <Button variant="ghost" size="icon" asChild>
+                  <Link href="/">
+                      <Briefcase />
+                      <span className="sr-only">Home</span>
                   </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-            
-            <SidebarSeparator />
-
-            <SidebarGroup>
-                <SidebarGroupLabel>Content</SidebarGroupLabel>
-                <SidebarMenu>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton tooltip="Team" isActive={isActive('/admin/team')}>
-                            <Users2 />
-                            <span>Team</span>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton tooltip="Partnerships" isActive={isActive('/admin/partnerships')}>
-                            <Handshake />
-                            <span>Partnerships</span>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton tooltip="Trainings" isActive={isActive('/admin/trainings')}>
-                            <BookUser />
-                            <span>Trainings</span>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                </SidebarMenu>
-            </SidebarGroup>
-
-            <SidebarGroup>
-                <SidebarGroupLabel>E-Commerce</SidebarGroupLabel>
-                 <SidebarMenu>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton tooltip="Products" isActive={isActive('/admin/products')}>
-                            <ShoppingBag />
-                            <span>Products</span>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton tooltip="Users" isActive={isActive('/admin/users')}>
-                            <Users />
-                            <span>Users</span>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                </SidebarMenu>
-            </SidebarGroup>
-            
-             <SidebarGroup>
-                <SidebarGroupLabel>AI Tools</SidebarGroupLabel>
-                 <SidebarMenu>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton tooltip="Sales Forecaster" isActive={isActive('/admin/forecasting')}>
-                            <Wand2 />
-                            <span>Forecasting</span>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                </SidebarMenu>
-            </SidebarGroup>
-
-          </SidebarContent>
-          <SidebarFooter className="p-2">
-            <SidebarMenu>
+                </Button>
+            </SidebarHeader>
+            <SidebarContent className="p-2 flex-grow">
+              <SidebarMenu>
                 <SidebarMenuItem>
-                    <SidebarMenuButton tooltip="Account" isActive={isActive('/admin/account')}>
-                        <UserCircle />
-                        <span>Account</span>
-                    </SidebarMenuButton>
+                  <SidebarMenuButton asChild tooltip="Dashboard" isActive={isActive('/admin')}>
+                    <Link href="/admin">
+                      <LayoutDashboard />
+                      <span>Dashboard</span>
+                    </Link>
+                  </SidebarMenuButton>
                 </SidebarMenuItem>
-                 <SidebarMenuItem>
-                    <SidebarMenuButton tooltip="Settings" isActive={isActive('/admin/settings')}>
-                        <Settings />
-                        <span>Settings</span>
-                    </SidebarMenuButton>
-                </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarFooter>
+              </SidebarMenu>
+              
+              <SidebarSeparator />
+
+              <SidebarGroup>
+                  <SidebarGroupLabel>Content</SidebarGroupLabel>
+                  <SidebarMenu>
+                      <SidebarMenuItem>
+                          <SidebarMenuButton tooltip="Team" isActive={isActive('/admin/team')}>
+                              <Users2 />
+                              <span>Team</span>
+                          </SidebarMenuButton>
+                      </SidebarMenuItem>
+                      <SidebarMenuItem>
+                          <SidebarMenuButton tooltip="Partnerships" isActive={isActive('/admin/partnerships')}>
+                              <Handshake />
+                              <span>Partnerships</span>
+                          </SidebarMenuButton>
+                      </SidebarMenuItem>
+                      <SidebarMenuItem>
+                          <SidebarMenuButton tooltip="Trainings" isActive={isActive('/admin/trainings')}>
+                              <BookUser />
+                              <span>Trainings</span>
+                          </SidebarMenuButton>
+                      </SidebarMenuItem>
+                  </SidebarMenu>
+              </SidebarGroup>
+
+              <SidebarGroup>
+                  <SidebarGroupLabel>E-Commerce</SidebarGroupLabel>
+                  <SidebarMenu>
+                      <SidebarMenuItem>
+                          <SidebarMenuButton tooltip="Products" isActive={isActive('/admin/products')}>
+                              <ShoppingBag />
+                              <span>Products</span>
+                          </SidebarMenuButton>
+                      </SidebarMenuItem>
+                      <SidebarMenuItem>
+                          <SidebarMenuButton tooltip="Users" isActive={isActive('/admin/users')}>
+                              <Users />
+                              <span>Users</span>
+                          </SidebarMenuButton>
+                      </SidebarMenuItem>
+                  </SidebarMenu>
+              </SidebarGroup>
+              
+              <SidebarGroup>
+                  <SidebarGroupLabel>AI Tools</SidebarGroupLabel>
+                  <SidebarMenu>
+                      <SidebarMenuItem>
+                          <SidebarMenuButton tooltip="Sales Forecaster" isActive={isActive('/admin/forecasting')}>
+                              <Wand2 />
+                              <span>Forecasting</span>
+                          </SidebarMenuButton>
+                      </SidebarMenuItem>
+                  </SidebarMenu>
+              </SidebarGroup>
+
+            </SidebarContent>
+            <SidebarFooter className="p-2">
+              <SidebarMenu>
+                  <SidebarMenuItem>
+                      <SidebarMenuButton tooltip="Account" isActive={isActive('/admin/account')}>
+                          <UserCircle />
+                          <span>Account</span>
+                      </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                      <SidebarMenuButton tooltip="Settings" isActive={isActive('/admin/settings')}>
+                          <Settings />
+                          <span>Settings</span>
+                      </SidebarMenuButton>
+                  </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarFooter>
+          </div>
         </Sidebar>
         <main className="flex-1 p-4 md:p-8">
             <div className="flex justify-end mb-4">

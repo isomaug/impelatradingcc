@@ -1,9 +1,12 @@
+
 import type { Metadata } from "next";
 import { Toaster } from "@/components/ui/toaster";
 import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
 import { CartProvider } from "@/hooks/use-cart";
+import { AdminLayoutContent } from "./admin-layout-content";
 import "./globals.css";
+
 
 export const metadata: Metadata = {
   title: "Impela Trading CC",
@@ -25,9 +28,9 @@ export default function RootLayout({
       </head>
       <body className="font-body antialiased min-h-screen flex flex-col">
         <CartProvider>
-          <SiteHeader />
-          <main className="flex-grow">{children}</main>
-          <SiteFooter />
+            <AdminLayoutContent>
+                {children}
+            </AdminLayoutContent>
           <Toaster />
         </CartProvider>
       </body>
