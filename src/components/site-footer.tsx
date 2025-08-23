@@ -1,3 +1,4 @@
+
 import Link from "next/link";
 import { Twitter, Facebook, Instagram } from "lucide-react";
 
@@ -8,15 +9,17 @@ const SiteFooter = () => {
         <div>
           <h3 className="font-headline text-lg font-bold mb-2">Impela Trading CC</h3>
           <p className="text-sm text-secondary-foreground/80">
-            Crafting timeless leather goods since 2024.
+            Empowering communities through artisan skills, sustainable partnerships, and global outreach.
           </p>
         </div>
         <div>
           <h3 className="font-headline text-lg font-bold mb-2">Quick Links</h3>
           <ul className="space-y-1">
             <li><Link href="/" className="text-sm hover:underline text-secondary-foreground/80">Home</Link></li>
-            <li><Link href="/dashboard" className="text-sm hover:underline text-secondary-foreground/80">Dashboard</Link></li>
-            <li><Link href="/admin" className="text-sm hover:underline text-secondary-foreground/80">Admin</Link></li>
+            <li><Link href="/about" className="text-sm hover:underline text-secondary-foreground/80">About Us</Link></li>
+            <li><Link href="/trainings" className="text-sm hover:underline text-secondary-foreground/80">Trainings</Link></li>
+            <li><Link href="/partnerships" className="text-sm hover:underline text-secondary-foreground/80">Our Work</Link></li>
+            <li><Link href="/shop" className="text-sm hover:underline text-secondary-foreground/80">Shop</Link></li>
             <li><Link href="/cart" className="text-sm hover:underline text-secondary-foreground/80">My Cart</Link></li>
           </ul>
         </div>

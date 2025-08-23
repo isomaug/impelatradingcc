@@ -1,12 +1,12 @@
+
 "use client";
 
 import Link from "next/link";
-import { ShoppingCart, CircleUser, Shield, LayoutGrid } from "lucide-react";
+import { ShoppingCart, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/use-cart";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu } from "lucide-react";
 
 const SiteHeader = () => {
   const { cartCount } = useCart();
@@ -16,6 +16,18 @@ const SiteHeader = () => {
     <>
       <Button variant="ghost" className="text-secondary-foreground hover:bg-secondary/80" asChild>
         <Link href="/">Home</Link>
+      </Button>
+       <Button variant="ghost" className="text-secondary-foreground hover:bg-secondary/80" asChild>
+        <Link href="/about">About Us</Link>
+      </Button>
+       <Button variant="ghost" className="text-secondary-foreground hover:bg-secondary/80" asChild>
+        <Link href="/trainings">Trainings</Link>
+      </Button>
+       <Button variant="ghost" className="text-secondary-foreground hover:bg-secondary/80" asChild>
+        <Link href="/partnerships">Our Work</Link>
+      </Button>
+      <Button variant="ghost" className="text-secondary-foreground hover:bg-secondary/80" asChild>
+        <Link href="/shop">Shop</Link>
       </Button>
       <Button variant="ghost" className="text-secondary-foreground hover:bg-secondary/80" asChild>
         <Link href="/dashboard">Dashboard</Link>
