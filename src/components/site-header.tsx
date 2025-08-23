@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { ShoppingCart, Menu, User } from "lucide-react";
+import { ShoppingCart, Menu, User, Briefcase } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/use-cart";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -40,18 +40,53 @@ const SiteHeader = () => {
     </>
   );
 
+  const userMenu = (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+          <Button variant="ghost" size="icon" className="rounded-full hover:bg-secondary/80">
+            <User />
+            <span className="sr-only">User Menu</span>
+          </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56 bg-secondary text-secondary-foreground border-border" align="end">
+        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem asChild><Link href="/dashboard">Buyer Dashboard</Link></DropdownMenuItem>
+        <DropdownMenuItem asChild><Link href="/admin">Admin Panel</Link></DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem asChild><Link href="/login">Login</Link></DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+  
+  const mobileUserMenu = (
+     <div className="border-t border-secondary-foreground/20 mt-4 pt-4">
+      <h3 className="px-4 mb-2 text-sm font-semibold text-secondary-foreground/70">My Account</h3>
+       <Button variant="ghost" className="w-full justify-start text-secondary-foreground hover:bg-secondary/80" asChild>
+         <Link href="/dashboard">Buyer Dashboard</Link>
+       </Button>
+       <Button variant="ghost" className="w-full justify-start text-secondary-foreground hover:bg-secondary/80" asChild>
+         <Link href="/admin">Admin Panel</Link>
+       </Button>
+       <Button variant="ghost" className="w-full justify-start text-secondary-foreground hover:bg-secondary/80" asChild>
+         <Link href="/login">Login</Link>
+       </Button>
+     </div>
+  );
+
   return (
     <header className="bg-secondary text-secondary-foreground shadow-md sticky top-0 z-50">
       <div className="container mx-auto flex items-center justify-between p-4">
-        <Link href="/" className="text-xl font-headline font-bold">
-          Impela Trading CC
+        <Link href="/" className="text-xl font-headline font-bold flex items-center gap-2">
+          <Briefcase />
+          <span>Impela Trading CC</span>
         </Link>
         {isMobile ? (
           <div className="flex items-center gap-2">
             <Link href="/cart" className="relative p-2">
               <ShoppingCart />
               {cartCount > 0 && (
-                <span className="absolute top-0 right-0 block h-5 w-5 rounded-full bg-primary text-primary-foreground text-xs text-center leading-5">
+                <span className="absolute top-0 right-0 block h-4 w-4 rounded-full bg-primary text-primary-foreground text-xs text-center leading-4">
                   {cartCount}
                 </span>
               )}
@@ -63,56 +98,29 @@ const SiteHeader = () => {
                   <Menu />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="bg-secondary text-secondary-foreground w-64 pt-12">
-                <nav className="flex flex-col gap-4">
+              <SheetContent side="left" className="bg-secondary text-secondary-foreground w-64 pt-12 flex flex-col">
+                <nav className="flex flex-col gap-2">
                   {navLinks}
-                   <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                       <Button variant="ghost" className="text-secondary-foreground hover:bg-secondary/80 justify-start">
-                         Account
-                       </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-56 bg-secondary text-secondary-foreground border-border">
-                      <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem asChild><Link href="/login">Login</Link></DropdownMenuItem>
-                      <DropdownMenuItem asChild><Link href="/dashboard">Dashboard</Link></DropdownMenuItem>
-                      <DropdownMenuItem asChild><Link href="/admin">Admin Panel</Link></DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
                 </nav>
+                {mobileUserMenu}
               </SheetContent>
             </Sheet>
           </div>
         ) : (
-          <div className="flex items-center gap-4">
-            <nav className="flex items-center gap-2">
+          <div className="flex items-center gap-2">
+            <nav className="hidden md:flex items-center gap-1">
               {navLinks}
             </nav>
              <Link href="/cart" className="relative p-2 rounded-full hover:bg-secondary/80 transition-colors">
               <ShoppingCart />
               {cartCount > 0 && (
-                <span className="absolute top-0 right-0 block h-5 w-5 rounded-full bg-primary text-primary-foreground text-xs text-center leading-5">
+                <span className="absolute top-0 right-0 block h-4 w-4 rounded-full bg-primary text-primary-foreground text-xs text-center leading-4">
                   {cartCount}
                 </span>
               )}
               <span className="sr-only">Shopping Cart</span>
             </Link>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                 <Button variant="ghost" size="icon" className="rounded-full hover:bg-secondary/80">
-                    <User />
-                    <span className="sr-only">User Menu</span>
-                  </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56 bg-secondary text-secondary-foreground border-border" align="end">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild><Link href="/login">Login</Link></DropdownMenuItem>
-                <DropdownMenuItem asChild><Link href="/dashboard">Dashboard</Link></DropdownMenuItem>
-                <DropdownMenuItem asChild><Link href="/admin">Admin Panel</Link></DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {userMenu}
           </div>
         )}
       </div>

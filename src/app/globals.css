@@ -5,22 +5,22 @@
 @layer base {
   :root {
     --background: 50 67% 92%;
-    --foreground: 21 50% 20%;
+    --foreground: 21 50% 10%; /* Darker for better contrast */
     --card: 50 50% 95%;
-    --card-foreground: 21 50% 20%;
+    --card-foreground: 21 50% 15%;
     --popover: 50 50% 95%;
-    --popover-foreground: 21 50% 20%;
+    --popover-foreground: 21 50% 15%;
     --primary: 12 61% 42%;
     --primary-foreground: 50 60% 94%;
     --secondary: 40 42% 60%;
     --secondary-foreground: 0 0% 100%;
     --muted: 50 30% 88%;
-    --muted-foreground: 21 50% 25%;
+    --muted-foreground: 21 50% 35%; /* Slightly darker muted text */
     --accent: 12 61% 48%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 50 20% 85%;
+    --border: 50 20% 80%; /* Darker border */
     --input: 50 20% 88%;
     --ring: 12 61% 42%;
     --radius: 0.5rem;
@@ -65,5 +65,14 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+  .prose {
+    @apply text-foreground;
+    h1,h2,h3,h4,h5,h6 {
+        @apply text-foreground;
+    }
+    a {
+        @apply text-primary hover:text-primary/80;
+    }
   }
 }
