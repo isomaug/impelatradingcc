@@ -15,6 +15,7 @@ import {
   Users2,
   LogOut,
   BookHeart,
+  Home,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,6 +32,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import React, { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
 
 const navItems = [
   {
@@ -40,6 +42,7 @@ const navItems = [
   {
     label: "Content",
     items: [
+      { href: "/admin/homepage", icon: Home, label: "Homepage" },
       { href: "/admin/team", icon: Users2, label: "Team" },
       { href: "/admin/partnerships", icon: Handshake, label: "Partnerships" },
       { href: "/admin/trainings", icon: BookUser, label: "Trainings" },
@@ -76,7 +79,8 @@ export default function AdminLayout({
 
   const isActive = (path: string) => {
     if (path === "/admin") return pathname === path;
-    return pathname.startsWith(path);
+    if (path === "/admin/homepage") return pathname === path;
+    return pathname.startsWith(path) && path !== "/admin";
   };
 
   const NavContent = () => (
@@ -98,11 +102,11 @@ export default function AdminLayout({
                           setIsSidebarOpen(false);
                         }
                       }}
-                      className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:bg-muted ${
+                      className={cn(`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:bg-muted`,
                         isActive(item.href)
                           ? "bg-primary text-primary-foreground hover:bg-primary/90"
                           : "text-muted-foreground hover:text-foreground"
-                      }`}
+                      )}
                     >
                       <item.icon className="h-4 w-4" />
                       <span>{item.label}</span>
@@ -146,15 +150,17 @@ export default function AdminLayout({
       <div className="grid min-h-screen w-full md:grid-cols-[auto_1fr]">
         {isClient && (
            <aside
-            className={`hidden md:flex flex-col border-r bg-card transition-all duration-300 ${
+            className={cn(`hidden md:flex flex-col border-r bg-card transition-all duration-300`,
               isSidebarOpen ? "w-60" : "w-16 items-center"
-            }`}
+            )}
           >
-            <div className={`flex h-16 items-center border-b px-4 shrink-0 ${isSidebarOpen ? 'justify-between' : 'justify-center'}`}>
-              <Link href="/" className={`flex items-center gap-2 font-semibold ${!isSidebarOpen && 'sr-only'}`}>
-                <Briefcase className="h-6 w-6" />
-                <span>Impela</span>
-              </Link>
+            <div className={cn(`flex h-16 items-center border-b px-4 shrink-0`, isSidebarOpen ? 'justify-between' : 'justify-center')}>
+              <SheetTitle asChild>
+                  <Link href="/" className={cn(`flex items-center gap-2 font-semibold`, !isSidebarOpen && 'sr-only')}>
+                    <Briefcase className="h-6 w-6" />
+                    <span>Impela</span>
+                  </Link>
+              </SheetTitle>
               <Button
                 variant="ghost"
                 size="icon"
@@ -164,7 +170,7 @@ export default function AdminLayout({
                 <span className="sr-only">Toggle Sidebar</span>
               </Button>
             </div>
-            <div className={`flex flex-col w-full flex-1 overflow-hidden ${!isSidebarOpen ? '[&_span]:sr-only [&_p]:sr-only' : ''}`}>
+            <div className={cn(`flex flex-col w-full flex-1 overflow-hidden`, !isSidebarOpen && '[&_span]:sr-only [&_p]:sr-only')}>
               <NavContent />
             </div>
           </aside>
@@ -209,4 +215,3 @@ export default function AdminLayout({
     </TooltipProvider>
   );
 }
-

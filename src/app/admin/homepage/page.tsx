@@ -1,0 +1,259 @@
+
+"use client";
+
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Loader2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import React, { useEffect } from "react";
+import type { HomePageContent } from "@/lib/types";
+
+const formSchema = z.object({
+  hero: z.object({
+    headline: z.string().min(5),
+    subheadline: z.string().min(10),
+    imageUrl: z.string().url(),
+    imageAlt: z.string().min(5),
+    buttonText: z.string().min(2),
+    buttonLink: z.string().startsWith("/"),
+  }),
+  about: z.object({
+    headline: z.string().min(5),
+    description: z.string().min(10),
+    imageUrl: z.string().url(),
+    imageAlt: z.string().min(5),
+    linkText: z.string().min(2),
+    linkUrl: z.string().startsWith("/"),
+  }),
+  coreActivities: z.object({
+    headline: z.string().min(5),
+    description: z.string().min(10),
+    cards: z.object({
+      artisanTraining: z.object({
+        title: z.string().min(5),
+        description: z.string().min(10),
+        linkText: z.string().min(2),
+        linkUrl: z.string().startsWith("/"),
+      }),
+      internationalMarkets: z.object({
+        title: z.string().min(5),
+        description: z.string().min(10),
+        linkText: z.string().min(2),
+        linkUrl: z.string().startsWith("/"),
+      }),
+      ngoPartnerships: z.object({
+        title: z.string().min(5),
+        description: z.string().min(10),
+        linkText: z.string().min(2),
+        linkUrl: z.string().startsWith("/"),
+      }),
+    }),
+  }),
+});
+
+export default function AdminHomepagePage() {
+  const { toast } = useToast();
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [isFetching, setIsFetching] = React.useState(true);
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {},
+  });
+
+  useEffect(() => {
+    const fetchContent = async () => {
+      setIsFetching(true);
+      try {
+        const response = await fetch('/api/homepage');
+        if (!response.ok) throw new Error("Failed to fetch content");
+        const data = await response.json();
+        form.reset(data);
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Could not fetch homepage content.",
+        });
+      } finally {
+        setIsFetching(false);
+      }
+    };
+    fetchContent();
+  }, [form, toast]);
+
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsLoading(true);
+    try {
+      const response = await fetch('/api/homepage', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(values),
+      });
+
+      if (!response.ok) throw new Error("Failed to update content");
+      
+      toast({
+        title: "Success",
+        description: "Homepage content has been updated.",
+      });
+    } catch (error) {
+       toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Could not save homepage content.",
+      });
+    } finally {
+        setIsLoading(false);
+    }
+  }
+
+  if (isFetching) {
+    return (
+      <div className="flex items-center justify-center h-full p-8">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="mx-auto grid max-w-4xl flex-1 auto-rows-max gap-8">
+        <div className="flex justify-between items-center">
+             <div>
+                <h1 className="text-3xl font-bold tracking-tight">Homepage Content</h1>
+                <p className="text-muted-foreground">
+                    Manage the text and images displayed on your homepage.
+                </p>
+            </div>
+            <Button size="lg" onClick={form.handleSubmit(onSubmit)} disabled={isLoading}>
+                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Save Changes
+            </Button>
+        </div>
+      
+      <Form {...form}>
+        <form className="space-y-8">
+          <Card>
+            <CardHeader>
+              <CardTitle>Hero Section</CardTitle>
+              <CardDescription>The main section at the top of your homepage.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <FormField
+                control={form.control}
+                name="hero.headline"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Headline</FormLabel>
+                    <FormControl><Input {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="hero.subheadline"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Sub-headline</FormLabel>
+                    <FormControl><Textarea {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="grid md:grid-cols-2 gap-4">
+                <FormField control={form.control} name="hero.buttonText" render={({ field }) => (<FormItem><FormLabel>Button Text</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                <FormField control={form.control} name="hero.buttonLink" render={({ field }) => (<FormItem><FormLabel>Button Link</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+              </div>
+               <div className="grid md:grid-cols-2 gap-4">
+                <FormField control={form.control} name="hero.imageUrl" render={({ field }) => (<FormItem><FormLabel>Image URL</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                <FormField control={form.control} name="hero.imageAlt" render={({ field }) => (<FormItem><FormLabel>Image Alt Text</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>About Section</CardTitle>
+               <CardDescription>"Rooted in South Africa, Reaching the World" section.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <FormField control={form.control} name="about.headline" render={({ field }) => (<FormItem><FormLabel>Headline</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+              <FormField control={form.control} name="about.description" render={({ field }) => (<FormItem><FormLabel>Description</FormLabel><FormControl><Textarea {...field} rows={4} /></FormControl><FormMessage /></FormItem>)} />
+              <div className="grid md:grid-cols-2 gap-4">
+                <FormField control={form.control} name="about.linkText" render={({ field }) => (<FormItem><FormLabel>Link Text</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                <FormField control={form.control} name="about.linkUrl" render={({ field }) => (<FormItem><FormLabel>Link URL</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+              </div>
+               <div className="grid md:grid-cols-2 gap-4">
+                <FormField control={form.control} name="about.imageUrl" render={({ field }) => (<FormItem><FormLabel>Image URL</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                <FormField control={form.control} name="about.imageAlt" render={({ field }) => (<FormItem><FormLabel>Image Alt Text</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+                <CardTitle>Core Activities Section</CardTitle>
+                <CardDescription>The section with the three cards (Artisan Training, etc.).</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+                <FormField control={form.control} name="coreActivities.headline" render={({ field }) => (<FormItem><FormLabel>Section Headline</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                <FormField control={form.control} name="coreActivities.description" render={({ field }) => (<FormItem><FormLabel>Section Description</FormLabel><FormControl><Textarea {...field} /></FormControl><FormMessage /></FormItem>)} />
+                
+                <div className="grid md:grid-cols-3 gap-6">
+                    <div className="space-y-4 p-4 border rounded-lg">
+                        <h4 className="font-semibold">Card 1: Artisan Training</h4>
+                        <FormField control={form.control} name="coreActivities.cards.artisanTraining.title" render={({ field }) => (<FormItem><FormLabel>Title</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                        <FormField control={form.control} name="coreActivities.cards.artisanTraining.description" render={({ field }) => (<FormItem><FormLabel>Description</FormLabel><FormControl><Textarea {...field} rows={3} /></FormControl><FormMessage /></FormItem>)} />
+                        <FormField control={form.control} name="coreActivities.cards.artisanTraining.linkText" render={({ field }) => (<FormItem><FormLabel>Link Text</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                        <FormField control={form.control} name="coreActivities.cards.artisanTraining.linkUrl" render={({ field }) => (<FormItem><FormLabel>Link URL</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                    </div>
+                     <div className="space-y-4 p-4 border rounded-lg">
+                        <h4 className="font-semibold">Card 2: International Markets</h4>
+                        <FormField control={form.control} name="coreActivities.cards.internationalMarkets.title" render={({ field }) => (<FormItem><FormLabel>Title</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                        <FormField control={form.control} name="coreActivities.cards.internationalMarkets.description" render={({ field }) => (<FormItem><FormLabel>Description</FormLabel><FormControl><Textarea {...field} rows={3} /></FormControl><FormMessage /></FormItem>)} />
+                        <FormField control={form.control} name="coreActivities.cards.internationalMarkets.linkText" render={({ field }) => (<FormItem><FormLabel>Link Text</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                        <FormField control={form.control} name="coreActivities.cards.internationalMarkets.linkUrl" render={({ field }) => (<FormItem><FormLabel>Link URL</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                    </div>
+                     <div className="space-y-4 p-4 border rounded-lg">
+                        <h4 className="font-semibold">Card 3: NGO Partnerships</h4>
+                        <FormField control={form.control} name="coreActivities.cards.ngoPartnerships.title" render={({ field }) => (<FormItem><FormLabel>Title</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                        <FormField control={form.control} name="coreActivities.cards.ngoPartnerships.description" render={({ field }) => (<FormItem><FormLabel>Description</FormLabel><FormControl><Textarea {...field} rows={3} /></FormControl><FormMessage /></FormItem>)} />
+                        <FormField control={form.control} name="coreActivities.cards.ngoPartnerships.linkText" render={({ field }) => (<FormItem><FormLabel>Link Text</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                        <FormField control={form.control} name="coreActivities.cards.ngoPartnerships.linkUrl" render={({ field }) => (<FormItem><FormLabel>Link URL</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                    </div>
+                </div>
+            </CardContent>
+          </Card>
+
+           <div className="flex justify-end">
+             <Button size="lg" onClick={form.handleSubmit(onSubmit)} disabled={isLoading}>
+                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Save Changes
+            </Button>
+           </div>
+        </form>
+      </Form>
+    </div>
+  );
+}

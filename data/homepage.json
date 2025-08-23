@@ -1,0 +1,43 @@
+
+{
+  "hero": {
+    "headline": "Impela Trading CC",
+    "subheadline": "Empowering communities through artisan skills, sustainable partnerships, and global outreach.",
+    "imageUrl": "https://placehold.co/1600x900.png",
+    "imageAlt": "South African landscape",
+    "buttonText": "Discover Our Story",
+    "buttonLink": "/about"
+  },
+  "about": {
+    "headline": "Rooted in South Africa, Reaching the World",
+    "description": "Impela Trading CC is more than just a brand; we are a movement born from the heart of South Africa. Our mission is to provide high-quality, handcrafted goods while fostering economic empowerment and sustainable practices within our communities.",
+    "imageUrl": "https://placehold.co/800x600.png",
+    "imageAlt": "South African artisans at work",
+    "linkText": "Learn More About Us",
+    "linkUrl": "/about"
+  },
+  "coreActivities": {
+    "headline": "Our Core Activities",
+    "description": "We are dedicated to creating lasting impact through a multi-faceted approach that combines skill development, global market access, and strategic partnerships.",
+    "cards": {
+      "artisanTraining": {
+        "title": "Artisan Training",
+        "description": "We provide comprehensive training programs, empowering local artisans with the skills to create world-class products.",
+        "linkText": "Learn About Training",
+        "linkUrl": "/trainings"
+      },
+      "internationalMarkets": {
+        "title": "International Markets",
+        "description": "Our work features on the global stage, connecting South African craftsmanship with international audiences.",
+        "linkText": "Explore Our Reach",
+        "linkUrl": "/our-work"
+      },
+      "ngoPartnerships": {
+        "title": "NGO Partnerships",
+        "description": "We collaborate with non-governmental organizations to create sustainable supply chains and community-focused initiatives.",
+        "linkText": "See Our Partners",
+        "linkUrl": "/our-work"
+      }
+    }
+  }
+}

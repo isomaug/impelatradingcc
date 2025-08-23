@@ -1,4 +1,5 @@
 
+
 export type Product = {
   id: string;
   name: string;
@@ -51,3 +52,46 @@ export type LibraryItem = {
     images?: string[];
     image?: string;
 }
+
+export type HomePageContent = {
+    hero: {
+        headline: string;
+        subheadline: string;
+        imageUrl: string;
+        imageAlt: string;
+        buttonText: string;
+        buttonLink: string;
+    };
+    about: {
+        headline: string;
+        description: string;
+        imageUrl: string;
+        imageAlt: string;
+        linkText: string;
+        linkUrl: string;
+    };
+    coreActivities: {
+        headline: string;
+        description: string;
+        cards: {
+            artisanTraining: {
+                title: string;
+                description: string;
+                linkText: string;
+                linkUrl: string;
+            };
+            internationalMarkets: {
+                title: string;
+                description: string;
+                linkText: string;
+                linkUrl: string;
+            };
+            ngoPartnerships: {
+                title: string;
+                description: string;
+                linkText: string;
+                linkUrl: string;
+            };
+        };
+    };
+};

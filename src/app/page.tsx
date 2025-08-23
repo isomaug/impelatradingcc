@@ -12,7 +12,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
-import type { Product } from "@/lib/types";
+import type { Product, HomePageContent } from "@/lib/types";
 import { unstable_noStore as noStore } from 'next/cache';
 import fs from 'fs/promises';
 import path from 'path';
@@ -25,22 +25,40 @@ async function getProducts(): Promise<Product[]> {
     return JSON.parse(fileContent);
   } catch (error) {
     console.error("Error reading products data:", error);
-    // In case of an error (e.g., file not found), return an empty array
     return [];
   }
+}
+
+async function getHomepageContent(): Promise<HomePageContent | null> {
+    noStore();
+    try {
+        const dataFilePath = path.join(process.cwd(), 'data', 'homepage.json');
+        const fileContent = await fs.readFile(dataFilePath, 'utf-8');
+        return JSON.parse(fileContent);
+    } catch (error) {
+        console.error("Error reading homepage data:", error);
+        return null;
+    }
 }
 
 
 export default async function Home() {
   const products: Product[] = await getProducts();
+  const content = await getHomepageContent();
+
+  if (!content) {
+    return <div>Error loading homepage content. Please try again later.</div>
+  }
+
+  const { hero, about, coreActivities } = content;
   
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
       <section className="relative h-[70vh] bg-cover bg-center text-white flex items-center justify-center">
         <Image
-          src="https://placehold.co/1600x900.png"
-          alt="South African landscape"
+          src={hero.imageUrl}
+          alt={hero.imageAlt}
           fill
           objectFit="cover"
           className="z-0"
@@ -48,12 +66,12 @@ export default async function Home() {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/20" />
         <div className="relative z-10 text-center px-4">
-          <h1 className="text-4xl md:text-6xl font-headline font-bold mb-4 drop-shadow-lg">Impela Trading CC</h1>
+          <h1 className="text-4xl md:text-6xl font-headline font-bold mb-4 drop-shadow-lg">{hero.headline}</h1>
           <p className="text-lg md:text-2xl font-body max-w-3xl mx-auto drop-shadow-md">
-            Empowering communities through artisan skills, sustainable partnerships, and global outreach.
+            {hero.subheadline}
           </p>
            <Button asChild size="lg" className="mt-8">
-              <Link href="/about">Discover Our Story</Link>
+              <Link href={hero.buttonLink}>{hero.buttonText}</Link>
             </Button>
         </div>
       </section>
@@ -63,18 +81,18 @@ export default async function Home() {
         <div className="container mx-auto px-4">
            <Card className="overflow-hidden lg:grid lg:grid-cols-2 lg:items-center bg-card shadow-2xl">
               <div className="p-10 md:p-16">
-                 <h2 className="text-3xl md:text-4xl font-headline font-bold mb-4">Rooted in South Africa, Reaching the World</h2>
+                 <h2 className="text-3xl md:text-4xl font-headline font-bold mb-4">{about.headline}</h2>
                 <p className="text-lg text-muted-foreground mb-6">
-                  Impela Trading CC is more than just a brand; we are a movement born from the heart of South Africa. Our mission is to provide high-quality, handcrafted goods while fostering economic empowerment and sustainable practices within our communities.
+                  {about.description}
                 </p>
                 <Button asChild variant="link" className="p-0 h-auto text-base">
-                  <Link href="/about">Learn More About Us <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                  <Link href={about.linkUrl}>{about.linkText} <ArrowRight className="ml-2 h-4 w-4" /></Link>
                 </Button>
               </div>
                <div className="h-64 sm:h-96 lg:h-full">
                  <Image
-                    src="https://placehold.co/800x600.png"
-                    alt="South African artisans at work"
+                    src={about.imageUrl}
+                    alt={about.imageAlt}
                     width={800}
                     height={600}
                     className="w-full h-full object-cover"
@@ -92,9 +110,9 @@ export default async function Home() {
             <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/10 rounded-full filter blur-3xl opacity-50 animate-blob animation-delay-2000"></div>
         </div>
         <div className="container mx-auto px-4 text-center relative z-10">
-          <h2 className="text-3xl md:text-4xl font-headline font-bold mb-2">Our Core Activities</h2>
+          <h2 className="text-3xl md:text-4xl font-headline font-bold mb-2">{coreActivities.headline}</h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-12">
-            We are dedicated to creating lasting impact through a multi-faceted approach that combines skill development, global market access, and strategic partnerships.
+            {coreActivities.description}
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Activity Card 1 */}
@@ -105,10 +123,10 @@ export default async function Home() {
                         <Users className="w-10 h-10 text-primary drop-shadow-lg" />
                     </div>
                 </div>
-                <h3 className="text-2xl font-headline font-semibold mb-2">Artisan Training</h3>
-                <p className="text-muted-foreground flex-grow mb-6">We provide comprehensive training programs, empowering local artisans with the skills to create world-class products.</p>
+                <h3 className="text-2xl font-headline font-semibold mb-2">{coreActivities.cards.artisanTraining.title}</h3>
+                <p className="text-muted-foreground flex-grow mb-6">{coreActivities.cards.artisanTraining.description}</p>
                 <Button asChild variant="outline" className="bg-transparent border-white/20 hover:bg-white/10 hover:text-foreground">
-                    <Link href="/trainings">Learn About Training</Link>
+                    <Link href={coreActivities.cards.artisanTraining.linkUrl}>{coreActivities.cards.artisanTraining.linkText}</Link>
                 </Button>
               </div>
             </div>
@@ -121,10 +139,10 @@ export default async function Home() {
                         <Globe className="w-10 h-10 text-primary drop-shadow-lg" />
                     </div>
                 </div>
-                <h3 className="text-2xl font-headline font-semibold mb-2">International Markets</h3>
-                <p className="text-muted-foreground flex-grow mb-6">Our work features on the global stage, connecting South African craftsmanship with international audiences.</p>
+                <h3 className="text-2xl font-headline font-semibold mb-2">{coreActivities.cards.internationalMarkets.title}</h3>
+                <p className="text-muted-foreground flex-grow mb-6">{coreActivities.cards.internationalMarkets.description}</p>
                 <Button asChild variant="outline" className="bg-transparent border-white/20 hover:bg-white/10 hover:text-foreground">
-                    <Link href="/partnerships">Explore Our Reach</Link>
+                    <Link href={coreActivities.cards.internationalMarkets.linkUrl}>{coreActivities.cards.internationalMarkets.linkText}</Link>
                 </Button>
               </div>
             </div>
@@ -137,10 +155,10 @@ export default async function Home() {
                         <Handshake className="w-10 h-10 text-primary drop-shadow-lg" />
                     </div>
                 </div>
-                <h3 className="text-2xl font-headline font-semibold mb-2">NGO Partnerships</h3>
-                <p className="text-muted-foreground flex-grow mb-6">We collaborate with non-governmental organizations to create sustainable supply chains and community-focused initiatives.</p>
+                <h3 className="text-2xl font-headline font-semibold mb-2">{coreActivities.cards.ngoPartnerships.title}</h3>
+                <p className="text-muted-foreground flex-grow mb-6">{coreActivities.cards.ngoPartnerships.description}</p>
                 <Button asChild variant="outline" className="bg-transparent border-white/20 hover:bg-white/10 hover:text-foreground">
-                    <Link href="/partnerships">See Our Partners</Link>
+                    <Link href={coreActivities.cards.ngoPartnerships.linkUrl}>{coreActivities.cards.ngoPartnerships.linkText}</Link>
                 </Button>
               </div>
             </div>
