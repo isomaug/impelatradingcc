@@ -2,8 +2,7 @@
 "use client";
 
 import Image from "next/image";
-import { notFound } from "next/navigation";
-import { products } from "@/lib/data";
+import { notFound, useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Carousel,
@@ -21,25 +20,65 @@ import {
 import { useCart } from "@/hooks/use-cart";
 import { useToast } from "@/hooks/use-toast";
 import ProductRecommender from "@/components/ai/product-recommender";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import type { Product } from "@/lib/types";
+import { Skeleton } from "@/components/ui/skeleton";
 
-interface ProductPageProps {
-  params: {
-    productId: string;
-  };
-}
-
-export default function ProductPage({ params }: ProductPageProps) {
+export default function ProductPage() {
   const { addToCart } = useCart();
   const { toast } = useToast();
+  const params = useParams();
+  const productId = params.productId as string;
+  
+  const [product, setProduct] = useState<Product | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const product = products.find((p) => p.id === params.productId);
+  useEffect(() => {
+    if (productId) {
+      const fetchProduct = async () => {
+        setIsLoading(true);
+        try {
+          const response = await fetch(`/api/products/${productId}`);
+          if (!response.ok) {
+            notFound();
+            return;
+          }
+          const data = await response.json();
+          setProduct(data);
+        } catch (error) {
+          console.error("Failed to fetch product", error);
+          notFound();
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      fetchProduct();
+    }
+  }, [productId]);
+
+
+  if (isLoading) {
+    return (
+        <div className="container mx-auto px-4 py-12">
+            <div className="grid md:grid-cols-2 gap-12 items-start">
+                <Skeleton className="w-full h-[500px] rounded-lg" />
+                <div className="space-y-6">
+                    <Skeleton className="h-10 w-3/4" />
+                    <Skeleton className="h-8 w-1/4" />
+                    <Skeleton className="h-24 w-full" />
+                    <Skeleton className="h-12 w-full md:w-40" />
+                </div>
+            </div>
+        </div>
+    );
+  }
 
   if (!product) {
     notFound();
   }
 
   const handleAddToCart = () => {
+    if (!product) return;
     addToCart(product);
     toast({
       title: "Added to Cart",

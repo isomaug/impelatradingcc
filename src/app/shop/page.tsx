@@ -1,5 +1,5 @@
 
-import { products } from "@/lib/data";
+
 import ProductCard from "@/components/product-card";
 import { Input } from "@/components/ui/input";
 import {
@@ -11,8 +11,31 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
+import type { Product } from "@/lib/types";
+import { unstable_noStore as noStore } from 'next/cache';
 
-export default function ShopPage() {
+async function getProducts() {
+  noStore();
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
+      ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+      : 'http://localhost:3000';
+    const response = await fetch(`${baseUrl}/api/products`, { cache: 'no-store' });
+
+    if (!response.ok) {
+        console.error("Failed to fetch products:", response.status, response.statusText);
+        return [];
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    return [];
+  }
+}
+
+export default async function ShopPage() {
+  const products: Product[] = await getProducts();
   const categories = [...new Set(products.map((p) => p.category))];
 
   return (

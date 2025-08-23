@@ -1,7 +1,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { products } from "@/lib/data";
 import ProductCard from "@/components/product-card";
 import { Button } from "@/components/ui/button";
 import { Users, Globe, Handshake, ArrowRight } from "lucide-react";
@@ -13,8 +12,33 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
+import type { Product } from "@/lib/types";
+import { unstable_noStore as noStore } from 'next/cache';
 
-export default function Home() {
+async function getProducts() {
+  noStore();
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
+      ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+      : 'http://localhost:3000';
+    const response = await fetch(`${baseUrl}/api/products`, { cache: 'no-store' });
+
+    if (!response.ok) {
+        console.error("Failed to fetch products:", response.status, response.statusText);
+        return [];
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    return [];
+  }
+}
+
+
+export default async function Home() {
+  const products: Product[] = await getProducts();
+  
   return (
     <div className="flex flex-col">
       {/* Hero Section */}

@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -27,7 +28,6 @@ import { useToast } from "@/hooks/use-toast";
 import type { Product } from "@/lib/types";
 import { Loader2, Wand2 } from "lucide-react";
 import ProductCard from "../product-card";
-import { products } from "@/lib/data";
 
 const FormSchema = z.object({
   interests: z.string().min(10, "Please describe your interests in a bit more detail."),
@@ -41,6 +41,22 @@ export default function ProductRecommender({ currentProduct }: ProductRecommende
   const [isLoading, setIsLoading] = useState(false);
   const [recommendations, setRecommendations] = useState<Product[]>([]);
   const { toast } = useToast();
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    // Fetch all products on component mount to filter recommendations from.
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch("/api/products");
+        if (!response.ok) throw new Error("Failed to fetch products");
+        const data = await response.json();
+        setAllProducts(data);
+      } catch (error) {
+        console.error("Could not fetch all products for recommender", error);
+      }
+    };
+    fetchProducts();
+  }, []);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -58,7 +74,7 @@ export default function ProductRecommender({ currentProduct }: ProductRecommende
         browsingHistory: `Currently viewing: ${currentProduct.name}`,
       });
       
-      const recommendedProducts = products.filter(p => result.recommendedProducts.includes(p.name) && p.id !== currentProduct.id);
+      const recommendedProducts = allProducts.filter(p => result.recommendedProducts.includes(p.name) && p.id !== currentProduct.id);
       setRecommendations(recommendedProducts.slice(0, 3)); // Show top 3 matches
       
       if (recommendedProducts.length === 0) {
@@ -66,6 +82,8 @@ export default function ProductRecommender({ currentProduct }: ProductRecommende
           title: "No specific matches found",
           description: "We couldn't find a perfect match, but have a look at our bestsellers!",
         });
+        // Optionally, show some generic bestsellers as a fallback
+        setRecommendations(allProducts.filter(p => p.id !== currentProduct.id).slice(0, 3));
       }
     } catch (error) {
       console.error(error);
