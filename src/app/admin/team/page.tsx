@@ -29,6 +29,7 @@ import {
 
 export default function AdminTeamPage() {
   return (
+    <div className="w-full">
     <Card>
       <CardHeader>
         <div className="flex justify-between items-center">
@@ -53,7 +54,7 @@ export default function AdminTeamPage() {
                 <span className="sr-only">Image</span>
               </TableHead>
               <TableHead>Name</TableHead>
-              <TableHead>Title</TableHead>
+              <TableHead className="hidden sm:table-cell">Title</TableHead>
               <TableHead className="hidden md:table-cell">Bio</TableHead>
               <TableHead>
                 <span className="sr-only">Actions</span>
@@ -74,8 +75,8 @@ export default function AdminTeamPage() {
                   />
                 </TableCell>
                 <TableCell className="font-medium">{member.name}</TableCell>
-                <TableCell>{member.title}</TableCell>
-                <TableCell className="hidden md:table-cell max-w-sm truncate">
+                <TableCell className="hidden sm:table-cell">{member.title}</TableCell>
+                <TableCell className="hidden md:table-cell max-w-xs truncate">
                   {member.bio}
                 </TableCell>
                 <TableCell>
@@ -101,5 +102,6 @@ export default function AdminTeamPage() {
         </Table>
       </CardContent>
     </Card>
+    </div>
   );
 }
