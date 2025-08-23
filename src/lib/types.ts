@@ -15,7 +15,7 @@ export type CartItem = {
 };
 
 export type TeamMember = {
-  id: string;
+  id:string;
   name: string;
   title: string;
   bio: string;
@@ -23,6 +23,10 @@ export type TeamMember = {
   imageHint: string;
   linkedin: string;
 };
+
+export type TeamCV = {
+    params: { memberId: string };
+}
 
 export type Partner = {
   id: string;
