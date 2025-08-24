@@ -339,7 +339,7 @@ export default function EditProductPage() {
                                           <DialogTitle>Image Library</DialogTitle>
                                           <DialogDescription>Select an existing image from your products.</DialogDescription>
                                       </DialogHeader>
-                                      <ImageLibrary products={allProducts} onSelectImage={handleImageSelect} />
+                                      <ImageLibrary items={allProducts} onSelectImage={handleImageSelect} />
                                   </DialogContent>
                              </Dialog>
                            </div>
