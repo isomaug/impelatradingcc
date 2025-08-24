@@ -72,9 +72,9 @@ export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
     const isShillingOrFranc = ["KES", "UGX", "TZS", "RWF", "BIF"].includes(currency);
 
     if (isShillingOrFranc) {
-        return `${symbol}${convertedAmount.toFixed(0)}`;
+        return `${symbol}${Math.round(convertedAmount).toLocaleString()}`;
     }
-    return `${symbol}${convertedAmount.toFixed(2)}`;
+    return `${symbol}${convertedAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   }, [currency, rates]);
 
   return (
