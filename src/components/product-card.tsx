@@ -22,7 +22,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const { formatCurrency } = useCurrency();
 
   return (
-    <Card className="flex flex-col h-full overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 group/card">
+    <Card className="prd _box -mas">
       <CardHeader className="p-0 relative overflow-hidden">
         <Link href={`/products/${product.id}`} className="block">
           <Image
@@ -36,17 +36,17 @@ const ProductCard = ({ product }: ProductCardProps) => {
         </Link>
       </CardHeader>
       <CardContent className="flex-grow p-4">
-        <CardTitle className="font-headline text-xl mb-2">
+        <CardTitle className="font-headline text-xl mb-2 name">
           <Link href={`/products/${product.id}`} className="hover:text-primary transition-colors duration-300">
             {product.name}
           </Link>
         </CardTitle>
-        <p className="font-semibold text-primary text-lg">
+        <p className="font-semibold text-primary text-lg prc">
           {formatCurrency(product.price)}
         </p>
       </CardContent>
-      <CardFooter className="p-4 pt-0">
-        <Button asChild className="w-full">
+      <CardFooter className="p-4 pt-0 ftr">
+        <Button asChild className="w-full btn _prim">
           <Link href={`/products/${product.id}`}>View Details</Link>
         </Button>
       </CardFooter>
