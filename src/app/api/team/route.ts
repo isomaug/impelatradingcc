@@ -4,7 +4,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import type { TeamMember } from '@/lib/types';
 import { db } from '@/lib/firebase';
-import { addDoc, collection } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 
 const dataFilePath = path.join(process.cwd(), 'data', 'team.json');
 
@@ -32,17 +32,21 @@ export async function GET() {
 export async function POST(request: Request) {
   const newMemberData: Omit<TeamMember, 'id'> = await request.json();
   const teamMembers = await readData();
+  
+  const newId = (teamMembers.length > 0 ? Math.max(...teamMembers.map(p => parseInt(p.id))) + 1 : 1).toString();
+
+  const newMember: TeamMember = {
+    id: newId,
+    ...newMemberData,
+  };
 
   try {
-      await addDoc(collection(db, "team"), newMemberData);
+      // Use setDoc with a specific ID to ensure consistency
+      await setDoc(doc(db, "team", newId), newMemberData);
   } catch(e) {
       console.error('Could not add team member to firestore', e);
   }
 
-  const newMember: TeamMember = {
-    id: (teamMembers.length > 0 ? Math.max(...teamMembers.map(p => parseInt(p.id))) + 1 : 1).toString(),
-    ...newMemberData,
-  };
   teamMembers.push(newMember);
   await writeData(teamMembers);
   return new NextResponse(JSON.stringify(newMember), { status: 201, headers: { 'Content-Type': 'application/json' } });

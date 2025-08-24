@@ -78,6 +78,12 @@
   }
 }
 
+@layer components {
+  .glass {
+    @apply backdrop-blur-md bg-opacity-50;
+  }
+}
+
 /* Custom animation for plane */
 .plane-path {
   offset-path: path("M-10,120 C80,0 180,0 280,120");
