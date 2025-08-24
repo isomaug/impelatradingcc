@@ -32,8 +32,10 @@ const currencySymbols: { [key in Currency]: string } = {
 export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
   const [currency, setCurrency] = useState<Currency>("ZAR");
   const [rates, setRates] = useState<ExchangeRates>({ ZAR: 1, USD: 0.054, EUR: 0.050, KES: 7.0, UGX: 205.0, TZS: 140.0, RWF: 70.0, BIF: 155.0 });
+  const [isClient, setIsClient] = useState(false);
   
   useEffect(() => {
+    setIsClient(true);
     // Attempt to get currency from localStorage
     try {
       const savedCurrency = localStorage.getItem("currency") as Currency | null;
@@ -60,22 +62,31 @@ export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   useEffect(() => {
-    // Save currency to localStorage whenever it changes
-    localStorage.setItem("currency", currency);
-  }, [currency]);
+    // Save currency to localStorage whenever it changes, only on client
+    if (isClient) {
+        localStorage.setItem("currency", currency);
+    }
+  }, [currency, isClient]);
   
   const formatCurrency = useMemo(() => (amountInZAR: number) => {
     const rate = rates[currency] || 0;
     const convertedAmount = amountInZAR * rate;
     const symbol = currencySymbols[currency];
-
     const isShillingOrFranc = ["KES", "UGX", "TZS", "RWF", "BIF"].includes(currency);
+
+    // To prevent hydration errors, we avoid locale-sensitive formatting on the server/initial render.
+    // Once the component is mounted on the client, we can use the full formatting.
+    if (!isClient) {
+      // Render a simple, non-locale-specific format on the server
+      const value = isShillingOrFranc ? Math.round(convertedAmount) : convertedAmount.toFixed(2);
+      return `${symbol}${value}`;
+    }
 
     if (isShillingOrFranc) {
         return `${symbol}${Math.round(convertedAmount).toLocaleString()}`;
     }
     return `${symbol}${convertedAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-  }, [currency, rates]);
+  }, [currency, rates, isClient]);
 
   return (
     <CurrencyContext.Provider
