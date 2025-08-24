@@ -23,9 +23,25 @@ async function getProducts(): Promise<Product[]> {
   }
 }
 
-export default async function ShopPage() {
-  const products: Product[] = await getProducts();
-  const categories = [...new Set(products.map((p) => p.category))];
+export default async function ShopPage({
+  searchParams,
+}: {
+  searchParams?: {
+    category?: string;
+    search?: string;
+  };
+}) {
+  const allProducts: Product[] = await getProducts();
+  const categories = [...new Set(allProducts.map((p) => p.category))];
+  
+  const selectedCategory = searchParams?.category;
+  const searchTerm = searchParams?.search;
+
+  const filteredProducts = allProducts.filter(product => {
+    const matchesCategory = selectedCategory ? product.category === selectedCategory : true;
+    const matchesSearch = searchTerm ? product.name.toLowerCase().includes(searchTerm.toLowerCase()) : true;
+    return matchesCategory && matchesSearch;
+  });
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -48,13 +64,19 @@ export default async function ShopPage() {
              <CardContent>
                <ul className="space-y-2">
                  <li>
-                   <Link href="/shop" className="text-muted-foreground hover:text-primary transition-colors">
+                   <Link 
+                    href="/shop" 
+                    className={`transition-colors ${!selectedCategory ? 'text-primary font-semibold' : 'text-muted-foreground hover:text-primary'}`}
+                   >
                      All
                    </Link>
                  </li>
                  {categories.map(category => (
                    <li key={category}>
-                     <Link href={`/shop?category=${category}`} className="text-muted-foreground hover:text-primary transition-colors">
+                     <Link 
+                       href={`/shop?category=${category}`} 
+                       className={`transition-colors ${selectedCategory === category ? 'text-primary font-semibold' : 'text-muted-foreground hover:text-primary'}`}
+                      >
                        {category}
                      </Link>
                    </li>
@@ -67,11 +89,13 @@ export default async function ShopPage() {
                     <CardTitle className="font-headline text-lg">Search</CardTitle>
                 </CardHeader>
                 <CardContent>
-                     <div className="relative">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                        <Input id="search" placeholder="e.g. Leather Wallet" className="pl-10" />
-                    </div>
-                    <Button className="w-full mt-4">Search</Button>
+                     <form action="/shop" method="GET">
+                        <div className="relative">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                            <Input id="search" name="search" placeholder="e.g. Leather Wallet" className="pl-10" defaultValue={searchTerm} />
+                        </div>
+                        <Button className="w-full mt-4" type="submit">Search</Button>
+                    </form>
                 </CardContent>
            </Card>
         </aside>
@@ -79,12 +103,17 @@ export default async function ShopPage() {
         {/* Product Grid */}
         <main className="md:col-span-3">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {products.map((product) => (
+            {filteredProducts.map((product) => (
               <div key={product.id} className="h-full">
                 <ProductCard product={product} />
               </div>
             ))}
           </div>
+           {filteredProducts.length === 0 && (
+            <div className="text-center py-16">
+              <p className="text-xl text-muted-foreground">No products found.</p>
+            </div>
+          )}
         </main>
       </div>
     </div>
