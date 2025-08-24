@@ -96,7 +96,7 @@ export default function ProductPage() {
             <CarouselContent>
               {product.images.map((src, index) => (
                 <CarouselItem key={index}>
-                  <div className="p-1">
+                  <div className="-paxs">
                     <Image
                       src={src}
                       alt={`${product.name} - view ${index + 1}`}
