@@ -97,5 +97,18 @@
       "https://placehold.co/600x600.png"
     ],
     "careInstructions": "Avoid getting wet. Wipe with a dry cloth to clean."
+  },
+  {
+    "id": "9",
+    "name": "Handcrafted Leather Armchair",
+    "price": 18999.99,
+    "category": "Furniture",
+    "description": "A statement piece for any living room. This armchair is built with a solid wood frame and upholstered in premium, top-grain South African leather. Designed for comfort and built to last generations.",
+    "images": [
+      "https://placehold.co/600x600.png",
+      "https://placehold.co/600x600.png",
+      "https://placehold.co/600x600.png"
+    ],
+    "careInstructions": "Wipe with a damp cloth. Apply leather conditioner every 6-12 months. Keep away from direct heat sources and sunlight."
   }
 ]
