@@ -6,18 +6,16 @@ import { Button } from '@/components/ui/button';
 import { Linkedin, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { unstable_noStore as noStore } from 'next/cache';
+import fs from 'fs/promises';
+import path from 'path';
 
 async function getMember(id: string): Promise<TeamMember | undefined> {
   noStore();
-  const baseUrl = process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
-      : 'http://localhost:9002';
   try {
-    const response = await fetch(`${baseUrl}/api/team/${id}`, { cache: 'no-store' });
-    if (!response.ok) {
-      return undefined;
-    }
-    return await response.json();
+    const dataFilePath = path.join(process.cwd(), 'data', 'team.json');
+    const fileContent = await fs.readFile(dataFilePath, 'utf-8');
+    const teamMembers: TeamMember[] = JSON.parse(fileContent);
+    return teamMembers.find(m => m.id === id);
   } catch (error) {
     console.error("Could not read team data", error);
     return undefined;

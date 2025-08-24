@@ -54,7 +54,7 @@ export default function ShopPage() {
   });
 
   const handleCategorySelect = (currentValue: string) => {
-    const newCategory = currentValue === selectedCategory ? "" : currentValue;
+    const newCategory = currentValue === selectedCategory.toLowerCase() ? "" : currentValue;
     const params = new URLSearchParams(searchParams.toString());
     if (newCategory) {
       params.set("category", newCategory);
