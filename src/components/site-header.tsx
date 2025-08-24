@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/use-cart";
 import { useCurrency, Currency } from "@/hooks/use-currency";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -158,14 +158,24 @@ const SiteHeader = () => {
                   <Menu />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="bg-secondary text-secondary-foreground w-64 pt-12 flex flex-col">
-                <nav className="flex flex-col gap-2">
+              <SheetContent side="left" className="bg-secondary text-secondary-foreground w-64 pt-4 flex flex-col">
+                 <SheetHeader className="p-4 border-b border-secondary-foreground/20 text-left">
+                    <SheetTitle>
+                        Impela Trading
+                    </SheetTitle>
+                    <SheetDescription className="text-secondary-foreground/80">
+                        Menu
+                    </SheetDescription>
+                 </SheetHeader>
+                <nav className="flex flex-col gap-2 p-4">
                   {navLinks}
                 </nav>
-                <div className="mt-4 pt-4 border-t border-secondary-foreground/20">
-                    {currencySelector}
+                <div className="mt-auto">
+                    <div className="p-4 border-t border-secondary-foreground/20">
+                        {currencySelector}
+                    </div>
+                    {mobileUserMenu}
                 </div>
-                {mobileUserMenu}
               </SheetContent>
             </Sheet>
           </div>
