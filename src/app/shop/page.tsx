@@ -1,51 +1,69 @@
 
+"use client";
 
 import ProductCard from "@/components/product-card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search } from "lucide-react";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Search, Check, ChevronsUpDown } from "lucide-react";
 import type { Product } from "@/lib/types";
-import { unstable_noStore as noStore } from 'next/cache';
+import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { cn } from "@/lib/utils";
 
-async function getProducts(): Promise<Product[]> {
-  noStore();
-  const baseUrl = process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
-      : 'http://localhost:9002';
-  try {
-    const response = await fetch(`${baseUrl}/api/products`, { cache: 'no-store' });
-    if (!response.ok) {
-        console.error("Failed to fetch products:", response.status, response.statusText);
-        return [];
-    }
-    return await response.json();
-  } catch (error) {
-    console.error("Error reading products data:", error);
-    return [];
-  }
-}
 
-export default async function ShopPage({
-  searchParams,
-}: {
-  searchParams?: {
-    category?: string;
-    search?: string;
-  };
-}) {
-  const allProducts: Product[] = await getProducts();
-  const categories = [...new Set(allProducts.map((p) => p.category))];
+export default function ShopPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [open, setOpen] = useState(false);
+
+  const selectedCategory = searchParams.get('category') || "";
+  const searchTerm = searchParams.get('search') || "";
   
-  const selectedCategory = searchParams?.category;
-  const searchTerm = searchParams?.search;
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch('/api/products');
+        if (!response.ok) {
+          console.error("Failed to fetch products:", response.status, response.statusText);
+          throw new Error("Failed to fetch products");
+        }
+        const data = await response.json();
+        setAllProducts(data);
+      } catch (error) {
+        console.error("Error reading products data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchProducts();
+  }, []);
 
+  const categories = [...new Set(allProducts.map((p) => p.category))].map(c => ({value: c.toLowerCase(), label: c}));
+  
   const filteredProducts = allProducts.filter(product => {
-    const matchesCategory = selectedCategory ? product.category === selectedCategory : true;
+    const matchesCategory = selectedCategory ? product.category.toLowerCase() === selectedCategory.toLowerCase() : true;
     const matchesSearch = searchTerm ? product.name.toLowerCase().includes(searchTerm.toLowerCase()) : true;
     return matchesCategory && matchesSearch;
   });
+
+  const handleCategorySelect = (currentValue: string) => {
+    const newCategory = currentValue === selectedCategory ? "" : currentValue;
+    const params = new URLSearchParams(searchParams.toString());
+    if (newCategory) {
+      params.set("category", newCategory);
+    } else {
+      params.delete("category");
+    }
+    router.push(`/shop?${params.toString()}`);
+    setOpen(false);
+  }
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -62,43 +80,69 @@ export default async function ShopPage({
         {/* Sidebar */}
         <aside className="md:col-span-1">
            <Card>
-             <CardHeader>
-               <CardTitle className="font-headline text-lg">Categories</CardTitle>
-             </CardHeader>
-             <CardContent>
-               <ul className="space-y-2">
-                 <li>
-                   <Link 
-                    href="/shop" 
-                    className={`transition-colors ${!selectedCategory ? 'text-primary font-semibold' : 'text-muted-foreground hover:text-primary'}`}
-                   >
-                     All
-                   </Link>
-                 </li>
-                 {categories.map(category => (
-                   <li key={category}>
-                     <Link 
-                       href={`/shop?category=${category}`} 
-                       className={`transition-colors ${selectedCategory === category ? 'text-primary font-semibold' : 'text-muted-foreground hover:text-primary'}`}
-                      >
-                       {category}
-                     </Link>
-                   </li>
-                 ))}
-               </ul>
-             </CardContent>
-           </Card>
-           <Card className="mt-6">
                 <CardHeader>
-                    <CardTitle className="font-headline text-lg">Search</CardTitle>
+                    <CardTitle className="font-headline text-lg">Filter & Search</CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="space-y-4">
+                     <div>
+                        <p className="text-sm font-medium mb-2">Category</p>
+                         <Popover open={open} onOpenChange={setOpen}>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              aria-expanded={open}
+                              className="w-full justify-between"
+                            >
+                              {selectedCategory
+                                ? categories.find((category) => category.value === selectedCategory)?.label
+                                : "All Categories"}
+                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                            <Command>
+                              <CommandInput placeholder="Search category..." />
+                              <CommandList>
+                                <CommandEmpty>No category found.</CommandEmpty>
+                                <CommandGroup>
+                                    <CommandItem
+                                        key="all"
+                                        value=""
+                                        onSelect={() => handleCategorySelect("")}
+                                    >
+                                        <Check className={cn("mr-2 h-4 w-4", selectedCategory === "" ? "opacity-100" : "opacity-0")} />
+                                        All Categories
+                                    </CommandItem>
+                                  {categories.map((category) => (
+                                    <CommandItem
+                                      key={category.value}
+                                      value={category.value}
+                                      onSelect={handleCategorySelect}
+                                    >
+                                      <Check
+                                        className={cn(
+                                          "mr-2 h-4 w-4",
+                                          selectedCategory === category.value ? "opacity-100" : "opacity-0"
+                                        )}
+                                      />
+                                      {category.label}
+                                    </CommandItem>
+                                  ))}
+                                </CommandGroup>
+                              </CommandList>
+                            </Command>
+                          </PopoverContent>
+                        </Popover>
+                    </div>
                      <form action="/shop" method="GET">
+                        <p className="text-sm font-medium mb-2">Search</p>
                         <div className="relative">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                             <Input id="search" name="search" placeholder="e.g. Leather Wallet" className="pl-10" defaultValue={searchTerm} />
                         </div>
-                        <Button className="w-full mt-4" type="submit">Search</Button>
+                        {selectedCategory && <input type="hidden" name="category" value={selectedCategory} />}
+                        <Button className="w-full mt-4" type="submit">Search Products</Button>
                     </form>
                 </CardContent>
            </Card>
@@ -113,7 +157,7 @@ export default async function ShopPage({
               </div>
             ))}
           </div>
-           {filteredProducts.length === 0 && (
+           {filteredProducts.length === 0 && !isLoading && (
             <div className="text-center py-16">
               <p className="text-xl text-muted-foreground">No products found.</p>
             </div>
