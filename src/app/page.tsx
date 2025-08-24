@@ -208,7 +208,7 @@ export default function Home() {
             <CarouselContent className="-ml-4">
               {products.slice(0, 6).map((product) => (
                 <CarouselItem key={product.id} className="pl-4 md:basis-1/2 lg:basis-1/3">
-                   <div className="p-1">
+                   <div className="p-1 h-full">
                     <ProductCard product={product} />
                   </div>
                 </CarouselItem>
