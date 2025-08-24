@@ -110,5 +110,127 @@
       "https://placehold.co/600x600.png"
     ],
     "careInstructions": "Wipe with a damp cloth. Apply leather conditioner every 6-12 months. Keep away from direct heat sources and sunlight."
+  },
+  {
+    "id": "10",
+    "name": "Leather Keychain",
+    "price": 399.99,
+    "category": "Accessories",
+    "description": "A simple yet elegant keychain, crafted from durable leather to keep your keys organized in style.",
+    "images": [
+      "https://placehold.co/600x600.png"
+    ],
+    "careInstructions": "Wipe clean with a dry cloth."
+  },
+  {
+    "id": "11",
+    "name": "Leather Watch Strap",
+    "price": 999.99,
+    "category": "Accessories",
+    "description": "Upgrade your timepiece with a classic leather watch strap that gains character with age.",
+    "images": [
+      "https://placehold.co/600x600.png"
+    ],
+    "careInstructions": "Avoid getting wet. Condition sparingly."
+  },
+  {
+    "id": "12",
+    "name": "Leather Glasses Case",
+    "price": 799.99,
+    "category": "Accessories",
+    "description": "A protective and stylish case for your eyewear, with a soft interior lining.",
+    "images": [
+      "https://placehold.co/600x600.png"
+    ],
+    "careInstructions": "Wipe with a damp cloth. Keep away from sharp objects."
+  },
+  {
+    "id": "13",
+    "name": "Leather Laptop Sleeve",
+    "price": 2499.99,
+    "category": "Tech",
+    "description": "A sleek, padded sleeve to protect your laptop, crafted from premium South African leather.",
+    "images": [
+      "https://placehold.co/600x600.png"
+    ],
+    "careInstructions": "Wipe clean. Apply leather conditioner occasionally."
+  },
+  {
+    "id": "14",
+    "name": "Leather Desk Mat",
+    "price": 1999.99,
+    "category": "Tech",
+    "description": "Elevate your workspace with this large leather desk mat, providing a smooth surface for your mouse and keyboard.",
+    "images": [
+      "https://placehold.co/600x600.png"
+    ],
+    "careInstructions": "Wipe spills immediately. Clean with a damp cloth."
+  },
+  {
+    "id": "15",
+    "name": "Leather Coasters (Set of 4)",
+    "price": 599.99,
+    "category": "Home",
+    "description": "A set of four handsome leather coasters to protect your surfaces and add a touch of class.",
+    "images": [
+      "https://placehold.co/600x600.png"
+    ],
+    "careInstructions": "Wipe clean with a damp cloth. Do not soak."
+  },
+  {
+    "id": "16",
+    "name": "Leather Cushion Cover",
+    "price": 1599.99,
+    "category": "Home",
+    "description": "A luxurious leather cushion cover to add a rustic and sophisticated touch to your living space.",
+    "images": [
+      "https://placehold.co/600x600.png"
+    ],
+    "careInstructions": "Wipe clean. Apply leather conditioner every 6-12 months."
+  },
+  {
+    "id": "17",
+    "name": "Leather Passport Holder",
+    "price": 999.99,
+    "category": "Travel",
+    "description": "Travel in style with a durable leather passport holder, featuring slots for cards and travel documents.",
+    "images": [
+      "https://placehold.co/600x600.png"
+    ],
+    "careInstructions": "Wipe with a damp cloth."
+  },
+  {
+    "id": "18",
+    "name": "Leather Luggage Tag",
+    "price": 499.99,
+    "category": "Travel",
+    "description": "A sturdy leather luggage tag to help you identify your bags with a touch of elegance.",
+    "images": [
+      "https://placehold.co/600x600.png"
+    ],
+    "careInstructions": "Wipe clean. Ensure information is secure."
+  },
+  {
+    "id": "19",
+    "name": "Leather Toiletry Bag",
+    "price": 2199.99,
+    "category": "Travel",
+    "description": "A spacious and water-resistant leather toiletry bag (Dopp Kit) for all your travel essentials.",
+    "images": [
+      "https://placehold.co/600x600.png"
+    ],
+    "careInstructions": "Wipe interior and exterior clean. Air dry if wet."
+  },
+  {
+    "id": "20",
+    "name": "The Voyager Backpack",
+    "price": 7999.99,
+    "category": "Travel",
+    "description": "A stylish and durable leather backpack with a padded laptop compartment and multiple pockets for organization.",
+    "images": [
+      "https://placehold.co/600x600.png",
+      "https://placehold.co/600x600.png"
+    ],
+    "careInstructions": "Wipe with a damp cloth. Apply leather conditioner every 6 months."
   }
 ]
