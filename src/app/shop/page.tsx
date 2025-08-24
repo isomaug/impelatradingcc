@@ -2,19 +2,14 @@
 
 import ProductCard from "@/components/product-card";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 import type { Product } from "@/lib/types";
 import { unstable_noStore as noStore } from 'next/cache';
 import fs from 'fs/promises';
 import path from 'path';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Link from "next/link";
 
 async function getProducts(): Promise<Product[]> {
   noStore();
@@ -43,41 +38,54 @@ export default async function ShopPage() {
         </p>
       </div>
 
-      <div className="mb-8 p-6 bg-card/50 rounded-lg shadow-md">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-          <div className="space-y-2">
-            <label htmlFor="search" className="font-medium">Search Products</label>
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-              <Input id="search" placeholder="e.g. Leather Wallet" className="pl-10" />
-            </div>
-          </div>
-          <div className="space-y-2">
-            <label htmlFor="category" className="font-medium">Filter by Category</label>
-            <Select>
-              <SelectTrigger id="category">
-                <SelectValue placeholder="All Categories" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Categories</SelectItem>
-                {categories.map((category) => (
-                  <SelectItem key={category} value={category}>
-                    {category}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <Button className="w-full md:w-auto self-end">Apply Filters</Button>
-        </div>
-      </div>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        {/* Sidebar */}
+        <aside className="md:col-span-1">
+           <Card>
+             <CardHeader>
+               <CardTitle className="font-headline text-lg">Categories</CardTitle>
+             </CardHeader>
+             <CardContent>
+               <ul className="space-y-2">
+                 <li>
+                   <Link href="/shop" className="text-muted-foreground hover:text-primary transition-colors">
+                     All
+                   </Link>
+                 </li>
+                 {categories.map(category => (
+                   <li key={category}>
+                     <Link href={`/shop?category=${category}`} className="text-muted-foreground hover:text-primary transition-colors">
+                       {category}
+                     </Link>
+                   </li>
+                 ))}
+               </ul>
+             </CardContent>
+           </Card>
+           <Card className="mt-6">
+                <CardHeader>
+                    <CardTitle className="font-headline text-lg">Search</CardTitle>
+                </CardHeader>
+                <CardContent>
+                     <div className="relative">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                        <Input id="search" placeholder="e.g. Leather Wallet" className="pl-10" />
+                    </div>
+                    <Button className="w-full mt-4">Search</Button>
+                </CardContent>
+           </Card>
+        </aside>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-        {products.map((product) => (
-          <div key={product.id} className="h-full">
-            <ProductCard product={product} />
+        {/* Product Grid */}
+        <main className="md:col-span-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {products.map((product) => (
+              <div key={product.id} className="h-full">
+                <ProductCard product={product} />
+              </div>
+            ))}
           </div>
-        ))}
+        </main>
       </div>
     </div>
   );
