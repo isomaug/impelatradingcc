@@ -177,22 +177,7 @@ const CarouselItem = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => {
-  const { orientation, api } = useCarousel();
-  const [isActive, setIsActive] = React.useState(false);
-
-  React.useEffect(() => {
-    if (api) {
-      const onSelect = () => {
-        // Check if this slide is selected
-      };
-      api.on("select", onSelect);
-      onSelect(); // Initial check
-      return () => {
-        api.off("select", onSelect);
-      };
-    }
-  }, [api]);
-
+  const { orientation } = useCarousel()
 
   return (
     <div
@@ -200,8 +185,7 @@ const CarouselItem = React.forwardRef<
       role="group"
       aria-roledescription="slide"
       className={cn(
-        "min-w-0 shrink-0 grow-0 basis-full transition-opacity duration-300",
-        "embla-slide",
+        "min-w-0 shrink-0 grow-0 basis-full",
         orientation === "horizontal" ? "pl-4" : "pt-4",
         className
       )}
