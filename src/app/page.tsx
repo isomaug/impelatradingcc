@@ -113,7 +113,7 @@ export default function Home() {
             <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/10 rounded-full filter blur-3xl opacity-50 animate-blob animation-delay-2000"></div>
         </div>
         <div className="container mx-auto px-4 text-center relative z-10">
-          <h2 className="text-3xl md:text-4xl font-headline font-bold mb-2">{coreActivities.headline}</h2>
+          <h2 className="text-2xl md:text-3xl font-headline font-bold mb-2">{coreActivities.headline}</h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-12">
             {coreActivities.description}
           </p>
@@ -174,7 +174,7 @@ export default function Home() {
         <div className="container mx-auto px-4">
            <Card className="overflow-hidden lg:grid lg:grid-cols-2 lg:items-center bg-card shadow-2xl">
               <div className="p-10 md:p-16">
-                 <h2 className="text-3xl md:text-4xl font-headline font-bold mb-4">{about.headline}</h2>
+                 <h2 className="text-2xl md:text-3xl font-headline font-bold mb-4">{about.headline}</h2>
                 <p className="text-lg text-muted-foreground mb-6">
                   {about.description}
                 </p>
@@ -199,7 +199,7 @@ export default function Home() {
       {/* Featured Products Carousel */}
       <section className="py-16 md:py-24 bg-card/50">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-headline font-bold text-center mb-12">From Our Workshop</h2>
+          <h2 className="text-2xl md:text-3xl font-headline font-bold text-center mb-12">From Our Workshop</h2>
           <Carousel
             opts={{
               align: "start",
