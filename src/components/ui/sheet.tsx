@@ -108,15 +108,15 @@ const SheetTitle = React.forwardRef<
   React.ElementRef<typeof SheetPrimitive.Title>,
   React.ComponentPropsWithoutRef<typeof SheetPrimitive.Title> & { asChild?: boolean }
 >(({ className, asChild = false, ...props }, ref) => {
-    const Comp = asChild ? Slot : "h2"
+    const Comp = asChild ? Slot : "h2";
     return (
         <SheetPrimitive.Title
-        asChild
         ref={ref}
+        asChild={asChild}
         className={cn("text-lg font-semibold text-foreground", className)}
         {...props}
         >
-            <Comp>{props.children}</Comp>
+         <Comp>{props.children}</Comp>
         </SheetPrimitive.Title>
     )
 })
