@@ -4,7 +4,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import type { TeamMember } from '@/lib/types';
 import { db } from '@/lib/firebase';
-import { doc, getDoc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { doc, updateDoc, deleteDoc } from 'firebase/firestore';
 
 
 const dataFilePath = path.join(process.cwd(), 'data', 'team.json');
