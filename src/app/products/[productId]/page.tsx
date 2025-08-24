@@ -91,19 +91,18 @@ export default function ProductPage() {
 
   return (
     <div className="container mx-auto px-4 py-12">
-      <div className="grid md:grid-cols-2 gap-12 items-start">
-        <div>
-          <Carousel className="w-full">
+      <div className="gr _2c-shs">
+        <div className="col">
+           <Carousel className="w-full">
             <CarouselContent>
               {product.images.map((src, index) => (
                 <CarouselItem key={index}>
-                  <div className="-paxs">
+                  <div className="ar _1-1">
                     <Image
                       src={src}
                       alt={`${product.name} - view ${index + 1}`}
-                      width={800}
-                      height={800}
-                      className="w-full h-auto object-cover rounded-lg shadow-lg"
+                      fill
+                      className="w-full h-full object-cover rounded-lg shadow-lg"
                       data-ai-hint="leather product lifestyle"
                     />
                   </div>
@@ -114,35 +113,37 @@ export default function ProductPage() {
             <CarouselNext className="mr-14" />
           </Carousel>
         </div>
-        <div className="space-y-6">
-          <h1 className="text-3xl md:text-4xl font-headline font-bold">{product.name}</h1>
-          <p className="text-2xl md:text-3xl font-semibold text-primary">
-            {formatCurrency(product.price)}
-          </p>
-          <p className="text-lg text-muted-foreground">{product.description}</p>
-          <Button size="lg" className="w-full md:w-auto" onClick={handleAddToCart}>
-            Add to Cart
-          </Button>
-
-          <Accordion type="single" collapsible className="w-full">
-            <AccordionItem value="details">
-              <AccordionTrigger className="text-lg font-medium">Product Details</AccordionTrigger>
-              <AccordionContent>
-                <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                  <li>Category: {product.category}</li>
-                  <li>Material: Premium Full-Grain Leather</li>
-                  <li>Hardware: Solid Brass</li>
-                </ul>
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="care">
-              <AccordionTrigger className="text-lg font-medium">Care Instructions</AccordionTrigger>
-              <AccordionContent>
-                <p className="text-muted-foreground">{product.careInstructions}</p>
-
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
+        <div className="col">
+            <div className="prd _full">
+                <div className="core">
+                    <h1 className="name -fs24 -elli2">{product.name}</h1>
+                    <div className="prc -fs20 -b -mtxs">{formatCurrency(product.price)}</div>
+                    <p className="-fs16 -lh-15 -gy7 -mtm">{product.description}</p>
+                    <div className="ftr -mtm">
+                         <Button size="lg" className="btn _prim _fw" onClick={handleAddToCart}>
+                            Add to Cart
+                        </Button>
+                    </div>
+                </div>
+                 <Accordion type="single" collapsible className="w-full -mtm">
+                    <AccordionItem value="details" className="dtls">
+                        <AccordionTrigger className="smry -fs16 -b">Product Details</AccordionTrigger>
+                        <AccordionContent className="cont">
+                            <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                                <li>Category: {product.category}</li>
+                                <li>Material: Premium Full-Grain Leather</li>
+                                <li>Hardware: Solid Brass</li>
+                            </ul>
+                        </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="care" className="dtls">
+                        <AccordionTrigger className="smry -fs16 -b">Care Instructions</AccordionTrigger>
+                        <AccordionContent className="cont">
+                            <p className="text-muted-foreground">{product.careInstructions}</p>
+                        </AccordionContent>
+                    </AccordionItem>
+                </Accordion>
+            </div>
         </div>
       </div>
       <div className="mt-20">
