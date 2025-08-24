@@ -98,12 +98,17 @@ export default {
           "100%": {
             transform: "translate(0px, 0px) scale(1)",
           },
-        }
+        },
+         'spin-slow': {
+          from: { transform: 'rotate(0deg)' },
+          to: { transform: 'rotate(360deg)' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         'blob': 'blob 7s infinite',
+        'spin-slow': 'spin-slow 25s linear infinite',
       },
     },
   },

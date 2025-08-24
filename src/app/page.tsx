@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import ProductCard from "@/components/product-card";
 import { Button } from "@/components/ui/button";
-import { Users, Globe, Handshake, ArrowRight } from "lucide-react";
+import { Users, Globe, Handshake, ArrowRight, Plane } from "lucide-react";
 import {
   Carousel,
   CarouselContent,
@@ -50,7 +50,7 @@ export default function Home() {
 
   if (isLoading || !content) {
     return (
-      <div className="flex flex-col gap-8 md:gap-16">
+      <div className="flex flex-col gap-8 md:gap-12">
         <Skeleton className="h-[70vh] w-full" />
         <div className="container mx-auto px-4">
             <Skeleton className="h-64 w-full" />
@@ -107,7 +107,7 @@ export default function Home() {
       </section>
 
       {/* What We Do Section */}
-       <section className="py-12 md:py-20 bg-background relative overflow-hidden">
+       <section className="py-12 md:py-16 bg-background relative overflow-hidden">
         <div className="absolute inset-0 z-0">
             <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full filter blur-3xl opacity-50 animate-blob"></div>
             <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/10 rounded-full filter blur-3xl opacity-50 animate-blob animation-delay-2000"></div>
@@ -170,7 +170,7 @@ export default function Home() {
       </section>
 
       {/* About Section */}
-       <section className="py-12 md:py-20 bg-background/70">
+       <section className="py-12 md:py-16 bg-background/70">
         <div className="container mx-auto px-4">
            <Card className="overflow-hidden lg:grid lg:grid-cols-2 lg:items-center bg-card shadow-2xl">
               <div className="p-10 md:p-16">
@@ -182,22 +182,18 @@ export default function Home() {
                   <Link href={about.linkUrl}>{about.linkText} <ArrowRight className="ml-2 h-4 w-4" /></Link>
                 </Button>
               </div>
-               <div className="h-64 sm:h-96 lg:h-full">
-                 <Image
-                    src={about.imageUrl}
-                    alt={about.imageAlt}
-                    width={800}
-                    height={600}
-                    className="w-full h-full object-cover"
-                    data-ai-hint="african artisans craft"
-                  />
+               <div className="h-80 lg:h-full flex items-center justify-center bg-primary/5 p-4 relative overflow-hidden">
+                <Globe className="text-amber-400 opacity-20 animate-spin-slow text-[280px]"/>
+                 <div className="absolute inset-0 flex items-center justify-center">
+                    <Plane className="text-foreground/80 text-4xl plane-path" />
+                  </div>
                </div>
            </Card>
         </div>
       </section>
 
       {/* Featured Products Carousel */}
-      <section className="py-12 md:py-20 bg-card/50">
+      <section className="py-12 md:py-16 bg-card/50">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-headline font-bold text-center mb-12">From Our Workshop</h2>
           <Carousel
