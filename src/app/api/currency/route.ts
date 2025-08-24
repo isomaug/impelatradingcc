@@ -8,6 +8,11 @@ const exchangeRates = {
   ZAR: 1,
   USD: 0.054, // 1 ZAR = 0.054 USD
   EUR: 0.050, // 1 ZAR = 0.050 EUR
+  KES: 7.0,   // 1 ZAR = 7.0 KES
+  UGX: 205.0, // 1 ZAR = 205.0 UGX
+  TZS: 140.0, // 1 ZAR = 140.0 TZS
+  RWF: 70.0,  // 1 ZAR = 70.0 RWF
+  BIF: 155.0, // 1 ZAR = 155.0 BIF
 };
 
 export async function GET() {

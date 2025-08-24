@@ -3,7 +3,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode, useMemo } from "react";
 
-export type Currency = "ZAR" | "USD" | "EUR";
+export type Currency = "ZAR" | "USD" | "EUR" | "KES" | "UGX" | "TZS" | "RWF" | "BIF";
 
 interface ExchangeRates {
   [key: string]: number;
@@ -22,17 +22,22 @@ const currencySymbols: { [key in Currency]: string } = {
   ZAR: "R",
   USD: "$",
   EUR: "€",
+  KES: "KSh ",
+  UGX: "UGX ",
+  TZS: "TSh ",
+  RWF: "FRw ",
+  BIF: "FBu ",
 };
 
 export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
   const [currency, setCurrency] = useState<Currency>("ZAR");
-  const [rates, setRates] = useState<ExchangeRates>({ ZAR: 1, USD: 0.054, EUR: 0.050 });
+  const [rates, setRates] = useState<ExchangeRates>({ ZAR: 1, USD: 0.054, EUR: 0.050, KES: 7.0, UGX: 205.0, TZS: 140.0, RWF: 70.0, BIF: 155.0 });
   
   useEffect(() => {
     // Attempt to get currency from localStorage
     try {
       const savedCurrency = localStorage.getItem("currency") as Currency | null;
-      if (savedCurrency && ["ZAR", "USD", "EUR"].includes(savedCurrency)) {
+      if (savedCurrency && Object.keys(currencySymbols).includes(savedCurrency)) {
         setCurrency(savedCurrency);
       }
     } catch (error) {
@@ -64,6 +69,11 @@ export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
     const convertedAmount = amountInZAR * rate;
     const symbol = currencySymbols[currency];
 
+    const isShillingOrFranc = ["KES", "UGX", "TZS", "RWF", "BIF"].includes(currency);
+
+    if (isShillingOrFranc) {
+        return `${symbol}${convertedAmount.toFixed(0)}`;
+    }
     return `${symbol}${convertedAmount.toFixed(2)}`;
   }, [currency, rates]);
 

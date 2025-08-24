@@ -83,6 +83,12 @@ const SiteHeader = () => {
             <DropdownMenuRadioItem value="ZAR">ZAR (South African Rand)</DropdownMenuRadioItem>
             <DropdownMenuRadioItem value="USD">USD (US Dollar)</DropdownMenuRadioItem>
             <DropdownMenuRadioItem value="EUR">EUR (Euro)</DropdownMenuRadioItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuRadioItem value="KES">KES (Kenyan Shilling)</DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value="UGX">UGX (Ugandan Shilling)</DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value="TZS">TZS (Tanzanian Shilling)</DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value="RWF">RWF (Rwandan Franc)</DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value="BIF">BIF (Burundian Franc)</DropdownMenuRadioItem>
           </DropdownMenuRadioGroup>
         </DropdownMenuContent>
       </DropdownMenu>
