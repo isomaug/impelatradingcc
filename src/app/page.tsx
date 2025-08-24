@@ -68,6 +68,19 @@ export default function Home() {
 
   const { hero, about, coreActivities } = content;
   
+  const WorldGlobe = () => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 1000 1000"
+      className="w-full h-full text-amber-400 opacity-20 animate-spin-slow"
+      fill="currentColor"
+    >
+      <path d="M500 0C223.9 0 0 223.9 0 500s223.9 500 500 500 500-223.9 500-500S776.1 0 500 0zM451.9 865.1C223.3 843.4 46.8 667 25.1 438.4l115.3 43.2c16.1 160.7 137.9 282.5 298.6 298.6l12.9 115.3-12.9-30.4zM865.1 548.1c-21.7 228.7-198.2 405.2-426.8 426.8l-12.9-115.3C606 843.5 727.8 721.7 743.9 541.1l121.2 7zM974.9 438.4C953.2 667 776.7 843.4 548.1 865.1l-12.9-115.3c177-16.1 306.3-138.8 322.4-322.4l117.3 11.0z"></path>
+      <path d="M523.5 125.1c-59.5-3.3-118 10.9-170.8 40.5-35.3 19.9-66 45.4-92 75.8-21.7 25.3-39 53.6-51.5 84-2.5 5.7-4.8 11.5-6.9 17.5-12.8 35.8-19.1 73.2-18.8 110.8 0.7 54.3 13.9 108.1 38.6 156.9 23.3 46 56.6 85.5 98.4 116.2 38.8 28.5 83.9 46.9 131.7 54.2 48.7 7.5 98.7 3.5 146.4-11.2 47.9-14.7 92.2-40 131.2-74.8 39-34.8 71.3-78.5 95.1-127.8 23.9-49.3 38.3-103.3 42.1-158.9 3.8-55.6-3.8-111.8-22.1-164.7-18.4-52.9-47.6-101.4-85.8-142.3-38.3-40.8-85.2-73.2-137.9-94.8-31.5-12.9-64.8-21.2-98.8-24.8l-3.3-0.4zM321.4 191.6c-20.9 9.3-40.8 20.8-59.3 34.3-43.1 31.4-74.1 75.8-90.8 126.9-12.3 37.5-17.7 76.9-16.4 116.2 1.4 42.1 10.3 83.5 26.2 122.2 12.3 29.8 28.9 57.5 49.3 82.5 35.8 43.1 82.8 73.8 136.2 89.2 32.5 9.6 66.4 13.6 99.8 12.2 35.8-1.4 71-9.2 104-23.3 27.9-11.9 54.3-28.1 78.4-48.1 43.5-36.2 76.5-84.5 95.8-139.7 19.3-55.2 24.3-114.7 14-173.3-9.9-56.7-34.5-109.8-71.3-154.3-29-35.1-65.1-63.1-105.9-82.2-41-19.2-86.4-28.8-132.4-28.2-49 0.7-97.2 11.2-141.6 30.8-14 6.2-27.5 13.4-40.5 21.4l-1-0.2z"></path>
+    </svg>
+);
+
+
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
@@ -107,7 +120,7 @@ export default function Home() {
       </section>
 
       {/* What We Do Section */}
-       <section className="py-12 md:py-16 bg-background relative overflow-hidden">
+       <section className="py-8 md:py-12 bg-background relative overflow-hidden">
         <div className="absolute inset-0 z-0">
             <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full filter blur-3xl opacity-50 animate-blob"></div>
             <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/10 rounded-full filter blur-3xl opacity-50 animate-blob animation-delay-2000"></div>
@@ -170,7 +183,7 @@ export default function Home() {
       </section>
 
       {/* About Section */}
-       <section className="py-12 md:py-16 bg-background/70">
+       <section className="py-8 md:py-12 bg-background/70">
         <div className="container mx-auto px-4">
            <Card className="overflow-hidden lg:grid lg:grid-cols-2 lg:items-center bg-card shadow-2xl">
               <div className="p-10 md:p-16">
@@ -183,17 +196,19 @@ export default function Home() {
                 </Button>
               </div>
                <div className="h-80 lg:h-full flex items-center justify-center bg-primary/5 p-4 relative overflow-hidden">
-                <Globe className="text-amber-400 opacity-20 animate-spin-slow text-[280px]"/>
-                 <div className="absolute inset-0 flex items-center justify-center">
-                    <Plane className="text-foreground/80 text-4xl plane-path" />
-                  </div>
+                <div className="w-[300px] h-[300px] md:w-[400px] md:h-[400px] relative">
+                    <WorldGlobe />
+                     <div className="absolute inset-0 flex items-center justify-center">
+                        <Plane className="text-foreground/80 text-4xl plane-path" />
+                    </div>
+                </div>
                </div>
            </Card>
         </div>
       </section>
 
       {/* Featured Products Carousel */}
-      <section className="py-12 md:py-16 bg-card/50">
+      <section className="py-8 md:py-12 bg-card/50">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-headline font-bold text-center mb-12">From Our Workshop</h2>
           <Carousel
@@ -225,3 +240,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
