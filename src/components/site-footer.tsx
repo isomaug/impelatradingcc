@@ -1,8 +1,9 @@
 
+
 "use client";
 
 import Link from "next/link";
-import { Twitter, Facebook, Instagram, Send } from "lucide-react";
+import { Twitter, Facebook, Instagram, Send, MapPin, Phone, Clock } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import React, { useEffect, useState } from "react";
@@ -73,7 +74,7 @@ export default function SiteFooter() {
     return <FooterSkeleton />;
   }
 
-  const { newsletter, columns, socials, legal, disclaimer } = content;
+  const { newsletter, columns, socials, legal, disclaimer, contact } = content;
 
   return (
     <footer className="bg-foreground text-background">
@@ -104,6 +105,14 @@ export default function SiteFooter() {
                 </ul>
               </div>
             ))}
+             <div>
+                <h3 className="font-headline text-sm font-semibold tracking-wider uppercase mb-4">Contact Us</h3>
+                <ul className="space-y-3 text-sm text-muted-foreground">
+                    <li className="flex gap-2 items-start"><MapPin className="w-4 h-4 mt-0.5 shrink-0" /><span>{contact.address}</span></li>
+                    <li className="flex gap-2 items-center"><Phone className="w-4 h-4 shrink-0" /><span>{contact.phone}</span></li>
+                    <li className="flex gap-2 items-center"><Clock className="w-4 h-4 shrink-0" /><span>{contact.hours}</span></li>
+                </ul>
+            </div>
           </div>
         </div>
 

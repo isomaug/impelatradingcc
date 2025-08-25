@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useForm, useFieldArray } from "react-hook-form";
@@ -49,6 +50,11 @@ const formSchema = z.object({
     description: z.string().min(10),
   }),
   columns: z.array(columnSchema),
+  contact: z.object({
+    address: z.string().min(10, "Address is required."),
+    phone: z.string().min(10, "Phone number is required."),
+    hours: z.string().min(5, "Hours are required."),
+  }),
   socials: z.object({
     twitter: z.string().url("Must be a valid URL."),
     facebook: z.string().url("Must be a valid URL."),
@@ -177,13 +183,13 @@ export default function AdminFooterPage() {
               <Card>
                 <AccordionTrigger className="p-6 hover:no-underline">
                   <CardHeader className="p-0 text-left">
-                    <CardTitle>Link Columns</CardTitle>
-                    <CardDescription>The columns of links (e.g., Shop, Support).</CardDescription>
+                    <CardTitle>Link & Contact Columns</CardTitle>
+                    <CardDescription>The columns of links and contact info.</CardDescription>
                   </CardHeader>
                 </AccordionTrigger>
                 <AccordionContent>
                   <CardContent className="space-y-6 pt-0">
-                    <div className="grid md:grid-cols-3 gap-6">
+                    <div className="grid md:grid-cols-2 gap-6">
                       {columnFields.map((column, colIndex) => (
                         <div key={column.id} className="space-y-4 p-4 border rounded-lg">
                           <FormField control={form.control} name={`columns.${colIndex}.title`} render={({ field }) => (<FormItem><FormLabel>Column Title</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
@@ -197,6 +203,12 @@ export default function AdminFooterPage() {
                           ))}
                         </div>
                       ))}
+                       <div className="space-y-4 p-4 border rounded-lg">
+                            <h4 className="font-semibold">Contact Details</h4>
+                            <FormField control={form.control} name="contact.address" render={({ field }) => (<FormItem><FormLabel>Address</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                            <FormField control={form.control} name="contact.phone" render={({ field }) => (<FormItem><FormLabel>Phone</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                            <FormField control={form.control} name="contact.hours" render={({ field }) => (<FormItem><FormLabel>Hours</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+                        </div>
                     </div>
                   </CardContent>
                 </AccordionContent>

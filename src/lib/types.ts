@@ -111,6 +111,12 @@ export type FooterColumn = {
   links: FooterLink[];
 };
 
+export type ContactDetails = {
+    address: string;
+    phone: string;
+    hours: string;
+}
+
 export type FooterContent = {
   newsletter: {
     headline: string;
@@ -122,6 +128,7 @@ export type FooterContent = {
     facebook: string;
     instagram: string;
   };
+  contact: ContactDetails;
   legal: {
     copyright: string;
     privacyPolicy: FooterLink;
