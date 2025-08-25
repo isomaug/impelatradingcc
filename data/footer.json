@@ -1,0 +1,45 @@
+
+{
+  "newsletter": {
+    "headline": "Subscribe to Our Newsletter",
+    "description": "Get the latest news on our artisans, new products, and special offers."
+  },
+  "columns": [
+    {
+      "title": "Shop",
+      "links": [
+        { "text": "All Products", "href": "/shop" },
+        { "text": "Bags", "href": "/shop?category=Bags" },
+        { "text": "Wallets", "href": "/shop?category=Wallets" },
+        { "text": "Accessories", "href": "/shop?category=Accessories" }
+      ]
+    },
+    {
+      "title": "Support",
+      "links": [
+        { "text": "Contact Us", "href": "/contact" },
+        { "text": "FAQ", "href": "/faq" },
+        { "text": "Shipping & Returns", "href": "/shipping-returns" }
+      ]
+    },
+    {
+      "title": "Company",
+      "links": [
+        { "text": "About Us", "href": "/about" },
+        { "text": "Trainings", "href": "/trainings" },
+        { "text": "Partnerships", "href": "/our-work" }
+      ]
+    }
+  ],
+  "socials": {
+    "twitter": "#",
+    "facebook": "#",
+    "instagram": "#"
+  },
+  "legal": {
+    "copyright": "Impela Trading CC. All Rights Reserved.",
+    "privacyPolicy": { "text": "Privacy", "href": "/privacy-policy" },
+    "termsOfService": { "text": "Terms", "href": "/terms-of-service" }
+  },
+  "disclaimer": "Currency conversions are for informational purposes only. All transactions will be processed in ZAR (South African Rand). Exchange rates may fluctuate."
+}

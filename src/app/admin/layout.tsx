@@ -16,6 +16,7 @@ import {
   LogOut,
   BookHeart,
   Home,
+  Footprints,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -47,6 +48,7 @@ const navItems = [
       { href: "/admin/partnerships", icon: Handshake, label: "Partnerships" },
       { href: "/admin/trainings", icon: BookUser, label: "Trainings" },
       { href: "/admin/our-work", icon: BookHeart, label: "Our Work" },
+      { href: "/admin/footer", icon: Footprints, label: "Footer" },
     ],
   },
   {

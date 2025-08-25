@@ -100,3 +100,32 @@ export type HomePageContent = {
 export type SiteSettings = {
     logoUrl: string;
 }
+
+export type FooterLink = {
+  text: string;
+  href: string;
+};
+
+export type FooterColumn = {
+  title: string;
+  links: FooterLink[];
+};
+
+export type FooterContent = {
+  newsletter: {
+    headline: string;
+    description: string;
+  };
+  columns: FooterColumn[];
+  socials: {
+    twitter: string;
+    facebook: string;
+    instagram: string;
+  };
+  legal: {
+    copyright: string;
+    privacyPolicy: FooterLink;
+    termsOfService: FooterLink;
+  };
+  disclaimer: string;
+};
