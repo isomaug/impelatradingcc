@@ -5,16 +5,17 @@ import { CheckCircle } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import type { Training } from "@/lib/types";
-import { unstable_noStore as noStore } from 'next/cache';
-import fs from 'fs/promises';
-import path from 'path';
 
 async function getTrainings(): Promise<Training[]> {
-  noStore();
+  const baseUrl = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : 'http://localhost:9002';
   try {
-    const dataFilePath = path.join(process.cwd(), 'data', 'trainings.json');
-    const fileContent = await fs.readFile(dataFilePath, 'utf-8');
-    return JSON.parse(fileContent);
+    const response = await fetch(`${baseUrl}/api/trainings`, { cache: 'no-store' });
+    if (!response.ok) {
+        throw new Error("Failed to fetch trainings");
+    }
+    return await response.json();
   } catch (error) {
      console.error("Error reading trainings data:", error);
     return [];

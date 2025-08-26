@@ -4,7 +4,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import type { TeamMember } from '@/lib/types';
 import { db } from '@/lib/firebase';
-import { doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, deleteDoc } from 'firebase/firestore';
 
 
 const dataFilePath = path.join(process.cwd(), 'data', 'team.json');
@@ -29,54 +29,61 @@ export async function GET(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  const members = await readData();
-  const member = members.find(p => p.id === params.id);
-  if (member) {
-    return NextResponse.json(member);
+  try {
+    const docRef = doc(db, "team", params.id);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      return NextResponse.json({ id: docSnap.id, ...docSnap.data() } as TeamMember);
+    } else {
+      return new NextResponse('Team member not found', { status: 404 });
+    }
+  } catch (error) {
+    console.error("Error fetching team member from Firestore:", error);
+    return new NextResponse('Error fetching team member data', { status: 500 });
   }
-  return new NextResponse('Team member not found', { status: 404 });
 }
 
 export async function PUT(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  const updatedMemberData: Omit<TeamMember, 'id'> = await request.json();
-  let members = await readData();
-  const memberIndex = members.findIndex(p => p.id === params.id);
-
-  if (memberIndex > -1) {
     try {
+        const updatedMemberData: Omit<TeamMember, 'id'> = await request.json();
         const docRef = doc(db, "team", params.id);
         await updateDoc(docRef, updatedMemberData);
-    } catch(e) {
-        console.error(`Could not update team member ${params.id} in firestore`, e);
+
+        // Also update the local JSON file for consistency
+        let members = await readData();
+        const memberIndex = members.findIndex(p => p.id === params.id);
+        if (memberIndex > -1) {
+            members[memberIndex] = { id: params.id, ...updatedMemberData };
+            await writeData(members);
+        }
+
+        return NextResponse.json({ id: params.id, ...updatedMemberData });
+    } catch (error) {
+        console.error(`Could not update team member ${params.id} in Firestore`, error);
+        return new NextResponse('Error updating team member', { status: 500 });
     }
-    members[memberIndex] = { ...members[memberIndex], ...updatedMemberData };
-    await writeData(members);
-    return NextResponse.json(members[memberIndex]);
-  }
-  return new NextResponse('Team member not found', { status: 404 });
 }
 
 export async function DELETE(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  let members = await readData();
-  const filteredMembers = members.filter(p => p.id !== params.id);
+    try {
+        const docRef = doc(db, "team", params.id);
+        await deleteDoc(docRef);
 
-  if (members.length === filteredMembers.length) {
-    return new NextResponse('Team member not found', { status: 404 });
-  }
-
-  try {
-      const docRef = doc(db, "team", params.id);
-      await deleteDoc(docRef);
-  } catch(e) {
-      console.error(`Could not delete team member ${params.id} from firestore`, e);
-  }
-
-  await writeData(filteredMembers);
-  return new NextResponse(null, { status: 204 }); // No Content
+        // Also delete from the local JSON file
+        let members = await readData();
+        const filteredMembers = members.filter(p => p.id !== params.id);
+        await writeData(filteredMembers);
+        
+        return new NextResponse(null, { status: 204 }); // No Content
+    } catch (error) {
+        console.error(`Could not delete team member ${params.id} from Firestore`, error);
+        return new NextResponse('Error deleting team member', { status: 500 });
+    }
 }

@@ -4,49 +4,50 @@ import fs from 'fs/promises';
 import path from 'path';
 import type { Product } from '@/lib/types';
 import { db } from '@/lib/firebase';
-import { addDoc, collection } from 'firebase/firestore';
+import { collection, addDoc, getDocs, doc, setDoc } from 'firebase/firestore';
 
 const dataFilePath = path.join(process.cwd(), 'data', 'products.json');
-
-async function readData(): Promise<Product[]> {
-   try {
-    const fileContent = await fs.readFile(dataFilePath, 'utf-8');
-    return JSON.parse(fileContent);
-  } catch (error) {
-    if (error instanceof Error && 'code' in error && error.code === 'ENOENT') {
-      return [];
-    }
-    throw error;
-  }
-}
 
 async function writeData(data: Product[]): Promise<void> {
   await fs.writeFile(dataFilePath, JSON.stringify(data, null, 2), 'utf-8');
 }
 
 export async function GET() {
-  const products = await readData();
-  return NextResponse.json(products);
+    try {
+        const querySnapshot = await getDocs(collection(db, "products"));
+        const products: Product[] = [];
+        querySnapshot.forEach((doc) => {
+            products.push({ id: doc.id, ...doc.data() } as Product);
+        });
+        return NextResponse.json(products);
+    } catch (error) {
+        console.error("Error fetching products from Firestore: ", error);
+        return new NextResponse('Error fetching products', { status: 500 });
+    }
 }
 
 export async function POST(request: Request) {
-  const newProductData: Omit<Product, 'id'> = await request.json();
-  const products = await readData();
-  
-  // Also add to Firestore
-  try {
-    await addDoc(collection(db, "products"), newProductData);
-  } catch (error) {
-     console.error("Error creating product in Firestore: ", error);
-     // We might want to handle this more gracefully, but for now we'll just log it
-     // and proceed with updating the JSON file.
-  }
+    try {
+        const newProductData: Omit<Product, 'id'> = await request.json();
+        
+        // Add to Firestore and get the new document reference
+        const docRef = await addDoc(collection(db, "products"), newProductData);
+        
+        const newProduct: Product = {
+            id: docRef.id,
+            ...newProductData,
+        };
 
-  const newProduct: Product = {
-    id: (products.length > 0 ? Math.max(...products.map(p => parseInt(p.id))) + 1 : 1).toString(),
-    ...newProductData,
-  };
-  products.push(newProduct);
-  await writeData(products);
-  return new NextResponse(JSON.stringify(newProduct), { status: 201, headers: { 'Content-Type': 'application/json' } });
+        // Also update the local JSON file for consistency during transition
+        const products = (await getDocs(collection(db, "products"))).docs.map(doc => ({ id: doc.id, ...doc.data() } as Product));
+        await writeData(products);
+
+        // Update the document in Firestore to include its own ID.
+        await setDoc(doc(db, "products", docRef.id), newProduct);
+
+        return new NextResponse(JSON.stringify(newProduct), { status: 201, headers: { 'Content-Type': 'application/json' } });
+    } catch (error) {
+        console.error("Error creating product: ", error);
+        return new NextResponse('Error creating product', { status: 500 });
+    }
 }

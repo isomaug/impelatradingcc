@@ -4,7 +4,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import type { Product } from '@/lib/types';
 import { db } from '@/lib/firebase';
-import { doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, deleteDoc } from 'firebase/firestore';
 
 
 const dataFilePath = path.join(process.cwd(), 'data', 'products.json');
@@ -29,57 +29,61 @@ export async function GET(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  const products = await readData();
-  const product = products.find(p => p.id === params.id);
-  if (product) {
-    return NextResponse.json(product);
+  try {
+    const docRef = doc(db, "products", params.id);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      return NextResponse.json({ id: docSnap.id, ...docSnap.data() } as Product);
+    } else {
+      return new NextResponse('Product not found', { status: 404 });
+    }
+  } catch (error) {
+    console.error("Error fetching product from Firestore:", error);
+    return new NextResponse('Error fetching product data', { status: 500 });
   }
-  return new NextResponse('Product not found', { status: 404 });
 }
 
 export async function PUT(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  const updatedProductData: Omit<Product, 'id'> = await request.json();
-  let products = await readData();
-  const productIndex = products.findIndex(p => p.id === params.id);
-
-  if (productIndex > -1) {
-    // Also update in Firestore
     try {
+        const updatedProductData: Omit<Product, 'id'> = await request.json();
         const docRef = doc(db, "products", params.id);
         await updateDoc(docRef, updatedProductData);
-    } catch(e) {
-        console.error(`Could not update product ${params.id} in firestore`, e);
-    }
 
-    products[productIndex] = { ...products[productIndex], ...updatedProductData };
-    await writeData(products);
-    return NextResponse.json(products[productIndex]);
-  }
-  return new NextResponse('Product not found', { status: 404 });
+        // Also update the local JSON file for consistency during transition
+        let products = await readData();
+        const productIndex = products.findIndex(p => p.id === params.id);
+        if (productIndex > -1) {
+            products[productIndex] = { ...products[productIndex], ...updatedProductData };
+            await writeData(products);
+        }
+        
+        return NextResponse.json({ id: params.id, ...updatedProductData });
+    } catch (error) {
+        console.error(`Could not update product ${params.id} in Firestore`, error);
+        return new NextResponse('Error updating product', { status: 500 });
+    }
 }
 
 export async function DELETE(
   request: Request,
   { params }: { params: { id:string } }
 ) {
-  let products = await readData();
-  const filteredProducts = products.filter(p => p.id !== params.id);
-  
-  if (products.length === filteredProducts.length) {
-    return new NextResponse('Product not found', { status: 404 });
-  }
+    try {
+        const docRef = doc(db, "products", params.id);
+        await deleteDoc(docRef);
 
-  // Also delete from Firestore
-  try {
-    const docRef = doc(db, "products", params.id);
-    await deleteDoc(docRef);
-  } catch(e) {
-    console.error(`Could not delete product ${params.id} from firestore`, e);
-  }
-
-  await writeData(filteredProducts);
-  return new NextResponse(null, { status: 204 }); // No Content
+        // Also delete from the local JSON file
+        let products = await readData();
+        const filteredProducts = products.filter(p => p.id !== params.id);
+        await writeData(filteredProducts);
+        
+        return new NextResponse(null, { status: 204 }); // No Content
+    } catch (error) {
+        console.error(`Could not delete product ${params.id} from Firestore`, error);
+        return new NextResponse('Error deleting product', { status: 500 });
+    }
 }

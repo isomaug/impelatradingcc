@@ -2,18 +2,19 @@
 import type { Product } from "@/lib/types";
 import React, { Suspense } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import fs from 'fs/promises';
-import path from 'path';
-import { unstable_noStore as noStore } from 'next/cache';
 import ShopPageClient from "./shop-page-client";
 import { Skeleton } from "@/components/ui/skeleton";
 
 async function getAllProducts(): Promise<Product[]> {
-  noStore();
+    const baseUrl = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : 'http://localhost:9002';
   try {
-    const dataFilePath = path.join(process.cwd(), 'data', 'products.json');
-    const fileContent = await fs.readFile(dataFilePath, 'utf-8');
-    return JSON.parse(fileContent);
+    const response = await fetch(`${baseUrl}/api/products`, { cache: 'no-store' });
+    if (!response.ok) {
+        throw new Error("Failed to fetch products");
+    }
+    return await response.json();
   } catch (error) {
     console.error("Error reading products data:", error);
     return [];

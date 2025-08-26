@@ -3,6 +3,8 @@ import { NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
 import type { Partner } from '@/lib/types';
+import { db } from '@/lib/firebase';
+import { doc, getDoc, updateDoc, deleteDoc } from 'firebase/firestore';
 
 const dataFilePath = path.join(process.cwd(), 'data', 'partners.json');
 
@@ -26,41 +28,61 @@ export async function GET(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  const partners = await readData();
-  const partner = partners.find(p => p.id === params.id);
-  if (partner) {
-    return NextResponse.json(partner);
+  try {
+    const docRef = doc(db, "partners", params.id);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      return NextResponse.json({ id: docSnap.id, ...docSnap.data() } as Partner);
+    } else {
+      return new NextResponse('Partner not found', { status: 404 });
+    }
+  } catch (error) {
+    console.error("Error fetching partner from Firestore:", error);
+    return new NextResponse('Error fetching partner data', { status: 500 });
   }
-  return new NextResponse('Partner not found', { status: 404 });
 }
 
 export async function PUT(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  const updatedPartnerData: Omit<Partner, 'id'> = await request.json();
-  let partners = await readData();
-  const partnerIndex = partners.findIndex(p => p.id === params.id);
-
-  if (partnerIndex > -1) {
-    partners[partnerIndex] = { ...partners[partnerIndex], ...updatedPartnerData };
-    await writeData(partners);
-    return NextResponse.json(partners[partnerIndex]);
+  try {
+    const updatedPartnerData: Omit<Partner, 'id'> = await request.json();
+    const docRef = doc(db, "partners", params.id);
+    await updateDoc(docRef, updatedPartnerData);
+    
+    // Also update the local JSON file for consistency
+    let partners = await readData();
+    const partnerIndex = partners.findIndex(p => p.id === params.id);
+    if (partnerIndex > -1) {
+        partners[partnerIndex] = { id: params.id, ...updatedPartnerData };
+        await writeData(partners);
+    }
+    
+    return NextResponse.json({ id: params.id, ...updatedPartnerData });
+  } catch (error) {
+    console.error(`Could not update partner ${params.id} in Firestore`, error);
+    return new NextResponse('Error updating partner', { status: 500 });
   }
-  return new NextResponse('Partner not found', { status: 404 });
 }
 
 export async function DELETE(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  let partners = await readData();
-  const filteredPartners = partners.filter(p => p.id !== params.id);
+  try {
+    const docRef = doc(db, "partners", params.id);
+    await deleteDoc(docRef);
+    
+    // Also delete from the local JSON file
+    let partners = await readData();
+    const filteredPartners = partners.filter(p => p.id !== params.id);
+    await writeData(filteredPartners);
 
-  if (partners.length === filteredPartners.length) {
-    return new NextResponse('Partner not found', { status: 404 });
+    return new NextResponse(null, { status: 204 }); // No Content
+  } catch (error) {
+    console.error(`Could not delete partner ${params.id} from Firestore`, error);
+    return new NextResponse('Error deleting partner', { status: 500 });
   }
-
-  await writeData(filteredPartners);
-  return new NextResponse(null, { status: 204 }); // No Content
 }

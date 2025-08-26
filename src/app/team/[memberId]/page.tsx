@@ -5,27 +5,22 @@ import type { TeamMember, TeamCV } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Linkedin, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
-import { unstable_noStore as noStore } from 'next/cache';
-import fs from 'fs/promises';
-import path from 'path';
-
-async function getTeamMembers(): Promise<TeamMember[]> {
-  noStore();
-  try {
-    const dataFilePath = path.join(process.cwd(), 'data', 'team.json');
-    const fileContent = await fs.readFile(dataFilePath, 'utf-8');
-    return JSON.parse(fileContent);
-  } catch (error) {
-    console.error("Could not read team data", error);
-    return [];
-  }
-}
 
 async function getMember(id: string): Promise<TeamMember | undefined> {
-  noStore();
   // In a real app, this would fetch from a database or CMS
-  const allMembers: TeamMember[] = await getTeamMembers();
-  return allMembers.find((m) => m.id === id);
+  const baseUrl = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : 'http://localhost:9002';
+  try {
+    const response = await fetch(`${baseUrl}/api/team/${id}`, { cache: 'no-store' });
+    if (!response.ok) {
+      return undefined;
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Could not read team data", error);
+    return undefined;
+  }
 }
 
 export default async function TeamMemberPage({ params }: TeamCV) {
@@ -61,7 +56,7 @@ export default async function TeamMemberPage({ params }: TeamCV) {
               />
             </div>
             <div className="md:col-span-2">
-              <h1 className="text-3xl md:text-4xl font-headline font-bold">{member.name}</h1>
+              <h1 className="text-4xl md:text-5xl font-headline font-bold">{member.name}</h1>
               <p className="text-xl text-primary mt-1">{member.title}</p>
               <Link href={member.linkedin} passHref target="_blank" className="mt-4 inline-block">
                 <Button variant="outline">
