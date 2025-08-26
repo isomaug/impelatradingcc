@@ -9,17 +9,23 @@ import { unstable_noStore as noStore } from 'next/cache';
 import fs from 'fs/promises';
 import path from 'path';
 
-async function getMember(id: string): Promise<TeamMember | undefined> {
+async function getTeamMembers(): Promise<TeamMember[]> {
   noStore();
   try {
     const dataFilePath = path.join(process.cwd(), 'data', 'team.json');
     const fileContent = await fs.readFile(dataFilePath, 'utf-8');
-    const teamMembers: TeamMember[] = JSON.parse(fileContent);
-    return teamMembers.find(m => m.id === id);
+    return JSON.parse(fileContent);
   } catch (error) {
     console.error("Could not read team data", error);
-    return undefined;
+    return [];
   }
+}
+
+async function getMember(id: string): Promise<TeamMember | undefined> {
+  noStore();
+  // In a real app, this would fetch from a database or CMS
+  const allMembers: TeamMember[] = await getTeamMembers();
+  return allMembers.find((m) => m.id === id);
 }
 
 export default async function TeamMemberPage({ params }: TeamCV) {
@@ -55,15 +61,15 @@ export default async function TeamMemberPage({ params }: TeamCV) {
               />
             </div>
             <div className="md:col-span-2">
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-headline font-bold">{member.name}</h1>
-              <p className="text-xl md:text-2xl font-semibold text-primary mt-2">{member.title}</p>
+              <h1 className="text-3xl md:text-4xl font-headline font-bold">{member.name}</h1>
+              <p className="text-xl text-primary mt-1">{member.title}</p>
               <Link href={member.linkedin} passHref target="_blank" className="mt-4 inline-block">
                 <Button variant="outline">
                   <Linkedin className="mr-2 h-5 w-5" />
                   View LinkedIn Profile
                 </Button>
               </Link>
-              <div className="prose prose-lg max-w-none mt-8 text-foreground/80">
+              <div className="prose prose-lg max-w-none mt-6 text-foreground/80">
                  {bioParagraphs.map((paragraph, index) => (
                   <p key={index}>{paragraph}</p>
                 ))}

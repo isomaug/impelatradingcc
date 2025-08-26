@@ -28,7 +28,7 @@ export default async function TeamPage() {
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="text-center mb-12">
-        <h1 className="text-3xl md:text-5xl font-headline font-bold mb-4">
+        <h1 className="text-4xl md:text-5xl font-headline font-bold mb-4">
           Meet Our Team
         </h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
@@ -41,7 +41,7 @@ export default async function TeamPage() {
             <Card className="grid md:grid-cols-2 overflow-hidden bg-card/60 backdrop-blur-md border-white/10 shadow-2xl">
                 <div className="p-8 md:p-12 flex flex-col justify-center order-2 md:order-1">
                      <CardHeader className="p-0">
-                        <CardTitle className="font-headline text-3xl">{leader.name}</CardTitle>
+                        <CardTitle className="font-headline text-2xl">{leader.name}</CardTitle>
                         <p className="text-primary text-lg font-semibold mt-1">{leader.title}</p>
                      </CardHeader>
                      <CardContent className="p-0 mt-4">
@@ -91,8 +91,8 @@ export default async function TeamPage() {
                   />
                 </CardHeader>
                 <CardContent className="p-6 flex-grow flex flex-col">
-                    <CardTitle className="font-headline text-lg mb-1">{member.name}</CardTitle>
-                    <p className="text-primary font-semibold text-sm mb-3">{member.title}</p>
+                    <CardTitle className="font-headline text-xl mb-1">{member.name}</CardTitle>
+                    <p className="text-primary font-semibold text-base mb-3">{member.title}</p>
                     <CardDescription className="text-sm flex-grow line-clamp-3">{member.bio}</CardDescription>
                     <div className="mt-4 flex justify-center items-center gap-2">
                         <Button asChild variant="outline" size="sm">

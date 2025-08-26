@@ -118,7 +118,7 @@ export default function ProductPage() {
                 <h1 className="text-3xl md:text-4xl font-headline font-bold">{product.name}</h1>
                 <p className="text-2xl font-semibold text-primary mt-2">{formatCurrency(product.price)}</p>
             </div>
-            <p className="text-lg text-muted-foreground">{product.description}</p>
+            <p className="text-muted-foreground">{product.description}</p>
             <Button size="lg" onClick={handleAddToCart}>
                 Add to Cart
             </Button>
